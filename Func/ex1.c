@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 
 typedef struct {
     char name[10];
@@ -57,7 +56,7 @@ void search_abonent(abonent mass[100]){
     for(short i = 0; i < 100; i++){
         if(strcmp(mass[i].name, search_name) == 0){
             printf("%s %s %s\n", mass[i].name, mass[i].second_name, mass[i].tell);
-]        }
+        }
     }
 }
 
@@ -82,6 +81,6 @@ void new_abonent(abonent mass[100]){
     }else{
         scanf("%s", mass[i].name);
         scanf("%s", mass[i].second_name);
-        scanf("%s", mass[i].tell);
+        scanf("%s", mass[i].tell); // Подразумеваеться что все данные верны и не больше 10 символов
     }
 }
