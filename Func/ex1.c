@@ -76,7 +76,7 @@ void new_abonent(abonent mass[100]){
     for(; i < 100; i++){
         if(mass[i].name[0] == 0) break;
     }
-    if(i == 99 && mass[i].name[0] == 0){
+    if(i == 99 && mass[i].name[0]){
         printf("abonents is full");
     }else{
         scanf("%s", mass[i].name);
