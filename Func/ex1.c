@@ -29,6 +29,9 @@ int main(){
             search_abonent(mass);
         } else if(argument == 4){
             print_abonent(mass);
+        } else if(argument == 6){
+            printf("ERROR\n");
+            break;
         }
     }
 }
@@ -42,8 +45,8 @@ void print_abonent(abonent mass[MAX_SIZE_MASS]){
 
 void del_abonent(abonent mass[MAX_SIZE_MASS]){
     char del_name[SIZE_ELEMENTS] = {0};
-    char n = 0;
-    scanf("%s", del_name);
+    fgets(del_name, 10, stdin);
+    fflush(stdin);
     for(short i = 0; i < SIZE_ELEMENTS; i++){
         if(strcmp(mass[i].name, del_name) == 0){
             memset(mass[i].name, 0, SIZE_ELEMENTS);
@@ -55,10 +58,11 @@ void del_abonent(abonent mass[MAX_SIZE_MASS]){
 
 void search_abonent(abonent mass[MAX_SIZE_MASS]){
     char search_name[SIZE_ELEMENTS] = {0};
-    scanf("%s", search_name);
+    fgets(search_name, 10, stdin);
+    fflush(stdin);
     for(short i = 0; i < SIZE_ELEMENTS; i++){
         if(strcmp(mass[i].name, search_name) == 0){
-            printf("%s %s %s\n", mass[i].name, mass[i].second_name, mass[i].tell);
+            printf("%s%s%s\n", mass[i].name, mass[i].second_name, mass[i].tell);
         }
     }
 }
@@ -70,7 +74,10 @@ int menu_bar(){
     printf("3. search abonent\n");
     printf("4. print abonent\n");
     printf("5. exit\n");  
-    scanf("%d", &menu);
+    if(scanf("%d", &menu) != 1){
+        menu = 6;
+    }
+    fflush(stdin);
     return menu;
 }
 
@@ -82,8 +89,11 @@ void new_abonent(abonent mass[MAX_SIZE_MASS]){
     if(i == 99 && mass[i].name[0]){
         printf("abonents is full");
     }else{
-        scanf("%s", mass[i].name);
-        scanf("%s", mass[i].second_name);
-        scanf("%s", mass[i].tell); // Подразумеваеться что все данные верны и не больше 10 символов
+        fgets(mass[i].name, 10, stdin);
+        fflush(stdin);
+        fgets(mass[i].second_name, 10, stdin);
+        fflush(stdin);
+        fgets(mass[i].tell, 10, stdin);
+        fflush(stdin);
     }
 }
