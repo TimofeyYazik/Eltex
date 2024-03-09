@@ -1,59 +1,62 @@
 #include <stdio.h>
 #include <string.h>
 
+#define MAX_SIZE_MASS 100
+#define SIZE_ELEMENTS 10
+
 typedef struct {
-    char name[10];
-    char second_name[10];
-    char tell[10];
+    char name[SIZE_ELEMENTS];
+    char second_name[SIZE_ELEMENTS];
+    char tell[SIZE_ELEMENTS];
 }abonent;
 
 int menu_bar();
-void new_abonent(abonent mass[100]);
-void search_abonent(abonent mass[100]);
-void print_abonent(abonent mass[100]);
-void del_abonent(abonent mass[100]);
+void new_abonent(abonent mass[MAX_SIZE_MASS]);
+void search_abonent(abonent mass[MAX_SIZE_MASS]);
+void print_abonent(abonent mass[MAX_SIZE_MASS]);
+void del_abonent(abonent mass[MAX_SIZE_MASS]);
 
 int main(){
-    abonent mass[100] = {0};
-    int menu = 0;
-    while(menu != 5){
-        menu = menu_bar();
-        if(menu == 1){
+    abonent mass[MAX_SIZE_MASS] = {0};
+    int argument = 0;
+    while(argument != 5){
+        argument = menu_bar();
+        if(argument == 1){
             new_abonent(mass);
-        } else if(menu == 2){
+        } else if(argument == 2){
             del_abonent(mass); 
-        } else if(menu == 3){
+        } else if(argument == 3){
             search_abonent(mass);
-        } else if(menu == 4){
+        } else if(argument == 4){
             print_abonent(mass);
         }
     }
 }
 
-void print_abonent(abonent mass[100]){
-    for(short i = 0; i < 100; i++){
-        if(mass[i].name[0] != 0){
+void print_abonent(abonent mass[MAX_SIZE_MASS]){
+    for(short i = 0; i < MAX_SIZE_MASS; i++){
+        if(mass[i].name[0]){
             printf("%s %s %s\n", mass[i].name, mass[i].second_name, mass[i].tell);
-        }
     }
-}
+}}
 
-void del_abonent(abonent mass[100]){
-    char del_name[10] = {0};
+void del_abonent(abonent mass[MAX_SIZE_MASS]){
+    char del_name[SIZE_ELEMENTS] = {0};
+    char n = 0;
     scanf("%s", del_name);
-    for(short i = 0; i < 100; i++){
+    for(short i = 0; i < SIZE_ELEMENTS; i++){
         if(strcmp(mass[i].name, del_name) == 0){
-            memset(mass[i].name, 0, 10);
-            memset(mass[i].second_name, 0, 10);
-            memset(mass[i].tell, 0, 10);
+            memset(mass[i].name, 0, SIZE_ELEMENTS);
+            memset(mass[i].second_name, 0, SIZE_ELEMENTS);
+            memset(mass[i].tell, 0, SIZE_ELEMENTS);
         }
     }
 }
 
-void search_abonent(abonent mass[100]){
-    char search_name[10] = {0};
+void search_abonent(abonent mass[MAX_SIZE_MASS]){
+    char search_name[SIZE_ELEMENTS] = {0};
     scanf("%s", search_name);
-    for(short i = 0; i < 100; i++){
+    for(short i = 0; i < SIZE_ELEMENTS; i++){
         if(strcmp(mass[i].name, search_name) == 0){
             printf("%s %s %s\n", mass[i].name, mass[i].second_name, mass[i].tell);
         }
@@ -71,9 +74,9 @@ int menu_bar(){
     return menu;
 }
 
-void new_abonent(abonent mass[100]){
+void new_abonent(abonent mass[MAX_SIZE_MASS]){
     short i = 0;
-    for(; i < 100; i++){
+    for(; i < MAX_SIZE_MASS; i++){
         if(mass[i].name[0] == 0) break;
     }
     if(i == 99 && mass[i].name[0]){
