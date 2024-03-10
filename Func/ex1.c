@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
 #define MAX_SIZE_MASS 100
 #define SIZE_ELEMENTS 10
 
@@ -17,7 +16,8 @@ void search_abonent(abonent mass[MAX_SIZE_MASS]);
 void print_abonent(abonent mass[MAX_SIZE_MASS]);
 void del_abonent(abonent mass[MAX_SIZE_MASS]);
 
-void clear_enter(abonent *a);
+// void clear_enter(abonent *a);
+void clear_stdin();
 
 int main(){
     abonent mass[MAX_SIZE_MASS] = {0};
@@ -38,6 +38,8 @@ int main(){
         case 4:
             print_abonent(mass);
             break;
+        case 5:
+            break;
         default:
             printf("operation not found or error type input\n");
             break;
@@ -45,19 +47,24 @@ int main(){
     }
 }
 
-void clear_enter(abonent *a){
-    for(int i = 0; i <  SIZE_ELEMENTS; i++){
-        if(a->name[i] == '\n'){
-            a->name[i] = 0;
-        }
-        if(a->second_name[i] == '\n'){
-            a->second_name[i] = 0;
-        }
-        if(a->tell[i] == '\n'){
-            a->tell[i] = 0;
-        }
-    }
+void clear_stdin(){
+    char c = 0;
+    while ((c = getchar()) != '\n' && c != EOF){}
 }
+
+// void clear_enter(abonent *a){
+//     for(int i = 0; i <  SIZE_ELEMENTS; i++){
+//         if(a->name[i] == '\n'){
+//             a->name[i] = 0;
+//         }
+//         if(a->second_name[i] == '\n'){
+//             a->second_name[i] = 0;
+//         }
+//         if(a->tell[i] == '\n'){
+//             a->tell[i] = 0;
+//         }
+//     }
+// }
 
 void print_abonent(abonent mass[MAX_SIZE_MASS]){
     for(short i = 0; i < MAX_SIZE_MASS; i++){
@@ -71,15 +78,14 @@ void print_abonent(abonent mass[MAX_SIZE_MASS]){
 
 void del_abonent(abonent mass[MAX_SIZE_MASS]){
     char del_name[SIZE_ELEMENTS] = {0};
-    fgets(del_name, 10, stdin);
+    scanf("%9s", del_name);
     for(short i = 0; i < SIZE_ELEMENTS;i++){
         if(del_name[i] == '\n'){
             del_name[i] = 0;
             break;
         }
     }
-    fseek(stdin, SEEK_END, 0);
-
+    clear_stdin();
     for(short i = 0; i < SIZE_ELEMENTS; i++){
         if(strcmp(mass[i].name, del_name) == 0){
             memset(mass[i].name, 0, SIZE_ELEMENTS);
@@ -91,8 +97,8 @@ void del_abonent(abonent mass[MAX_SIZE_MASS]){
 
 void search_abonent(abonent mass[MAX_SIZE_MASS]){
     char search_name[SIZE_ELEMENTS] = {0};
-    fgets(search_name, 10, stdin);
-    fseek(stdin, SEEK_END,0);
+    scanf("%9s", search_name);
+    clear_stdin();
     for(short i = 0; i < SIZE_ELEMENTS;i++){
         if(search_name[i] == '\n'){
             search_name[i] = 0;
@@ -118,7 +124,7 @@ int menu_bar(){
     if(scanf("%d", &menu) != 1){
         menu = 6;
     }
-    fseek(stdin, SEEK_END,0);
+    clear_stdin();
     return menu;
 }
 
@@ -130,12 +136,11 @@ void new_abonent(abonent mass[MAX_SIZE_MASS]){
     if(i == 99 && mass[i].name[0]){
         printf("abonents is full");
     }else{
-        fgets(mass[i].name, 10, stdin);
-        fseek(stdin, SEEK_END,0);
-        fgets(mass[i].second_name, 10, stdin);
-        fseek(stdin, SEEK_END,0);
-        fgets(mass[i].tell, 10, stdin);
-        fseek(stdin, SEEK_END,0);
-        clear_enter(&mass[i]);
+        scanf("%9s", mass[i].name);
+        clear_stdin();
+        scanf("%9s", mass[i].second_name);
+        clear_stdin();
+        scanf("%9s", mass[i].tell);
+        clear_stdin();
     }
 }
