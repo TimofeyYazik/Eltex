@@ -6,4 +6,5 @@ int main(){
     for(short i = 0; i < 10; i++, mas_point++){
         printf("%d\n", *mas_point);
     }
+    return 0;
 }

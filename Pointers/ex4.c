@@ -24,6 +24,8 @@ int main(){
             break;
         }
     }
-    if(res_point)
+    if(res_point) {
         printf("%s", res_point);
+    }
+    return 0;
 }

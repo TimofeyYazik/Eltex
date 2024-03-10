@@ -9,4 +9,5 @@ int main(void)
     float *xp = &x + 1;
     float *yp = &y;
     printf("Результат: %f\n", *xp + *yp);
+    return 0;
 }

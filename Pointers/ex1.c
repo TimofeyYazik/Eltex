@@ -4,6 +4,10 @@ int main(){
     int res = 0;
     char *point_res = &res;
     point_res += 2;
-    scanf("%d", point_res);
-    printf("%d", res);
+    if(scanf("%d", point_res) != 1){
+        printf("error");
+    } else{
+        printf("%d", res);   
+    }
+    return 0;
 }
