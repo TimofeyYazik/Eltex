@@ -20,23 +20,25 @@ void clear_enter(abonent *a);
 
 int main(){
     abonent mass[MAX_SIZE_MASS] = {0};
-    int argument = 0;
+    volatile int argument = 0;
     while(argument != 5){
         argument = menu_bar();
-        if(argument == 1){
+        switch (argument)
+        {
+        case 1:
             new_abonent(mass);
-        } 
-        if(argument == 2){
+            break;
+        case 2:
             del_abonent(mass); 
-        } 
-        if(argument == 3){
+            break;
+        case 3:
             search_abonent(mass);
-        }  
-        if(argument == 4){
+            break;
+        case 4:
             print_abonent(mass);
-        } 
-        if(argument == 6){
-            printf("ERROR\n");
+            break;
+        default:
+            printf("operation not found or error type input\n");
             break;
         }
     }
