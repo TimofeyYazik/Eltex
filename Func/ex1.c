@@ -16,7 +16,6 @@ void search_abonent(abonent mass[MAX_SIZE_MASS]);
 void print_abonent(abonent mass[MAX_SIZE_MASS]);
 void del_abonent(abonent mass[MAX_SIZE_MASS]);
 
-// void clear_enter(abonent *a);
 void clear_stdin();
 
 int main(){
@@ -52,20 +51,6 @@ void clear_stdin(){
     while ((c = getchar()) != '\n' && c != EOF){}
 }
 
-// void clear_enter(abonent *a){
-//     for(int i = 0; i <  SIZE_ELEMENTS; i++){
-//         if(a->name[i] == '\n'){
-//             a->name[i] = 0;
-//         }
-//         if(a->second_name[i] == '\n'){
-//             a->second_name[i] = 0;
-//         }
-//         if(a->tell[i] == '\n'){
-//             a->tell[i] = 0;
-//         }
-//     }
-// }
-
 void print_abonent(abonent mass[MAX_SIZE_MASS]){
     for(short i = 0; i < MAX_SIZE_MASS; i++){
         if(mass[i].name[0]){
@@ -79,12 +64,6 @@ void print_abonent(abonent mass[MAX_SIZE_MASS]){
 void del_abonent(abonent mass[MAX_SIZE_MASS]){
     char del_name[SIZE_ELEMENTS] = {0};
     scanf("%9s", del_name);
-    for(short i = 0; i < SIZE_ELEMENTS;i++){
-        if(del_name[i] == '\n'){
-            del_name[i] = 0;
-            break;
-        }
-    }
     clear_stdin();
     for(short i = 0; i < SIZE_ELEMENTS; i++){
         if(strcmp(mass[i].name, del_name) == 0){
@@ -99,12 +78,6 @@ void search_abonent(abonent mass[MAX_SIZE_MASS]){
     char search_name[SIZE_ELEMENTS] = {0};
     scanf("%9s", search_name);
     clear_stdin();
-    for(short i = 0; i < SIZE_ELEMENTS;i++){
-        if(search_name[i] == '\n'){
-            search_name[i] = 0;
-            break;
-        }
-    }
     for(short i = 0; i < SIZE_ELEMENTS; i++){
         if(strcmp(mass[i].name, search_name) == 0){
             printf("name: %s\n"
@@ -133,7 +106,7 @@ void new_abonent(abonent mass[MAX_SIZE_MASS]){
     for(i = 0; i < MAX_SIZE_MASS; i++){
         if(mass[i].name[0] == 0) break;
     }
-    if(i == 99 && mass[i].name[0]){
+    if((i == MAX_SIZE_MASS - 1) && mass[i].name[0]){
         printf("abonents is full");
     }else{
         scanf("%9s", mass[i].name);
