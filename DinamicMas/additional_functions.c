@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include <malloc.h>
+#include <stdlib.h>
+// #include <malloc.h> //not found from Linux and MacOS
 #include <errno.h>
 
 #include "additional_functions.h"
