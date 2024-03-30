@@ -20,10 +20,13 @@ void NewAbonent(AbonentMas *mas) {
     mas->abonent_mas = realloc(mas->abonent_mas, sizeof(Abonent) * mas->size);
     CheckErrorMemory(*mas);
   }
+  printf("Your name: ");
   CheckErrorScanf(scanf("%9s", mas->abonent_mas[mas->size - 1].name), 1);
-  ClearStdin();
+  ClearStdin();  
+  printf("Your second name: ");
   CheckErrorScanf(scanf("%9s", mas->abonent_mas[mas->size - 1].second_name), 1);
   ClearStdin();
+  printf("Your tell: ");
   CheckErrorScanf(scanf("%9s", mas->abonent_mas[mas->size - 1].tell), 1);
   ClearStdin();
 }
@@ -64,7 +67,8 @@ void DelAbonent(AbonentMas *mas){
   }
   if(search_ready){
     mas->size--;
-    //mas->abonent_mas = realloc(mas->abonent_mas, mas->size); удаляет не последний элемент массива
+    //mas->abonent_mas = realloc(mas->abonent_mas, mas->size); 
+    //удаляет не последний элемент массива, а просто рандомный кусок из массива
     CheckErrorMemory(*mas);
   } else {
     printf("abonent not found");
