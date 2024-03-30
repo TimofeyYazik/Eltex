@@ -9,7 +9,7 @@
 
 void CheckErrorMemory(AbonentMas mas){
   if(mas.abonent_mas == NULL || errno == ENOMEM){
-    perror("error: ");
+    perror("error");
     exit(EXIT_FAILURE);
   }
 }

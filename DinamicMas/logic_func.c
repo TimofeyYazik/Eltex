@@ -42,9 +42,9 @@ void SearchAbonent(AbonentMas *mas){
   if(search_ready == -1){
     printf("abonent not found");
   } else {
-    printf("%s\n", mas->abonent_mas[search_ready].name);
-    printf("%s\n", mas->abonent_mas[search_ready].second_name);
-    printf("%s\n", mas->abonent_mas[search_ready].tell);
+    printf("Name: %s\n", mas->abonent_mas[search_ready].name);
+    printf("Second name: %s\n", mas->abonent_mas[search_ready].second_name);
+    printf("Tell: %s\n", mas->abonent_mas[search_ready].tell);
   }
 }
 
