@@ -6,11 +6,8 @@
 
 #include "castom_type.h"
 
-void CopyAbonent(Abonent *receiver, Abonent *sender){
-}
-
 void CheckErrorMemory(AbonentMas mas){
-  if(mas.abonent_mas == NULL || mas.abonent_mas == ENOMEM){
+  if(mas.abonent_mas == NULL || errno == ENOMEM){
     perror("error: ");
     exit(EXIT_FAILURE);
   }

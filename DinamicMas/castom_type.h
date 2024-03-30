@@ -11,7 +11,7 @@ typedef struct {
 
 typedef struct {
   Abonent *abonent_mas;
-  int64_t size;
+  int size;
 }AbonentMas;
 
 #endif // DINAMIC_MAS_CASTOM_TYPE_H_

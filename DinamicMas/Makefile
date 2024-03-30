@@ -1,7 +1,10 @@
+CFLAGS := -std=c11 -Wall -Wextra
 
+all: obg
+	gcc $(CFLAGS) *.o -o abonents_app
 
-CFLAGS := -std=c11 -Wall -Wextra -Werror
-ABONENTS := $(wildcard *.c)
+obg: 
+	gcc -c -g $(CFLAGS) *.c
 
-ABONENTS_OBJS := $(patsubst %.c, %.o, $(ABONENTS))
-
+clean:
+	rm -f abonents_app *.o

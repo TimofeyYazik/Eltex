@@ -11,13 +11,13 @@ int main() {
     argument = MenuBar();
     switch (argument) {
       case 1:
-        NewAbonent(mas);
+        NewAbonent(&mas);
         break;
       case 2:
-        DelAbonent(mas);
+        DelAbonent(&mas);
         break;
       case 3:
-        SearchAbonent(mas);
+        SearchAbonent(&mas);
         break;
       case 4:
         PrintAbonent(mas);
