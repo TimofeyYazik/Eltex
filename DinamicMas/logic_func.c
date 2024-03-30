@@ -6,6 +6,7 @@
 
 #include "logic_func.h"
 
+// #include "iofunc.h"
 #include "castom_type.h"
 #include "additional_functions.h"
 
@@ -42,9 +43,9 @@ void SearchAbonent(AbonentMas *mas){
   if(search_ready == -1){
     printf("abonent not found");
   } else {
-    printf("Name: %s\n", mas->abonent_mas[search_ready].name);
-    printf("Second name: %s\n", mas->abonent_mas[search_ready].second_name);
-    printf("Tell: %s\n", mas->abonent_mas[search_ready].tell);
+    printf("Name: %10s\n", mas->abonent_mas[search_ready].name);
+    printf("Second name: %3s\n", mas->abonent_mas[search_ready].second_name);
+    printf("Tell: %10s\n", mas->abonent_mas[search_ready].tell);
   }
 }
 
@@ -59,15 +60,15 @@ void DelAbonent(AbonentMas *mas){
       continue;
     }
     if(search_ready){
-        memcpy(mas->abonent_mas[i - 1].name, mas->abonent_mas[i].name, 10);
-        memcpy(mas->abonent_mas[i - 1].second_name, mas->abonent_mas[i].second_name, 10);
-        memcpy(mas->abonent_mas[i - 1].tell, mas->abonent_mas[i].tell, 10);
+        CopyAbonent(&mas->abonent_mas[i - 1], &mas->abonent_mas[i]);
     }
   }
+  // PrintAbonent(*mas);
   if(search_ready){
     mas->size--;
     mas->abonent_mas = realloc(mas->abonent_mas, mas->size);
     CheckErrorMemory(*mas);
+    // PrintAbonent(*mas);
   } else {
     printf("abonent not found");
   }

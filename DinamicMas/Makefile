@@ -8,3 +8,8 @@ obg:
 
 clean:
 	rm -f abonents_app *.o
+
+git:
+	git add .
+	git commit
+	git push

@@ -22,9 +22,9 @@ int MenuBar() {
 
 void PrintAbonent(AbonentMas mas){
   for(int i = 0; i < mas.size; i++){
-    printf("Name: %s\n", mas.abonent_mas[i].name);
-    printf("Second name: %s\n", mas.abonent_mas[i].second_name);
-    printf("Tell: %s\n", mas.abonent_mas[i].tell);
+    printf("Name: %10s\n", mas.abonent_mas[i].name);
+    printf("Second name: %3s\n", mas.abonent_mas[i].second_name);
+    printf("Tell: %10s\n", mas.abonent_mas[i].tell);
   }
 }
 

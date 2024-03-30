@@ -3,6 +3,7 @@
 
 #include "castom_type.h"
 
+void CopyAbonent(Abonent *receiver, const Abonent *sender);
 void CheckErrorMemory(AbonentMas mas);
 void CheckErrorScanf(int real_result, int expected_result);
 void ClearStdin();

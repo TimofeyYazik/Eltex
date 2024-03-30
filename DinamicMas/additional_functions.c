@@ -25,3 +25,15 @@ void ClearStdin() {
   char c = 0;
   while ((c = getchar()) != '\n' && c != EOF) {}
 }
+
+void CopyAbonent(Abonent *receiver, const Abonent *sender){
+  for(int i = 0; i < SIZE_ELEMENTS; i++){
+    receiver->name[i] = sender->name[i];
+  }
+  for(int i = 0; i < SIZE_ELEMENTS; i++){
+    receiver->second_name[i] = sender->second_name[i];
+  }
+  for(int i = 0; i < SIZE_ELEMENTS; i++){
+    receiver->tell[i] = sender->tell[i];
+  }
+}
