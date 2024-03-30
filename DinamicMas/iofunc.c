@@ -1,7 +1,6 @@
 #include "iofunc.h"
 
 #include <stdio.h>
-// #include <malloc.h>
 #include <string.h>
 
 #include "additional_functions.h"
