@@ -6,7 +6,6 @@
 
 #include "logic_func.h"
 
-// #include "iofunc.h"
 #include "castom_type.h"
 #include "additional_functions.h"
 
@@ -63,12 +62,10 @@ void DelAbonent(AbonentMas *mas){
         CopyAbonent(&mas->abonent_mas[i - 1], &mas->abonent_mas[i]);
     }
   }
-  // PrintAbonent(*mas);
   if(search_ready){
     mas->size--;
-    mas->abonent_mas = realloc(mas->abonent_mas, mas->size);
+    //mas->abonent_mas = realloc(mas->abonent_mas, mas->size); удаляет не последний элемент массива
     CheckErrorMemory(*mas);
-    // PrintAbonent(*mas);
   } else {
     printf("abonent not found");
   }

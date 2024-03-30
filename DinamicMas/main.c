@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+//#include <malloc.h>
 
 #include "castom_type.h"
 #include "iofunc.h"
@@ -29,5 +31,6 @@ int main() {
         break;
     }
   }
+  free(mas.abonent_mas);
   return 0;
 }
