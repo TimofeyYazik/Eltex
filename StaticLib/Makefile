@@ -12,7 +12,7 @@ calclib.a: $(LIBOBJS)
 	ar rcs $@ $(LIBOBJS)
 
 calc: main.o calclib.a
-	gcc $(CFLAGS) main.o -o calc
+	gcc $(CFLAGS) calclib.a main.o -o calc
 
 clean:
 	rm -rf StaticLib/*.o calclib.a calc *.o
