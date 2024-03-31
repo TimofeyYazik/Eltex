@@ -1,5 +1,15 @@
 #include <stdio.h>
+
 #include "libcalc.h"
+
+#define EXIT_FAILURE 1
+
+void CheckErrorScanf(int real_result, int expected_result){
+  if(real_result != expected_result){
+    fprintf(stderr, "type error\n");
+    exit(EXIT_FAILURE);
+  }
+}
 
 int main(){
   int menu = 0;
@@ -7,29 +17,29 @@ int main(){
   int flag = 0;
   while (menu != 5) {
     if(flag) {
-      printf("result: %d", res);
+      printf("result: %d\n", res);
     }
     printf("1) Add\n"
     "2) Sub\n"
     "3) Mult\n"
     "4) Div\n"
     "5) Exit\n");
-    scanf("%d", &menu);
+    CheckErrorScanf(scanf("%d", &menu), 1);
     switch (menu) {
     case 1:
-      scanf("%d %d", &var1, &var2);
+      CheckErrorScanf(scanf("%d %d", &var1, &var2), 2);
       res = Add(var1, var2);
       break;
     case 2:
-      scanf("%d %d", &var1, &var2);
+      CheckErrorScanf(scanf("%d %d", &var1, &var2), 2);
       res = Sub(var1, var2);
       break;
     case 3:
-      scanf("%d %d", &var1, &var2);
+      CheckErrorScanf(scanf("%d %d", &var1, &var2), 2);
       res = Mul(var1, var2);
       break;
     case 4:
-      scanf("%d %d", &var1, &var2);
+      CheckErrorScanf(scanf("%d %d", &var1, &var2), 2);
       res = Div(var1, var2);
       break;
     case 5:
