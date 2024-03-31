@@ -1,20 +1,21 @@
 CFLAGS := -std=c11 -Wall -Wextra -Werror
 
 LIBFILES = $(wildcard CalcLib/*.c)
+LIBOBJS = $(LIBFILES:.c=.o)
 
 all: calc
 
-libcalc.a: objects
-	ar rcs $@ CalcLib/*.o
+%.o: %.c
+	gcc $(CFLAGS) -c -g $< -o $@
 
-objects:
-	gcc -c -g $(CFLAGS) $(LIBFILES)
+libcalc.a: $(LIBOBJS)
+	ar rcs $@ $(LIBOBJS)
 
 calc: main.o libcalc.a
 	gcc $(CFLAGS) main.o -L. -lcalc -o $@
 
 clean:
-	rm -rf StaticLib/*.o libcalc.a calc *.o
+	rm -rf CalcLib/*.o libcalc.a calc *.o
 
 clang-format:
 	clang-format --style=Google -n *.c *.h libcalc/*.c
