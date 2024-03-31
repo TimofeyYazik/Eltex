@@ -5,10 +5,10 @@ int main(){
   int menu = 0;
   while (menu != 5)
   {
-    printf("1)Add\n",
-    "2) Sub\n",
-    "3) Mult\n",
-    "4) Div\n",
+    printf("1)Add\n"
+    "2) Sub\n"
+    "3) Mult\n"
+    "4) Div\n"
     "5) Exit\n");
     scanf("%d", &menu);
     switch (menu)
