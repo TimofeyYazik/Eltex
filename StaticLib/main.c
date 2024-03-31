@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "calclib.h"
+#include "libcalc.h"
 
 int main(){
   int menu = 0;

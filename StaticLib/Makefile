@@ -8,14 +8,14 @@ all: calc
 %.o: %.c
 	gcc $(CFLAGS) -c -g $< -o $@
 
-calclib.a: $(LIBOBJS)
+libcalc.a: $(LIBOBJS)
 	ar rcs $@ $(LIBOBJS)
 
-calc: main.o calclib.a
-	gcc $(CFLAGS) calclib.a main.o -o calc
+calc: main.o libcalc.a
+	gcc $(CFLAGS) main.o -L. -lcalc -o $@
 
 clean:
-	rm -rf StaticLib/*.o calclib.a calc *.o
+	rm -rf StaticLib/*.o libcalc.a calc *.o
 
 clang-format:
-	clang-format --style=Google -n *.c *.h CalcLib/*.c
+	clang-format --style=Google -n *.c *.h libcalc/*.c
