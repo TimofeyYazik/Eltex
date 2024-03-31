@@ -10,7 +10,7 @@ int main(){
     "3) Mult\n",
     "4) Div\n",
     "5) Exit\n");
-    scanf("%d", menu);
+    scanf("%d", &menu);
     switch (menu)
     {
     case 1:
