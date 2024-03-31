@@ -44,6 +44,7 @@ int main(){
     case 5:
       break;
     default:
+      printf("operation not found\n");
       break;
     }
     flag = 1;
