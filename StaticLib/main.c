@@ -1,8 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "libcalc.h"
-
-#define EXIT_FAILURE 1
 
 void CheckErrorScanf(int real_result, int expected_result){
   if(real_result != expected_result){
