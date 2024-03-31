@@ -1,6 +1,6 @@
 CFLAGS := -std=c11 -Wall -Wextra -Werror
 
-LIBFILES = $(wildcard StaticLib/*.c)
+LIBFILES = $(wildcard CalcLib/*.c)
 
 all: calc
 
