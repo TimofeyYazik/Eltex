@@ -9,7 +9,7 @@ objlib: $(LIBFILES)
 	mv *.o CalcLib
 
 libcalc.so: objlib
-	gcc $(CFLAGS) -shared CalcLib/*.o -o $@  
+	gcc $(CFLAGS) -shared -o $@  CalcLib/*.o
 
 calc: main.o libcalc.so
 	gcc $(CFLAGS) main.o -L. -lcalc -o $@
