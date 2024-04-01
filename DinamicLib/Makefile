@@ -12,7 +12,7 @@ libcalc.so: objlib
 
 calc: main.o libcalc.so
 	gcc $(CFLAGS) main.o -L. -lcalc -o $@
-	LD_LIBRARY_PATH=$PWD:$LD_LIBRARY_PATH ./calc
+	LD_LIBRARY_PATH=$(PWD):$(LD_LIBRARY_PATH) ./calc
 
 %.o: %.c
 	gcc $(CFLAGS) -fPIC -c $< -o $@
