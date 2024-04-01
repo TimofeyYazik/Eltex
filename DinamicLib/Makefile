@@ -6,6 +6,7 @@ all: calc
 
 objlib: $(LIBFILES)
 	gcc -c -fPIC $(CFLAGS) $(LIBFILES)
+	mv *.o CalcLib
 
 libcalc.so: objlib
 	gcc $(CFLAGS) -shared CalcLib/*.o -o $@  
