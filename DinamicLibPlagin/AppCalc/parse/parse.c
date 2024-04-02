@@ -24,13 +24,9 @@ void parse_flags(service_info *servise, int argc, char **argv){
         strcpy(servise->func[servise->func_count - 1], optarg);
       } else {
         servise->func_count++;
-        printf("%d %s \n", servise->func_count, servise->func[0]);
-        servise->func = realloc(servise->func, servise->func_count);
-        printf("%d %s \n", servise->func_count, servise->func[0]);
+        servise->func = realloc(servise->func, sizeof(char *) * servise->func_count);
         servise->func[servise->func_count - 1] = calloc(SIZE_BUFF, sizeof(char));
-        printf("%d %s \n", servise->func_count, servise->func[0]);
         strcpy(servise->func[servise->func_count - 1], optarg);
-        printf("%d %s \n", servise->func_count, servise->func[0]);
       }
       break;
     default:
