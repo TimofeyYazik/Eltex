@@ -2,7 +2,7 @@ CC = gcc
 FLAGS = -g -Wall -Werror -Wextra
 LIBFLAG = -shared 
 
-CALC = $(wildcard ./*.c)
+CALC = $(wildcard ./*.c ./connect_library/*.c ./menu/*.c ./parse/*.c)
 CALCOBJ = $(CALC:.c=.o)
 
 %.o: %.c
