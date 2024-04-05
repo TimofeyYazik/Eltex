@@ -2,7 +2,7 @@ CC = gcc
 FLAGS = -g -Wall -Werror -Wextra
 LIBFLAG = -shared 
 
-CALC = $(wildcard AppCalc/*.c)
+CALC = $(wildcard ./*.c)
 CALCOBJ = $(CALC:.c=.o)
 
 %.o: %.c
