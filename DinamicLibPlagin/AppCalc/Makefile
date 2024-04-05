@@ -9,7 +9,7 @@ CALCOBJ = $(CALC:.c=.o)
 	$(CC) $(FLAGS) -c -g $<
 
 all: $(CALCOBJ)
-	$(CC) $(FLAGS) -o AppCalc *.o
+	$(CC) $(FLAGS) -o -ldl AppCalc *.o
 
 clean:
 	rm -f AppCalc *.o
