@@ -8,5 +8,5 @@ CALCOBJ = $(CALC:.c=.o)
 %.o: %.c
 	$(CC) $(FLAGS) -ldl -c $<
 
-appcalc: $(CALCOBJ)
+all: $(CALCOBJ)
 	$(CC) $(FLAGS) -ldl -o AppCalc $(CALCOBJ)
