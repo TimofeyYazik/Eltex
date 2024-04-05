@@ -19,13 +19,13 @@ int main(int argc, char **argv){
   ConnectLib(func_calc_int, &count_func_arr, service);
   while (argument) {
     argument = Menu(service);
-    if (argument > 0 && argument < count_func_arr) {
+    if (argument > 0 && argument <= count_func_arr) {
       scanf("%d %d", &var_func_one, &var_func_two);
       result = func_calc_int[argument - 1](var_func_one, var_func_two);
       printf("%d\n", result);
     } else {
       if(!argument) continue;
-      printf("not this argument");
+      printf("not this argument\n");
     }
   }
   
