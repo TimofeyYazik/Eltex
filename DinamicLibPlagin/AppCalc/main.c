@@ -11,10 +11,6 @@
 int main(int argc, char **argv){
   int count_func_arr = 0;
   int (**func_calc_int)(int, int);
-
-  //float (**func_calc_float)(float, float);
-  int *count_func = 0;
-
   int var_func_one = 0, var_func_two = 0;
   volatile int argument = 1;
   service_info service = {0};
