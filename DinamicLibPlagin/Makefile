@@ -2,14 +2,14 @@ CC = gcc
 FLAGS = -g -Wall -Werror -Wextra
 LIBFLAG = -shared 
 
-CALC = $(wildcard AppCalc/*.c)
+CALC = $(wildcard CalcLibInt/*.c)
 CALCOBJ = $(CALC:.c=.o)
 
-lib: libobj
-  $(CC) $(FLAGS) $(LIBFLAG) CalcLibInt/*.o -o libCalc.so
+%.o: %.c
+	$(CC) $(FLAGS) -c $<
 
-libobj: 
-	gcc -c $(LIBFLAG) CalcLibInt/*.c
+lib: $(CALCOBJ)
+	$(CC) $(FLAGS) $(LIBFLAG) *.o -o libcalc.so
 
-appcalc: 
-	$(CC) $(FLAGS) -ldl -o AppCalc $(CALCOBJ)
+clean:
+	rm -f libcalc.so *.o
