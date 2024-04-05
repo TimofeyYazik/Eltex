@@ -1,5 +1,5 @@
 CC = gcc
-FLAGS = -g -Wall -Werror -Wextra
+FLAGS = -g 
 LIBFLAG = -shared 
 
 CALC = $(wildcard ./*.c ./connect_library/*.c ./menu/*.c ./parse/*.c)
