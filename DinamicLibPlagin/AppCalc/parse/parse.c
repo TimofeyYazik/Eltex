@@ -8,26 +8,35 @@
 
 #define SIZE_BUFF  80
 
-void parse_flags(service_info *servise, int argc, char **argv){
+void ParseFlags(service_info *service, int argc, char **argv){
   char ch = 0;
+  char flag = 0, prev_flag = 1;
   while ((ch = getopt_long(argc, argv, "p:f:", NULL, NULL)) != -1){
     switch (ch) {
     case 'p':
-      servise->lib = malloc(strlen(optarg));
-      strcpy(servise->lib, optarg);
+      flag++;
+      if (flag == prev_flag){
+        service->lib_count++;
+        service->lib = realloc(service->func, sizeof(char *) * service->lib_count);
+        service->lib[service->lib_count - 1] = calloc(SIZE_BUFF, sizeof(char));
+        strcpy(service->lib[service->lib_count - 1], optarg);
+      } else {
+        prev_flag = flag;
+        service->lib_count++;
+        service->lib = realloc(service->func, sizeof(char *) * service->lib_count);
+        service->lib[service->lib_count - 1] = calloc(SIZE_BUFF, sizeof(char));
+        strcpy(service->lib[service->lib_count - 1], optarg);
+        service->func_count++;
+        service->func = realloc(service->func, sizeof(char *) * service->func_count);
+        service->func[service->func_count - 1] = calloc(SIZE_BUFF, sizeof(char));
+        strcpy(service->func[service->func_count - 1], "new lib");
+      }
       break;
     case 'f':
-      if(!servise->func_count){
-        servise->func_count++;
-        servise->func = malloc(sizeof(char *) * servise->func_count);
-        servise->func[servise->func_count - 1] = calloc(SIZE_BUFF, sizeof(char));
-        strcpy(servise->func[servise->func_count - 1], optarg);
-      } else {
-        servise->func_count++;
-        servise->func = realloc(servise->func, sizeof(char *) * servise->func_count);
-        servise->func[servise->func_count - 1] = calloc(SIZE_BUFF, sizeof(char));
-        strcpy(servise->func[servise->func_count - 1], optarg);
-      }
+      service->func_count++;
+      service->func = realloc(service->func, sizeof(char *) * service->func_count);
+      service->func[service->func_count - 1] = calloc(SIZE_BUFF, sizeof(char));
+      strcpy(service->func[service->func_count - 1], optarg);
       break;
     default:
       break;

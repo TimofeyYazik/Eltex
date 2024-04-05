@@ -5,8 +5,11 @@ LIBFLAG = -shared
 CALC = $(wildcard AppCalc/*.c)
 CALCOBJ = $(CALC:.c=.o)
 
-%.o: %.c
-	$(CC) $(FLAGS) -ldl -c $<
+lib: libobj
+  $(CC) $(FLAGS) $(LIBFLAG) CalcLibInt/*.o -o libCalc.so
 
-appcalc: $(CALCOBJ)
+libobj: 
+	gcc -c $(LIBFLAG) CalcLibInt/*.c
+
+appcalc: 
 	$(CC) $(FLAGS) -ldl -o AppCalc $(CALCOBJ)
