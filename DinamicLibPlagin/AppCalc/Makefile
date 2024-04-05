@@ -11,5 +11,5 @@ CALCOBJ = $(CALC:.c=.o)
 all: $(CALCOBJ)
   $(CC) $(FLAGS) -o AppCalc $(CALCOBJ)
 
-clean:
+clean: $(CALCOBJ)
   rm -f AppCalc $(CALCOBJ)
