@@ -3,7 +3,6 @@
 
 #include "../castom_type.h"
 
-void ConnectLib(int (**func_calc_int)(int, int), int *count,
-                const service_info service);
+void ConnectLib(int (***func_calc_int)(int, int), int *count, const service_info service);
 
 #endif  // APPCALC_CONNECT_H_

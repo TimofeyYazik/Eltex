@@ -7,6 +7,7 @@
 #include "menu_work/menu.h"
 #include "connect_library/connect.h"
 
+void ClearService(service_info *service);
 
 int main(int argc, char **argv){
   int count_func_arr = 0;
@@ -16,7 +17,7 @@ int main(int argc, char **argv){
   volatile int argument = 1;
   service_info service = {0};
   ParseFlags(&service, argc, argv);
-  ConnectLib(func_calc_int, &count_func_arr, service);
+  ConnectLib(&func_calc_int, &count_func_arr, service);
   while (argument) {
     argument = Menu(service);
     if (argument > 0 && argument <= count_func_arr) {
@@ -28,7 +29,20 @@ int main(int argc, char **argv){
       printf("not this argument\n");
     }
   }
-  
+///////
+  free(func_calc_int);
+  ClearService(&service);
+
   return 0;
 }
 
+void ClearService(service_info *service){
+  for(int i = 0; i < service->func_count; i++){
+    free(service->func[i]);
+  }
+  free(service->func);
+  for(int i = 0; i < service->lib_count; i++){
+    free(service->lib[i]);
+  }
+  free(service->lib);
+}

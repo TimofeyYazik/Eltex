@@ -6,9 +6,10 @@
 #include "../castom_type.h"
 #include "connect.h"
 
-void ConnectLib(int (**func_calc_int)(int, int),int *count, const service_info service){
-  int func_to_be = 0;
+void ConnectLib(int (***func_calc_int)(int, int), int *count, const service_info service){
+  // int func_to_be = 0;
   for(int i = 0; i < service.lib_count; i++){
+    printf("%s\n", service.lib[i]);
     void *handler_lib = dlopen(service.lib[i], RTLD_LAZY);
     if(handler_lib == NULL){
       fprintf(stderr, "path not found");
@@ -29,14 +30,15 @@ void ConnectLib(int (**func_calc_int)(int, int),int *count, const service_info s
       // }
       // if(func_to_be){
         (*count)++;
-        func_calc_int = realloc(func_calc_int, (*count * sizeof(int (*)(int, int))));
-        func_calc_int[*count - 1] = dlsym(handler_lib, service.func[j]);
-        if(func_calc_int[*count - 1] == NULL){
+        (*func_calc_int) = realloc(*func_calc_int, (*count * sizeof(int (*)(int, int))));
+        (*func_calc_int)[*count - 1] = dlsym(handler_lib, service.func[j]);
+        if((*func_calc_int)[*count - 1] == NULL){
           fprintf(stderr, "not function\n");
           exit(EXIT_FAILURE);
         }
       // }
       // func_to_be = 0;
     }
+    // dlclose(handler_lib);
   }
 }
