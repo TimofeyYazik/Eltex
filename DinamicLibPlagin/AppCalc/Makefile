@@ -10,3 +10,6 @@ CALCOBJ = $(CALC:.c=.o)
 
 all: $(CALCOBJ)
 	$(CC) $(FLAGS) -ldl -o AppCalc *.o
+
+clean:
+	rm -f AppCalc *.o
