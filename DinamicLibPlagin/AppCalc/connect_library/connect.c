@@ -21,7 +21,7 @@ void ConnectLib(int (**func_calc_int)(int, int),int *count, const service_info s
         break;
       }
       for(int l = 0; l < *count_func; l++){
-        if(!strcmp(service.func[j], *func_name[l])){
+        if(!strcmp(service.func[j], *(func_name)[l])){
           func_to_be = 1;
         }
       }
