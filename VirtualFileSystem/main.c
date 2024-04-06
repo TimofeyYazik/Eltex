@@ -19,7 +19,7 @@ int main(){
     buffer[len] = ch;
     len++;
   }
-  int ds_file = open("test.txt", O_WRONLY | O_CREAT);
+  int ds_file = open("test.txt", O_APPEND | O_CREAT | O_WRONLY);
   write(ds_file, buffer, len);
   return 0;
 }

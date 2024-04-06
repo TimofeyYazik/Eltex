@@ -1,5 +1,6 @@
 all: main.o
-    gcc $^ -o -g main.c
+		gcc $^ -o main -g
+
 clean:
-    rm -f main.o test.txt
+		rm -f main.o test.txt main
 
