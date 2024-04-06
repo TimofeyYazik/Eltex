@@ -15,20 +15,6 @@ void _CheckErrorMemory(service_info *service){
     perror("error");
     exit(EXIT_FAILURE);
   }
-  for(int i = 0; i < service->lib_count; i++){
-    if(service->lib[i] == NULL){
-      ClearService(service);
-      perror("error");
-      exit(EXIT_FAILURE);
-    }
-  }
-  for(int i = 0; i < service->func_count; i++){
-    if(service->func[i] == NULL){
-      ClearService(service);
-      perror("error");
-      exit(EXIT_FAILURE);
-    }
-  }
 }
 
 void ParseFlags(service_info *service, int argc, char **argv){
@@ -43,7 +29,11 @@ void ParseFlags(service_info *service, int argc, char **argv){
         service->lib = realloc(service->lib, sizeof(char *) * service->lib_count);
         _CheckErrorMemory(service);
         service->lib[service->lib_count - 1] = calloc(SIZE_BUFF, sizeof(char));
-        _CheckErrorMemory(service);
+        if(service->lib[service->lib_count - 1] == NULL){
+          ClearService(service);
+          perror("error");
+          exit(EXIT_FAILURE);
+        }
         strcpy(service->lib[service->lib_count - 1], optarg);
       } else {
         prev_flag = flag;
@@ -51,13 +41,21 @@ void ParseFlags(service_info *service, int argc, char **argv){
         service->lib = realloc(service->lib, sizeof(char *) * service->lib_count);
         _CheckErrorMemory(service);
         service->lib[service->lib_count - 1] = calloc(SIZE_BUFF, sizeof(char));
-        _CheckErrorMemory(service);
+        if(service->lib[service->lib_count - 1] == NULL){
+          ClearService(service);
+          perror("error");
+          exit(EXIT_FAILURE);
+        }
         strcpy(service->lib[service->lib_count - 1], optarg);
         service->func_count++;
         service->func = realloc(service->func, sizeof(char *) * service->func_count);
         _CheckErrorMemory(service);
         service->func[service->func_count - 1] = calloc(SIZE_BUFF, sizeof(char));
-        _CheckErrorMemory(service);
+        if(service->func[service->func_count - 1] == NULL){
+          ClearService(service);
+          perror("error");
+          exit(EXIT_FAILURE);
+        }
         strcpy(service->func[service->func_count - 1], "new lib");
       }
       break;
@@ -66,7 +64,11 @@ void ParseFlags(service_info *service, int argc, char **argv){
       service->func = realloc(service->func, sizeof(char *) * service->func_count);
       _CheckErrorMemory(service);
       service->func[service->func_count - 1] = calloc(SIZE_BUFF, sizeof(char));
-      _CheckErrorMemory(service);
+      if(service->func[service->func_count - 1] == NULL){
+          ClearService(service);
+          perror("error");
+          exit(EXIT_FAILURE);
+        }
       strcpy(service->func[service->func_count - 1], optarg);
       break;
     default:
