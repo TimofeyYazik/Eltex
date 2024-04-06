@@ -9,8 +9,16 @@
 
 #define SIZE_BUFF  80
 
-void _CheckErrorMemory(service_info *service){
-  if(service->func == NULL || service->lib == NULL){
+void _CheckErrorMemoryLib(service_info *service){
+  if(service->lib == NULL){
+    ClearService(service);
+    perror("error");
+    exit(EXIT_FAILURE);
+  }
+}
+
+void _CheckErrorMemoryFunc(service_info *service){
+  if(service->func == NULL){
     ClearService(service);
     perror("error");
     exit(EXIT_FAILURE);
@@ -27,7 +35,7 @@ void ParseFlags(service_info *service, int argc, char **argv){
       if (flag == prev_flag){
         service->lib_count++;
         service->lib = realloc(service->lib, sizeof(char *) * service->lib_count);
-        _CheckErrorMemory(service);
+        _CheckErrorMemoryLib(service);
         service->lib[service->lib_count - 1] = calloc(SIZE_BUFF, sizeof(char));
         if(service->lib[service->lib_count - 1] == NULL){
           ClearService(service);
@@ -39,7 +47,7 @@ void ParseFlags(service_info *service, int argc, char **argv){
         prev_flag = flag;
         service->lib_count++;
         service->lib = realloc(service->lib, sizeof(char *) * service->lib_count);
-        _CheckErrorMemory(service);
+        _CheckErrorMemoryLib(service);
         service->lib[service->lib_count - 1] = calloc(SIZE_BUFF, sizeof(char));
         if(service->lib[service->lib_count - 1] == NULL){
           ClearService(service);
@@ -49,7 +57,7 @@ void ParseFlags(service_info *service, int argc, char **argv){
         strcpy(service->lib[service->lib_count - 1], optarg);
         service->func_count++;
         service->func = realloc(service->func, sizeof(char *) * service->func_count);
-        _CheckErrorMemory(service);
+        _CheckErrorMemoryFunc(service);
         service->func[service->func_count - 1] = calloc(SIZE_BUFF, sizeof(char));
         if(service->func[service->func_count - 1] == NULL){
           ClearService(service);
@@ -62,7 +70,7 @@ void ParseFlags(service_info *service, int argc, char **argv){
     case 'f':
       service->func_count++;
       service->func = realloc(service->func, sizeof(char *) * service->func_count);
-      _CheckErrorMemory(service);
+      _CheckErrorMemoryFunc(service);
       service->func[service->func_count - 1] = calloc(SIZE_BUFF, sizeof(char));
       if(service->func[service->func_count - 1] == NULL){
           ClearService(service);
