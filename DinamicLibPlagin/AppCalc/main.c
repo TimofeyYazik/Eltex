@@ -24,7 +24,7 @@ int main(int argc, char **argv){
       argument = Menu(service);
       if (argument > 0 && argument <= count_func_arr) {
         if(scanf("%d %d", &var_func_one, &var_func_two) != 2){
-          exit(EXIT_FAILURE);
+          goto Err;
         }
         result = func_calc_int[argument - 1](var_func_one, var_func_two);
         printf("%d\n", result);
@@ -35,6 +35,7 @@ int main(int argc, char **argv){
     }
   }
 
+  Err:
   if(func_calc_int != NULL) 
     free(func_calc_int);
   ClearService(&service);
