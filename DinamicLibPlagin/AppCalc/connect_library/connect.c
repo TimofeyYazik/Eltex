@@ -22,13 +22,13 @@ void ConnectLib(int (***func_calc_int)(int, int), handler_t *handler, int *count
       fprintf(stderr, "var not found");
       exit(EXIT_FAILURE);
     }
-    char *func_name_ = dlsym(handler->handler_arr[i], "g_name_func");
-    char **func_name = *func_name_;
-    if(func_name_ == NULL){
+    char ***func_name = dlsym(handler->handler_arr[i], "g_name_func");
+    // char **func_name = *func_name_;
+    if(func_name == NULL){
       fprintf(stderr, "var not found");
       exit(EXIT_FAILURE);
     }
-    printf("%s\n", func_name[0]);
+    printf("%s\n", (*func_name)[0]);
     for(; j < service.func_count; j++){
       if(!strcmp(service.func[j], "new lib")) {
         j++;
