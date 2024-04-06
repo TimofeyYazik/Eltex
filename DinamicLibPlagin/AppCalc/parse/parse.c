@@ -17,13 +17,13 @@ void ParseFlags(service_info *service, int argc, char **argv){
       flag++;
       if (flag == prev_flag){
         service->lib_count++;
-        service->lib = realloc(service->func, sizeof(char *) * service->lib_count);
+        service->lib = realloc(service->lib, sizeof(char *) * service->lib_count);
         service->lib[service->lib_count - 1] = calloc(SIZE_BUFF, sizeof(char));
         strcpy(service->lib[service->lib_count - 1], optarg);
       } else {
         prev_flag = flag;
         service->lib_count++;
-        service->lib = realloc(service->func, sizeof(char *) * service->lib_count);
+        service->lib = realloc(service->lib, sizeof(char *) * service->lib_count);
         service->lib[service->lib_count - 1] = calloc(SIZE_BUFF, sizeof(char));
         strcpy(service->lib[service->lib_count - 1], optarg);
         service->func_count++;

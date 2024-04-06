@@ -8,4 +8,9 @@ typedef struct {
   int lib_count;
 } service_info;
 
+typedef struct{
+  void **handler_arr;
+  int len;
+} handler_t;
+
 #endif //APPCALC_CASTOM_TYPE_H_
