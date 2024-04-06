@@ -15,13 +15,13 @@ int ConnectLib(int (***func_calc_int)(int, int), handler_t *handler, int *count,
     if (handler->handler_arr == NULL) {
       fprintf(stderr, "not memmory allocaten");
       error = 1;
-      Err:
+      goto Err;
     }
     handler->handler_arr[i] = dlopen(service.lib[i], RTLD_LAZY);
     if(handler->handler_arr[i] == NULL){
       fprintf(stderr, "path not found");
       error = 1;
-      Err:
+      goto Err;
     }
     // int *count_func = dlsym(handler->handler_arr[i], "g_number_functions");
     // if(count_func == NULL){
@@ -44,16 +44,16 @@ int ConnectLib(int (***func_calc_int)(int, int), handler_t *handler, int *count,
         if((*func_calc_int) == NULL){
           fprintf(stderr, "not memmory allocaten");
           error = 1;
-          Err:
+          goto Err;
         }
         (*func_calc_int)[*count - 1] = dlsym(handler->handler_arr[i], service.func[j]);
         if((*func_calc_int)[*count - 1] == NULL){
           fprintf(stderr, "not function\n");
           error = 1;
-          Err:
+          goto Err;
         }
     }
   }
-  goto Err;
+  Err:
   return error;
 }
