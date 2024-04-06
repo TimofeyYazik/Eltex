@@ -10,7 +10,7 @@
 #define SIZE_BUFF  80
 
 void _CheckErrorMemory(service_info *service){
-  if(service->func == NULL || service->lib == NULL || errno == ENOMEM){
+  if(service->func == NULL || service->lib == NULL){
     ClearService(service);
     perror("error");
     exit(EXIT_FAILURE);
