@@ -21,5 +21,7 @@ int main(){
   }
   int ds_file = open("test.txt", O_APPEND | O_CREAT | O_WRONLY);
   write(ds_file, buffer, len);
+  close(ds_file);
+  free(buffer);
   return 0;
 }
