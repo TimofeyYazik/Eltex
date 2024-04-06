@@ -16,7 +16,7 @@ int Menu(const service_info service) {
         num++;
     }
     if(scanf("%d", &menu) != 1){
-      menu = -1;
+      menu = 0;
     }
     return menu;
 }
