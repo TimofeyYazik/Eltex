@@ -1,6 +1,7 @@
 {
   "files.associations": {
     "parse.h": "c",
-    "dlfcn.h": "c"
+    "dlfcn.h": "c",
+    "castom_type.h": "c"
   }
 }
