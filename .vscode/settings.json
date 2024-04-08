@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "libcalc.h": "c",
+    "libcalc_float.h": "c",
+    "libcalc_int.h": "c",
+    "string.h": "c"
+  }
+}

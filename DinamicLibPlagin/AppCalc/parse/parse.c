@@ -9,7 +9,7 @@
 
 #define SIZE_BUFF  80
 
-void _CheckErrorMemoryLib(service_info *service){
+static void _CheckErrorMemoryLib(service_info *service){
   if(service->lib == NULL){
     ClearService(service);
     perror("error");
@@ -17,7 +17,7 @@ void _CheckErrorMemoryLib(service_info *service){
   }
 }
 
-void _CheckErrorMemoryFunc(service_info *service){
+static void _CheckErrorMemoryFunc(service_info *service){
   if(service->func == NULL){
     ClearService(service);
     perror("error");
