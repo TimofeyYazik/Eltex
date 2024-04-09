@@ -27,7 +27,7 @@ int main(){
     scanf("%d", &driver);
     if(driver >= counter || driver < 0) break;
     closedir(use_dir);
-    use_dir(namelist[driver]->d_name);
+    use_dir = opendir(namelist[driver]->d_name);
     long ds = telldir(use_dir);
     seekdir(use_dir, ds);
   }
