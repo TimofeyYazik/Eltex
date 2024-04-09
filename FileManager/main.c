@@ -17,7 +17,7 @@ int main(){
     counter++;
   }
   
-  for(int i = 0; i < count_line; i++){
+  for(int i = 0; i < counter; i++){
     printf("%s\n", namelist[i]->d_name);
   }
   
