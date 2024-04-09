@@ -33,7 +33,6 @@ int main() {
     seekdir(use_dir, ds);
   }
   if (use_dir != NULL) closedir(use_dir);
-  free(namelist);
   exit(EXIT_SUCCESS);
 }
 
