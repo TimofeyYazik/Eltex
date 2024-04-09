@@ -8,6 +8,8 @@
 
 // #define MAX_LEN_NAME_FILE 256
 
+void QuickSort(struct dirent *namelist[], int start, int finish);
+
 int main() {
   int counter = 0;
   // DIR *use_dir = opendir("../");
@@ -22,6 +24,7 @@ int main() {
       namelist[counter] = buff;
       counter++;
     }
+    QuickSort(namelist, 0, counter - 1);
     for (int i = 0; i < counter; i++) {
       printf("%d) %s\n", i, namelist[i]->d_name);
     }
