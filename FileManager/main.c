@@ -16,6 +16,7 @@ int main() {
   DIR *use_dir = opendir(".");
   int driver = 0;
   while (1) {
+    counter = 0;
     struct dirent *buff;
     while ((buff = readdir(use_dir)) != NULL) {
       namelist[counter] = buff;
