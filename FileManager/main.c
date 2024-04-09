@@ -29,6 +29,7 @@ int main() {
       printf("%d) %s\n", i, namelist[i]->d_name);
     }
     scanf("%d", &driver);
+    printf("\n\n\n");
     if (driver >= counter || driver < 0) break;
     closedir(use_dir);
     use_dir = opendir(namelist[driver]->d_name);
