@@ -8,35 +8,32 @@
 
 #define MAX_LEN_NAME_FILE 256
 
-void switch_dir(char name[MAX_LEN_NAME_FILE]);
-
 int main(){
   int counter = 0;
   // DIR *use_dir = opendir("../");
-  struct dirent **namelist;
-  // struct dirent *buff;
-  // while((buff = readdir(use_dir)) != NULL){
-  //   namelist[counter] = buff;
-  //   counter++;
-  // }
+  struct dirent *namelist[100];
+
+  DIR *use_dir = opendir(".");
   int driver = 0;
-  int len_namelist = scandir(".", &namelist, NULL, alphasort);
-  while(driver != -1){
-    for(int i = 0; i < len_namelist; i++){
-      printf("%d) %s\n", i ,namelist[i]->d_name);
+  while(1){
+    struct dirent *buff;
+    while((buff = readdir(use_dir)) != NULL){
+    namelist[counter] = buff;
+    counter++;
+    }
+    for(int i = 0; i < counter; i++){
+      printf("%d) %s\n", i, namelist[i]->d_name);
     }
     scanf("%d", &driver);
-    switch_dir(namelist[driver]->d_name);
+    if(driver >= counter || driver < 0) break;
+    closedir(use_dir);
+    use_dir(namelist[driver]->d_name);
+    long ds = telldir(use_dir);
+    seekdir(use_dir, ds);
   }
-  // closedir(use_dir);
+  if(use_dir != NULL)
+    closedir(use_dir);
   free(namelist);
   exit(EXIT_SUCCESS);
 }
 
-
-void switch_dir(char name[MAX_LEN_NAME_FILE]){
-  DIR* use_dir = opendir(name);
-  long ds = telldir(use_dir);
-  seekdir(use_dir, ds);
-  closedir(use_dir);
-}
