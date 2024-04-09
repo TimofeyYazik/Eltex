@@ -6,7 +6,7 @@
 // #include <stdint.h>
 #include <errno.h>
 
-#define MAX_LEN_NAME_FILE 255
+#define MAX_LEN_NAME_FILE 256
 
 void switch_dir(char name[MAX_LEN_NAME_FILE]);
 
@@ -26,9 +26,10 @@ int main(){
       printf("%d) %s\n", i ,namelist[i]->d_name);
     }
     scanf("%d", &driver);
-    switch_dir(namelist[i]->d_name);
+    switch_dir(namelist[driver]->d_name);
   }
   // closedir(use_dir);
+  free(namelist);
   exit(EXIT_SUCCESS);
 }
 
