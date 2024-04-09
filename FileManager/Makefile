@@ -1,3 +1,2 @@
 
-all:
-	gcc main.c -o FIM
+all : gcc main.c - o FIM
