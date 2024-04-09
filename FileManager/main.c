@@ -8,6 +8,8 @@
 
 #define MAX_LEN_NAME_FILE 255
 
+void switch_dir(char name[MAX_LEN_NAME_FILE]);
+
 int main(){
   int counter = 0;
   // DIR *use_dir = opendir("../");
@@ -23,7 +25,7 @@ int main(){
     for(int i = 0; i < len_namelist; i++){
       printf("%d) %s\n", i ,namelist[i]->d_name);
     }
-    scanf("%d", driver);
+    scanf("%d", &driver);
     switch_dir(namelist[i]->d_name);
   }
   // closedir(use_dir);
@@ -31,7 +33,7 @@ int main(){
 }
 
 
-void switch_dir(char name[256]){
+void switch_dir(char name[MAX_LEN_NAME_FILE]){
   DIR* use_dir = opendir(name);
   long ds = telldir(use_dir);
   seekdir(use_dir, ds);
