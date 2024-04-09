@@ -29,6 +29,10 @@ int main() {
     if (driver >= counter || driver < 0) break;
     closedir(use_dir);
     use_dir = opendir(namelist[driver]->d_name);
+    if(use_dir == NULL){
+      printf("PIZDA\n");
+      exit(EXIT_FAILURE);
+    }
     long ds = telldir(use_dir);
     seekdir(use_dir, ds);
   }
@@ -40,8 +44,7 @@ void QuickSort(struct dirent *namelist[], int start, int finish) {
   int left = start;
   int right = finish;
   int middle = (start + finish) / 2;
-  char pivot = namelist[middle]->d_name[0];  // Используем первый символ имени в
-                                             // качестве опорного элемента
+  char pivot = namelist[middle]->d_name[0];  
 
   // Разделение массива на две части
   while (left <= right) {
@@ -57,7 +60,6 @@ void QuickSort(struct dirent *namelist[], int start, int finish) {
     }
   }
 
-  // Рекурсивный вызов для двух подмассивов
   if (start < right) QuickSort(namelist, start, right);
   if (left < finish) QuickSort(namelist, left, finish);
 }
