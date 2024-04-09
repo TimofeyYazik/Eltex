@@ -5,16 +5,22 @@
 #include <sys/types.h>
 #include <errno.h>
 
+#define MAX_LEN_NAME_FILE 255
 
 int main(){
+  int counter = 0;
   DIR *use_dir = opendir("../");
-  struct dirent **namelist = NULL;
+  struct dirent *namelist[100] = {NULL};
+  struct dirent *buff;
+  while((buff = readdir(use_dir)) != NULL){
+    namelist[counter] = buff;
+    counter++;
+  }
   
-  int count_line = scandir(".", &namelist, NULL, alphasort);
   for(int i = 0; i < count_line; i++){
     printf("%s\n", namelist[i]->d_name);
   }
-  free(namelist);
+  
   closedir(use_dir);
   exit(EXIT_SUCCESS);
 }
