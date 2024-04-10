@@ -31,6 +31,7 @@ void VimCall(char *name) {
         execl("/usr/bin/vim", "vim", name, NULL);
     }
     pid_vim = wait(&status);
+    printw("%d\n", pid_vim);
 
     restoreTerminalSettings(&original_termios);
 }
@@ -76,9 +77,6 @@ int main() {
         driver = DriverDir(&len_namelist, &namelist_dir, namelist_dir[selected_button]->d_name);
         if(driver == ENOTDIR){
           VimCall(namelist_dir[selected_button]->d_name);
-          cbreak();  // Включить режим CBREAK (ввод без буферизации, но с сигналами прерывания)
-          keypad(stdscr, TRUE);  // Включить использование специальных клавиш
-          curs_set(FALSE);
         }
         refresh();
         break;
