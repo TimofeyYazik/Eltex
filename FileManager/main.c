@@ -28,6 +28,7 @@ int main() {
     exit(EXIT_FAILURE);
   }
   while (1) {
+    long td = telldir(dr_us.use_dir[dr_us.len]);
     counter = 0;
     struct dirent *buff;
     while ((buff = readdir(dr_us.use_dir[dr_us.len])) != NULL) {
@@ -52,7 +53,6 @@ int main() {
       perror("Error opening selected directory");
       exit(EXIT_FAILURE);
     }
-    long td = telldir(dr_us.use_dir[dr_us.len]);
     if(td == -1){
       exit(EXIT_FAILURE);
     }
