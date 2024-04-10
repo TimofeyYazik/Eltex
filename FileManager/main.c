@@ -9,10 +9,8 @@
 
 #include "driver_dir/driver.h"
 
-
 #define TRUE 1
 #define FALSE 0
-#define MAX_BUTTONS 40
 
 void draw_buttons(struct dirent **namelist_dir, int count, int selected) {
   clear();  // Очистить экран
@@ -29,13 +27,13 @@ void draw_buttons(struct dirent **namelist_dir, int count, int selected) {
 }
 
 int main() {
-  //WINDOW *addition_window = NULL;
-  //wnd = newwin(5, 23, 2, 2);
+  // WINDOW *addition_window = NULL;
   int len_namelist = 0;
   struct dirent **namelist_dir;
   int selected_button = 0;
   DriverDir(&len_namelist, &namelist_dir, ".");
   initscr();  // Инициализировать ncurses
+  // addition_window = newwin(80, 100, 2, 2);
   cbreak();  // Включить режим CBREAK (ввод без буферизации, но с сигналами прерывания)
   keypad(stdscr, TRUE);  // Включить использование специальных клавиш
   curs_set(FALSE);
