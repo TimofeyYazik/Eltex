@@ -41,7 +41,7 @@ void VimCall(char *name) {
     // Ждем завершения процесса vim и получаем его статус
     printw("Waiting for vim process to exit...\n");
     refresh();
-    waitpid(pid_vim, &status, 0);
+    waitpid(pid_vim, &status, WUNTRACED);
     printw("Vim process exited\n");
     if (WIFEXITED(status)) {
         // Если процесс завершился успешно, выводим его статус
