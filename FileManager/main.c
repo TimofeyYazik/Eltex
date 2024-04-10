@@ -47,7 +47,8 @@ void VimCall(char *name) {
         // Если процесс завершился с ошибкой, выводим сообщение об ошибке
         printw("vim exited with error\n");
     }
-
+    fflush(stdout); 
+    sync();
     restoreTerminalSettings(&original_termios);
 }
 
