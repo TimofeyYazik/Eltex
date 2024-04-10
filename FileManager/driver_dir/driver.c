@@ -16,4 +16,3 @@ int DriverDir(int *len_namelist, struct dirent ***namelist_dir, char *name_dir) 
 
   return error;
 }
-
