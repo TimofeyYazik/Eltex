@@ -19,11 +19,11 @@ int main() {
     perror("Error opening current directory");
     exit(EXIT_FAILURE);
   }
-
+  DIR *new_dir = use_dir;
   while (1) {
     counter = 0;
     struct dirent *buff;
-    while ((buff = readdir(use_dir)) != NULL) {
+    while ((buff = readdir(new_dir)) != NULL) {
       namelist[counter] = buff;
       counter++;
       if (counter >= MAX_ENTRIES) break; // Prevent buffer overflow
@@ -40,21 +40,16 @@ int main() {
     printf("\n\n\n");
     if (driver < 0 || driver >= counter) break;
     // closedir(use_dir);
-    use_dir = opendir(namelist[driver]->d_name);
-    if (use_dir == NULL) {
+    new_dir = opendir(namelist[driver]->d_name);
+    if (new_dir == NULL) {
       perror("Error opening selected directory");
       exit(EXIT_FAILURE);
     }
-    long td = telldir(use_dir);
+    long td = telldir(new_dir);
     if(td == -1){
       exit(EXIT_FAILURE);
     }
-    seekdir(use_dir, td);
-//    closedir(use_dir);
-//    use_dir = opendir(".");
-//    if(use_dir == NULL){
-//      exit(1);
-//    }
+    seekdir(new_dir, td);
   }
 
   if (use_dir != NULL) closedir(use_dir);
