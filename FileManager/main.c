@@ -10,31 +10,25 @@
 
 void QuickSort(struct dirent *namelist[], int start, int finish);
 
-typedef struct 
-{
-  DIR **use_dir;
-  int len;
-}DirUse;
-
-
 int main() {
   int counter = 0;
   struct dirent *namelist[MAX_ENTRIES];
-  DirUse dr_us = {0};
-  dr_us.use_dir = malloc(MAX_ENTRIES * sizeof(DIR*));
-  dr_us.use_dir[dr_us.len] = opendir(".");
-  if (dr_us.use_dir[dr_us.len] == NULL) {
+
+  DIR *use_dir = opendir(".");
+  if (use_dir == NULL) {
     perror("Error opening current directory");
     exit(EXIT_FAILURE);
   }
+
   while (1) {
     counter = 0;
     struct dirent *buff;
-    while ((buff = readdir(dr_us.use_dir[dr_us.len])) != NULL) {
+    while ((buff = readdir(use_dir)) != NULL) {
       namelist[counter] = buff;
       counter++;
       if (counter >= MAX_ENTRIES) break; // Prevent buffer overflow
     }
+
     QuickSort(namelist, 0, counter - 1);
     for (int i = 0; i < counter; i++) {
       printf("%d) %s\n", i, namelist[i]->d_name);
@@ -45,20 +39,16 @@ int main() {
     scanf("%d", &driver);
     printf("\n\n\n");
     if (driver < 0 || driver >= counter) break;
-    // closedir(use_dir);
-    dr_us.len++;
-    dr_us.use_dir[dr_us.len] = opendir(namelist[driver]->d_name);
-    if (dr_us.use_dir[dr_us.len] == NULL) {
+    closedir(use_dir);
+    use_dir = opendir(namelist[driver]->d_name);
+    if (use_dir == NULL) {
       perror("Error opening selected directory");
       exit(EXIT_FAILURE);
     }
-    rewinddir(dr_us.use_dir[dr_us.len]);
+    rewinddir(use_dir);
   }
-  for(int i = 0; i < dr_us.len; i++){
-    if (dr_us.use_dir[i] != NULL) 
-      closedir(dr_us.use_dir[i]);
-  }
-  free(dr_us.use_dir);
+
+  if (use_dir != NULL) closedir(use_dir);
   exit(EXIT_SUCCESS);
 }
 
