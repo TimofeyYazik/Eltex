@@ -21,7 +21,7 @@ int main() {
   int counter = 0;
   struct dirent *namelist[MAX_ENTRIES];
   DirUse dr_us = {0};
-  dr_us.use_dir = malloc(MAX_ENTRIES, sizeof(DIR*));
+  dr_us.use_dir = malloc(MAX_ENTRIES * sizeof(DIR*));
   dr_us.use_dir[dr_us.len] = opendir(".");
   if (dr_us.use_dir[dr_us.len] == NULL) {
     perror("Error opening current directory");
@@ -59,9 +59,10 @@ int main() {
     seekdir(dr_us.use_dir[dr_us.len], td);
   }
   for(int i = 0; i < dr_us.len; i++){
-    if (use_dir != NULL) 
+    if (dr_us.use_dir[i] != NULL) 
       closedir(dr_us.use_dir[i]);
   }
+  free(dr_us.use_dir);
   exit(EXIT_SUCCESS);
 }
 
