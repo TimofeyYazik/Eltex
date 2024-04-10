@@ -28,7 +28,6 @@ int main() {
     exit(EXIT_FAILURE);
   }
   while (1) {
-    long td = telldir(dr_us.use_dir[dr_us.len]);
     counter = 0;
     struct dirent *buff;
     while ((buff = readdir(dr_us.use_dir[dr_us.len])) != NULL) {
@@ -56,7 +55,7 @@ int main() {
     if(td == -1){
       exit(EXIT_FAILURE);
     }
-    seekdir(dr_us.use_dir[dr_us.len], td);
+    rewinddir(dr_us.use_dir[dr_us.len]);
   }
   for(int i = 0; i < dr_us.len; i++){
     if (dr_us.use_dir[i] != NULL) 
