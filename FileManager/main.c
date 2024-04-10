@@ -25,17 +25,32 @@ void restoreTerminalSettings(const struct termios *original_termios) {
 void VimCall(char *name) {
     struct termios original_termios;
     saveTerminalSettings(&original_termios);
-
     int status = 0;
     pid_t pid_vim = fork();
     if (!pid_vim) {
         execl("/usr/bin/vim", "vim", name, NULL);
+        // Если execl() завершилась с ошибкой, выводим сообщение и завершаем дочерний процесс
+        perror("execl failed");
+        exit(EXIT_FAILURE);
+    } else if (pid_vim < 0) {
+        // Если fork() завершилась с ошибкой, выводим сообщение и завершаем программу
+        perror("fork failed");
+        exit(EXIT_FAILURE);
     }
+
+    // Ждем завершения процесса vim и получаем его статус
     waitpid(pid_vim, &status, 0);
-    printw("%d\n", pid_vim);
+    if (WIFEXITED(status)) {
+        // Если процесс завершился успешно, выводим его статус
+        printw("vim exited with status %d\n", WEXITSTATUS(status));
+    } else {
+        // Если процесс завершился с ошибкой, выводим сообщение об ошибке
+        printw("vim exited with error\n");
+    }
 
     restoreTerminalSettings(&original_termios);
 }
+
 
 
 void draw_buttons(struct dirent **namelist_dir, int count, int selected) {
