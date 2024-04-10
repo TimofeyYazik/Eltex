@@ -1,6 +1,6 @@
 
 all: 
-	gcc main.c -g -o FIM
+	gcc main.c driver_dir/driver.c -g -lncurses -o FIM
 clean:
 	rm -f FIM *.o
 

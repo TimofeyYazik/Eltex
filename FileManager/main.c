@@ -1,39 +1,63 @@
-#include <curses.h>
+// #include <curses.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <sys/ioctl.h>
 #include <termios.h>
+#include <dirent.h>
+#include <ncurses.h>
+#include <string.h>
 
-#define MAX_NAME_LEN 15
+#include "driver_dir/driver.h"
 
-void sig_winch(int signo) {
-  struct winsize size;
-  ioctl(fileno(stdout), TIOCGWINSZ, (char *)&size);
-  resizeterm(size.ws_row, size.ws_col);
+
+#define TRUE 1
+#define FALSE 0
+#define MAX_BUTTONS 40
+
+void draw_buttons(struct dirent **namelist_dir, int count, int selected) {
+  clear();  // Очистить экран
+  for (int i = 0; i < count; ++i) {
+    if (i == selected) {
+      attron(A_REVERSE);  // Включить обратный вид (выделение выбранной кнопки)
+    }
+    mvprintw(i + 1, 1, "%s", namelist_dir[i]->d_name);  // Вывести кнопку на экран
+    if (i == selected) {
+      attroff(A_REVERSE);  // Выключить обратный вид
+    }
+  }
+  refresh();  // Обновить экран
 }
-int main(int argc, char **argv) {
-  WINDOW *wnd;
-  char name[MAX_NAME_LEN + 1];
-  initscr();
-  signal(SIGWINCH, sig_winch);
-  curs_set(TRUE);
-  start_color();
-  refresh();
-  init_pair(1, COLOR_YELLOW, COLOR_BLUE);
-  wnd = newwin(5, 23, 2, 2);
-  wbkgd(wnd, COLOR_PAIR(1));
-  wattron(wnd, A_BOLD);
-  wprintw(wnd, "Enter your name...\n");
-  wgetnstr(wnd, name, MAX_NAME_LEN);
-  name[MAX_NAME_LEN] = 0;
-  wprintw(wnd, "Hello, %s!", name);
-  wrefresh(wnd);
-  delwin(wnd);
+
+int main() {
+  int len_namelist = 0;
+  struct dirent **namelist_dir;
+  int selected_button = 0;
+  DriverDir(&len_namelist, &namelist_dir, ".");
+  initscr();  // Инициализировать ncurses
+  cbreak();  // Включить режим CBREAK (ввод без буферизации, но с сигналами
+             // прерывания)
+  keypad(stdscr, TRUE);  // Включить использование специальных клавиш
   curs_set(FALSE);
-  move(8, 4);
-  printw("Press any key to continue...");
-  refresh();
-  getch();
-  endwin();
-  exit(EXIT_SUCCESS);
+  while (1) {
+    draw_buttons(namelist_dir, len_namelist, selected_button);  // Отрисовать кнопки
+    int key = getch();  // Получить ввод пользователя
+    switch (key) {
+      case KEY_UP:  // Стрелка вверх
+        selected_button = (selected_button - 1 + len_namelist) % len_namelist;
+        break;
+      case KEY_DOWN:  // Стрелка вниз
+        selected_button = (selected_button + 1) % len_namelist;
+        break;
+      case 10:  // Enter
+        DriverDir(&len_namelist, &namelist_dir, namelist_dir[selected_button]->d_name);
+        refresh();
+        break;
+      case 'q':    // Нажата клавиша 'q'
+        endwin();  // Завершить работу с ncurses
+        return 0;
+    }
+  }
+
+  endwin();  // Завершить работу с ncurses
+  return 0;
 }
