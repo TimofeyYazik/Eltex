@@ -20,7 +20,7 @@ void VimCall(char *name){
   if(!pid_vim){
     execl("/usr/bin/vim", "vim", name, NULL);
   }
-  wait(&status);
+  pid_vim = wait(&status);
 }
 
 void draw_buttons(struct dirent **namelist_dir, int count, int selected) {
