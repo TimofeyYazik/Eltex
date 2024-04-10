@@ -7,88 +7,55 @@
 #include <unistd.h>
 #include <ncurses.h>
 #include <string.h>
-#include <sys/wait.h>
 
 #include "driver_dir/driver.h"
+#include "style_term/style.h"
 
 #define TRUE 1
 #define FALSE 0
 
-void VimCall(char *name) {
-    int status = 0;
-    pid_t pid_vim = fork();
-    if (!pid_vim) {
-        execl("/usr/bin/vim", "vim", name, NULL);
-        // Если execl() завершилась с ошибкой, выводим сообщение и завершаем дочерний процесс
-        perror("execl failed");
-        exit(EXIT_FAILURE);
-    } else if (pid_vim < 0) {
-        // Если fork() завершилась с ошибкой, выводим сообщение и завершаем программу
-        perror("fork failed");
-        exit(EXIT_FAILURE);
-    }
-    waitpid(pid_vim, &status, 0);
-
-  //   initscr();  // Инициализировать ncurses
-  //   cbreak();  // Включить режим CBREAK (ввод без буферизации, но с сигналами прерывания)
-  //   keypad(stdscr, TRUE);  // Включить использование специальных клавиш
-  //   curs_set(FALSE);
-}
-
-
-
-
-void draw_buttons(struct dirent **namelist_dir, int count, int selected) {
-  clear();  // Очистить экран
-  for (int i = 0; i < count; ++i) {
-    if (i == selected) {
-      attron(A_REVERSE);  // Включить обратный вид (выделение выбранной кнопки)
-    }
-    mvprintw(i + 1, 1, "%s", namelist_dir[i]->d_name);  // Вывести кнопку на экран
-    if (i == selected) {
-      attroff(A_REVERSE);  // Выключить обратный вид
-    }
-  }
-  refresh();  // Обновить экран
-}
-
 int main() {
-  // WINDOW *addition_window = NULL;
+  WINDOW *addition_window = NULL;
   int len_namelist = 0;
   int driver = 0;
   struct dirent **namelist_dir;
   int selected_button = 0;
-  DriverDir(&len_namelist, &namelist_dir, ".");
   initscr();  // Инициализировать ncurses
-  // addition_window = newwin(80, 100, 2, 2);
   cbreak();  // Включить режим CBREAK (ввод без буферизации, но с сигналами прерывания)
   keypad(stdscr, TRUE);  // Включить использование специальных клавиш
   curs_set(FALSE);
-  while (1) {
-    draw_buttons(namelist_dir, len_namelist, selected_button);  // Отрисовать кнопки
-    int key = getch();  // Получить ввод пользователя
-    switch (key) {
-      case KEY_UP:  // Стрелка вверх
-        selected_button = (selected_button - 1 + len_namelist) % len_namelist;
-        break;
-      case KEY_DOWN:  // Стрелка вниз
-        selected_button = (selected_button + 1) % len_namelist;
-        break;
-      case 10:  // Enter
-        driver = DriverDir(&len_namelist, &namelist_dir, namelist_dir[selected_button]->d_name);
-        if(driver == ENOTDIR){
-          //VimCall(namelist_dir[selected_button]->d_name);
-        }
-        refresh();
-        break;
-      case 'q':    // Нажата клавиша 'q'
-        endwin();  // Завершить работу с ncurses
-        return 0;
-    }
-  }
-
+  addition_window = newwin(5, 18, 2, 4);
+  box(addition_window, '|', '-');
+  wattron(addition_window, COLOR_YELLOW);
+  wprintw(addition_window,"Hello");
+  wrefresh(addition_window);
+  refresh();
+  getch();  // Ожидаем нажатие клавиши
   endwin();  // Завершить работу с ncurses
   return 0;
 }
 
 
+
+//  while (1) {
+//     draw_buttons(namelist_dir, len_namelist, selected_button);  // Отрисовать кнопки
+//     int key = getch();  // Получить ввод пользователя
+//     switch (key) {
+//       case KEY_UP:  // Стрелка вверх
+//         selected_button = (selected_button - 1 + len_namelist) % len_namelist;
+//         break;
+//       case KEY_DOWN:  // Стрелка вниз
+//         selected_button = (selected_button + 1) % len_namelist;
+//         break;
+//       case 10:  // Enter
+//         driver = DriverDir(&len_namelist, &namelist_dir, namelist_dir[selected_button]->d_name);
+//         if(driver == ENOTDIR){
+//           //VimCall(namelist_dir[selected_button]->d_name);
+//         }
+//         refresh();
+//         break;
+//       case 'q':    // Нажата клавиша 'q'
+//         endwin();  // Завершить работу с ncurses
+//         return 0;
+//     }
+//   }

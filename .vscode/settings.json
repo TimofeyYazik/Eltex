@@ -3,6 +3,9 @@
     "libcalc.h": "c",
     "libcalc_float.h": "c",
     "libcalc_int.h": "c",
-    "string.h": "c"
+    "string.h": "c",
+    "cstdlib": "c",
+    "main": "c",
+    "unistd.h": "c"
   }
 }
