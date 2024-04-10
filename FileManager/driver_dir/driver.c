@@ -6,7 +6,7 @@
 
 int DriverDir(int *len_namelist, struct dirent ***namelist_dir, char *name_dir) {
   int error = 0;
-  if(strcmd(name_dir, ".") != 0){
+  if(strcmp(name_dir, ".") != 0){
     error = chdir(name_dir);
     // perror("Not dir:");
   }  
