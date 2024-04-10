@@ -39,7 +39,7 @@ int main() {
     scanf("%d", &driver);
     printf("\n\n\n");
     if (driver < 0 || driver >= counter) break;
-    closedir(use_dir);
+    // closedir(use_dir);
     use_dir = opendir(namelist[driver]->d_name);
     if (use_dir == NULL) {
       perror("Error opening selected directory");
