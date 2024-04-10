@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <ncurses.h>
 #include <string.h>
+#include <sys/wait.h>
 
 #include "driver_dir/driver.h"
 
