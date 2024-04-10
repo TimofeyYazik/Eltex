@@ -30,7 +30,7 @@ void VimCall(char *name) {
     if (!pid_vim) {
         execl("/usr/bin/vim", "vim", name, NULL);
     }
-    pid_vim = wait(&status);
+    waitpid(pid_vim, &status, 0);
     printw("%d\n", pid_vim);
 
     restoreTerminalSettings(&original_termios);
