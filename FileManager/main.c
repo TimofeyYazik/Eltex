@@ -52,9 +52,6 @@ int main() {
       perror("Error opening selected directory");
       exit(EXIT_FAILURE);
     }
-    if(td == -1){
-      exit(EXIT_FAILURE);
-    }
     rewinddir(dr_us.use_dir[dr_us.len]);
   }
   for(int i = 0; i < dr_us.len; i++){
