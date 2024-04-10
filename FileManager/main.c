@@ -27,13 +27,16 @@ int main() {
   addition_window = newwin(5, 18, 2, 4);
   box(addition_window, '|', '-');
   wattron(addition_window, COLOR_YELLOW);
-  wprintw(addition_window,"Hello");
-  wrefresh(addition_window);
-  refresh();
+  mvwprintw(addition_window, 1, 1, "Hello");  // Вывод текста в окно
+  wrefresh(addition_window);  // Обновление экрана
+  // Добавляем задержку и сообщение
+  printw("Нажмите любую клавишу для завершения...");
   getch();  // Ожидаем нажатие клавиши
+  delwin(addition_window);  // Удаление окна
   endwin();  // Завершить работу с ncurses
   return 0;
 }
+
 
 
 
