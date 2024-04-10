@@ -4,6 +4,8 @@
 #include <sys/ioctl.h>
 #include <termios.h>
 #include <dirent.h>
+#include <errno.h>
+#include <unistd.h>
 #include <ncurses.h>
 #include <string.h>
 
@@ -11,6 +13,15 @@
 
 #define TRUE 1
 #define FALSE 0
+
+void VimCall(char *name){
+  int status = 0;
+  pid_t pid_vim = fork();
+  if(!pid_vim){
+    execl("/usr/bin/vim", "vim", name, NULL);
+  }
+  wait(&status);
+}
 
 void draw_buttons(struct dirent **namelist_dir, int count, int selected) {
   clear();  // Очистить экран
@@ -29,6 +40,7 @@ void draw_buttons(struct dirent **namelist_dir, int count, int selected) {
 int main() {
   // WINDOW *addition_window = NULL;
   int len_namelist = 0;
+  int driver = 0;
   struct dirent **namelist_dir;
   int selected_button = 0;
   DriverDir(&len_namelist, &namelist_dir, ".");
@@ -48,7 +60,10 @@ int main() {
         selected_button = (selected_button + 1) % len_namelist;
         break;
       case 10:  // Enter
-        DriverDir(&len_namelist, &namelist_dir, namelist_dir[selected_button]->d_name);
+        driver = DriverDir(&len_namelist, &namelist_dir, namelist_dir[selected_button]->d_name);
+        if(driver == ENOTDIR){
+          VimCall(namelist_dir[selected_button]->d_name);
+        }
         refresh();
         break;
       case 'q':    // Нажата клавиша 'q'
@@ -60,3 +75,5 @@ int main() {
   endwin();  // Завершить работу с ncurses
   return 0;
 }
+
+

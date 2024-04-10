@@ -8,11 +8,16 @@ int DriverDir(int *len_namelist, struct dirent ***namelist_dir, char *name_dir) 
   int error = 0;
   if(strcmp(name_dir, ".") != 0){
     error = chdir(name_dir);
-    // perror("Not dir:");
   }  
   if(error != -1){
     *len_namelist = scandir(".", namelist_dir, NULL, alphasort);
+    if(*len_namelist == -1){
+      error = -1;
+    }
   }
 
+  if(errno == ENOTDIR){
+    error = ENOTDIR;
+  }
   return error;
 }
