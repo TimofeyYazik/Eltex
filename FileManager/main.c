@@ -50,6 +50,11 @@ int main() {
       exit(EXIT_FAILURE);
     }
     seekdir(use_dir, td);
+//    closedir(use_dir);
+//    use_dir = opendir(".");
+//    if(use_dir == NULL){
+//      exit(1);
+//    }
   }
 
   if (use_dir != NULL) closedir(use_dir);
