@@ -14,17 +14,7 @@
 #define TRUE 1
 #define FALSE 0
 
-void saveTerminalSettings(struct termios *original_termios) {
-    tcgetattr(STDIN_FILENO, original_termios);
-}
-
-void restoreTerminalSettings(const struct termios *original_termios) {
-    tcsetattr(STDIN_FILENO, TCSANOW, original_termios);
-}
-
 void VimCall(char *name) {
-    struct termios original_termios;
-    saveTerminalSettings(&original_termios);
     int status = 0;
     pid_t pid_vim = fork();
     if (!pid_vim) {
@@ -37,22 +27,12 @@ void VimCall(char *name) {
         perror("fork failed");
         exit(EXIT_FAILURE);
     }
+    waitpid(pid_vim, &status, 0);
 
-    // Ждем завершения процесса vim и получаем его статус
-    printw("Waiting for vim process to exit...\n");
-    refresh();
-    waitpid(pid_vim, &status, WUNTRACED);
-    printw("Vim process exited\n");
-    if (WIFEXITED(status)) {
-        // Если процесс завершился успешно, выводим его статус
-        printw("vim exited with status %d\n", WEXITSTATUS(status));
-    } else {
-        // Если процесс завершился с ошибкой, выводим сообщение об ошибке
-        printw("vim exited with error\n");
-    }
-    fflush(stdout); // Сбрасываем буфер вывода на экран
-
-    restoreTerminalSettings(&original_termios);
+  //   initscr();  // Инициализировать ncurses
+  //   cbreak();  // Включить режим CBREAK (ввод без буферизации, но с сигналами прерывания)
+  //   keypad(stdscr, TRUE);  // Включить использование специальных клавиш
+  //   curs_set(FALSE);
 }
 
 
@@ -97,7 +77,7 @@ int main() {
       case 10:  // Enter
         driver = DriverDir(&len_namelist, &namelist_dir, namelist_dir[selected_button]->d_name);
         if(driver == ENOTDIR){
-          VimCall(namelist_dir[selected_button]->d_name);
+          //VimCall(namelist_dir[selected_button]->d_name);
         }
         refresh();
         break;
