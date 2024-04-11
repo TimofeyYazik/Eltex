@@ -20,8 +20,10 @@ int main() {
   TouchHandler(&left_dir, &left_window, &right_window, &right_dir, &sw_dr);
   free(left_dir.namelist_dir);
   free(right_dir.namelist_dir);
-  closedir(sw_dr.dr[0]);
-  closedir(sw_dr.dr[1]);
+  if(sw_dr.dr[0] != NULL)
+    closedir(sw_dr.dr[0]);
+  if(sw_dr.dr[1] != NULL)
+    closedir(sw_dr.dr[1]);
   delwin(right_window);
   delwin(left_window);
   endwin();
