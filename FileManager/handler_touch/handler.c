@@ -51,6 +51,7 @@ void TouchHandler(DirList *left_dir, WINDOW **left_window,
           if (driver == FILE_VIM_OPEN) {
             _SaveNcursesSettings();
             VimCall(left_dir->namelist_dir[selected_button]->d_name);
+            sw_dr->dr[0] = NULL;
             _RestoreNcursesSettings();
           }
         }
@@ -61,6 +62,7 @@ void TouchHandler(DirList *left_dir, WINDOW **left_window,
           if (driver == FILE_VIM_OPEN) {
             _SaveNcursesSettings();
             VimCall(right_dir->namelist_dir[selected_button]->d_name);
+            sw_dr->dr[1] = NULL;
             _RestoreNcursesSettings();
           }
         }
