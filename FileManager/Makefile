@@ -1,6 +1,25 @@
 
-all: 
-	gcc main.c driver_dir/driver.c style_term/style.c vim_connect/process.c -g -lncurses -o FIM
+CC = gcc
+FLAGS = -std=c11 -Wall -Wextra -Werror -g
+LIB = -lncurses
+
+SOURCES := $(wildcard $(shell find . -name '*.c'))
+OBJ = $(patsubst %.c, %.o, $(SOURCES))
+
+%.o: %.c
+	$(CC) $(FLAGS) -c $< 
+
+all: $(OBJ)
+	$(CC) $(FLAGS) *.o $(LIB) -o FIM
+
 clean:
-	rm -rf FIM *.o FIM.*
+	rm -rf FIM *.o 
+
+format:	$(SOURCES)
+	clang-format --style=Google -i $(SOURCES)
+
+git:
+	git add .
+	git commit
+	git push
 
