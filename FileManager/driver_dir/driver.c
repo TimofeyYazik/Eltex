@@ -42,6 +42,7 @@ int DriverDir(DirList *dir_list, char *name, SwitchDir *sw_dr) {
         goto Error;
       }
     }
+    free(dir_list->namelist_dir);
     dir_list->len_namelist =
         scandir(".", &dir_list->namelist_dir, NULL, alphasort);
     if (dir_list->len_namelist == -1) {
