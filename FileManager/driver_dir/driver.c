@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -16,7 +17,9 @@ int DriverDir(DirList *dir_list, char *name, SwitchDir *sw_dr) {
       error = -1;
       goto Error;
     }
+    free(sw_dr->dr[sw_dr->win]);
   }
+
   if (stat(name, &statbuf) == -1) {
     perror("Error getting file status");
     error = -1;
