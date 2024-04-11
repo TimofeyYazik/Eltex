@@ -3,20 +3,25 @@
 #include <sys/ioctl.h>
 #include <stdlib.h>
 #include <stdio.h>
-// #include <ncurses.h>
-#include <termios.h>
+#include <ncurses.h>
+// #include <termios.h>
 
-void saveTerminalSettings(struct termios *original_termios) {
-    tcgetattr(STDIN_FILENO, original_termios);
+void saveNcursesSettings(SCREEN *original_screen) {
+    def_prog_mode();  // Сохранить настройки экрана ncurses
+    refresh();  // Обновить экран, чтобы изменения вступили в силу
+    original_screen = newterm(NULL, stdout, stdin);  // Создать новый экран для восстановления
 }
 
-void restoreTerminalSettings(const struct termios *original_termios) {
-    tcsetattr(STDIN_FILENO, TCSANOW, original_termios);
+void restoreNcursesSettings(SCREEN *original_screen) {
+    endwin();  // Завершить работу с текущим экраном
+    set_term(original_screen);  // Восстановить сохраненные настройки экрана
+    reset_prog_mode();  // Восстановить сохраненное состояние экрана
+    refresh();  // Обновить экран
 }
 
 void VimCall(char *name) {
-    struct termios original_termios;
-    saveTerminalSettings(&original_termios);
+    SCREEN *original_screen = NULL;
+    saveNcursesSettings(original_screen);
 
     int status = 0;
     pid_t pid_vim = fork();
@@ -25,5 +30,5 @@ void VimCall(char *name) {
     }
     pid_vim = wait(&status);
 
-    restoreTerminalSettings(&original_termios);
+    restoreNcursesSettings(original_screen);
 }
