@@ -1,6 +1,6 @@
 
 all: 
-	gcc main.c driver_dir/driver.c style_term/style.c -g -lncurses -o FIM
+	gcc main.c driver_dir/driver.c style_term/style.c vim_connect/process.c -g -lncurses -o FIM
 clean:
-	rm -f FIM *.o
+	rm -rf FIM *.o FIM.*
 
