@@ -1,6 +1,6 @@
 
 CC = gcc
-FLAGS = -g
+FLAGS = -g -Wall -Wextra -Werror
 LIB = -lncurses
 
 SOURCES := $(wildcard $(shell find . -name '*.c'))
