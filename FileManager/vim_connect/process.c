@@ -14,7 +14,6 @@ void VimCall(char *name) {
   }
   if (!pid_vim) {
     execl("/usr/bin/vim", "vim", name, NULL);
-    execl("/usr/bin/vim", "vim", name, NULL);
     perror("Error in execl");
     exit(EXIT_FAILURE);
   }
