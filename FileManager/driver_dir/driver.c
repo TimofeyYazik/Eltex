@@ -17,7 +17,6 @@ int DriverDir(DirList *dir_list, char *name, SwitchDir *sw_dr) {
       error = -1;
       goto Error;
     }
-    free(sw_dr->dr[sw_dr->win]);
   }
 
   if (stat(name, &statbuf) == -1) {
