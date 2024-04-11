@@ -18,6 +18,8 @@ int main() {
   SettingConsole(&left_window, &right_window, &left_dir, &right_dir, &sw_dr);
   DrawButtons(right_dir, 0, right_window);
   TouchHandler(&left_dir, &left_window, &right_window, &right_dir, &sw_dr);
+  free(left_dir.namelist_dir);
+  free(right_dir.namelist_dir);
   closedir(sw_dr.dr[0]);
   closedir(sw_dr.dr[1]);
   delwin(right_window);
