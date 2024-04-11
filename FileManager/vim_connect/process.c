@@ -11,7 +11,6 @@ void saveNcursesSettings(WINDOW **original_window) {
 
 void restoreNcursesSettings(WINDOW **original_window) {
     wrefresh(*original_window);  // Обновить дублированное окно
-    delwin(*original_window);    // Удалить дублированное окно
 }
 
 void VimCall(char *name) {
