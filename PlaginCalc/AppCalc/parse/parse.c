@@ -32,6 +32,7 @@ void ParseFlags(service_info *service, int argc, char **argv){
     switch (ch) {
     case 'p':
       flag++;
+      if(strlen(optarg) > 80) continue;
       if (flag == prev_flag){
         service->lib_count++;
         service->lib = realloc(service->lib, sizeof(char *) * service->lib_count);
@@ -68,6 +69,7 @@ void ParseFlags(service_info *service, int argc, char **argv){
       }
       break;
     case 'f':
+      if(strlen(optarg) > 80) continue;
       service->func_count++;
       service->func = realloc(service->func, sizeof(char *) * service->func_count);
       _CheckErrorMemoryFunc(service);
