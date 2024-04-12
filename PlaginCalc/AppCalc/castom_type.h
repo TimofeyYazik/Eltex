@@ -6,11 +6,11 @@ typedef struct {
   char **func;
   int func_count;
   int lib_count;
-} service_info;
+} ServiceInfo;
 
 typedef struct{
   void **handler_arr;
   int len;
-} handler_t;
+} Handler;
 
 #endif //APPCALC_CASTOM_TYPE_H_

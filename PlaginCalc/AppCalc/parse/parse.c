@@ -9,7 +9,7 @@
 
 #define SIZE_BUFF  80
 
-static void _CheckErrorMemoryLib(service_info *service){
+static void _CheckErrorMemoryLib(ServiceInfo *service){
   if(service->lib == NULL){
     ClearService(service);
     perror("error");
@@ -17,7 +17,7 @@ static void _CheckErrorMemoryLib(service_info *service){
   }
 }
 
-static void _CheckErrorMemoryFunc(service_info *service){
+static void _CheckErrorMemoryFunc(ServiceInfo *service){
   if(service->func == NULL){
     ClearService(service);
     perror("error");
@@ -25,7 +25,7 @@ static void _CheckErrorMemoryFunc(service_info *service){
   }
 }
 
-void ParseFlags(service_info *service, int argc, char **argv){
+void ParseFlags(ServiceInfo *service, int argc, char **argv){
   char ch = 0;
   char flag = 0, prev_flag = 1;
   while ((ch = getopt_long(argc, argv, "p:f:", NULL, NULL)) != -1){
@@ -88,7 +88,7 @@ void ParseFlags(service_info *service, int argc, char **argv){
 
 }
 
-void ClearService(service_info *service){
+void ClearService(ServiceInfo *service){
   if(service->func != NULL){
     for(int i = 0; i < service->func_count; i++){
       if(service->func[i] != NULL)

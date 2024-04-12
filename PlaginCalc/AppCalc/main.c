@@ -7,16 +7,16 @@
 #include "menu_work/menu.h"
 #include "connect_library/connect.h"
 
-void CloseHandler(handler_t *handler);
+void CloseHandler(Handler *handler);
 
 int main(int argc, char **argv){
   int count_func_arr = 0;
   int (**func_calc_int)(int, int) = NULL;
-  handler_t handler = {0};
+  Handler handler = {0};
   int var_func_one = 0, var_func_two = 0;
   int result = 0;
   volatile int argument = 1;
-  service_info service = {0};
+  ServiceInfo service = {0};
   ParseFlags(&service, argc, argv);
   int error = ConnectLib(&func_calc_int, &handler, &count_func_arr,  service);
   if(!error){
@@ -42,7 +42,7 @@ int main(int argc, char **argv){
   return 0;
 }
 
-void CloseHandler(handler_t *handler){
+void CloseHandler(Handler *handler){
   if(handler->handler_arr != NULL){
     for(int i = 0; i < handler->len; i++){
       if(handler->handler_arr[i] != NULL)

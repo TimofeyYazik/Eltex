@@ -4,7 +4,7 @@
 #include "../castom_type.h"
 
 
-int Menu(const service_info service) {
+int Menu(const ServiceInfo service) {
     int menu = 0;
     int num = 1;
     printf("0) Exit\n");

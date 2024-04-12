@@ -6,7 +6,7 @@
 #include "../castom_type.h"
 #include "connect.h"
 
-int ConnectLib(int (***func_calc_int)(int, int), handler_t *handler, int *count, const service_info service){
+int ConnectLib(int (***func_calc_int)(int, int), Handler *handler, int *count, const ServiceInfo service){
   int error = 0;
   int j = 0;
   for(int i = 0; i < service.lib_count; i++){
