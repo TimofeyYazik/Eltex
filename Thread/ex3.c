@@ -16,7 +16,7 @@ void *customers_buy(void *argc){
   
   while(*customers != 0){
     int i = 0;  
-    printf("id thread = %d\n", id);
+    printf("id thread = %ld\n", id);
     printf("need %d\n", *customers);
     pthread_mutex_lock(&mutex_shops);
     int shop_index = -1;
@@ -53,7 +53,7 @@ void *provider(void *argc){
   id_provider = pthread_self();
   
   while(1){
-    printf("id provider thread = %d\n", id_provider);
+    printf("id provider thread = %ld\n", id_provider);
     printf("+5000\n");
     
     pthread_mutex_lock(&mutex_shops);
