@@ -1,15 +1,15 @@
-#include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
+#include <stdlib.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
-int main(){
+int main() {
   int status = 0;
   pid_t child_process = fork();
-  if(child_process == 0){
+  if (child_process == 0) {
     printf("Child pid - %d\n", getpid());
     execl("/bin/ls", "ls", "-l", NULL);
-  } else if(child_process == -1){
+  } else if (child_process == -1) {
     perror("process not make\n");
     exit(EXIT_FAILURE);
   } else {
