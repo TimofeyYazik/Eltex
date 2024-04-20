@@ -4,6 +4,7 @@
 #include <time.h>
 #include <unistd.h> 
 #include <sys/syscall.h>
+#include <sys/types.h>
 
 pthread_t id_provider;
 char shop_close[5] = {0};
@@ -11,7 +12,7 @@ int shops[5] = {0};
 pthread_mutex_t mutex_shops = PTHREAD_MUTEX_INITIALIZER; 
 
 void *customers_buy(void *argc){
-  pthread_t id = pthread_self();
+  int id = gettid();
   int *customers = (int *)argc;
   
   while(*customers != 0){
@@ -51,9 +52,10 @@ void *customers_buy(void *argc){
 void *provider(void *argc){
   int package = 5000;
   id_provider = pthread_self();
+  int id = gettid();
   
   while(1){
-    printf("id provider thread = %d\n", id_provider);
+    printf("id provider thread = %d\n", id);
     printf("+5000\n");
     
     pthread_mutex_lock(&mutex_shops);
