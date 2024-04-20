@@ -25,6 +25,9 @@ int DriverDir(DirList *dir_list, char *name, SwitchDir *sw_dr) {
     goto Error;
   }
   if (S_ISDIR(statbuf.st_mode)) {
+    if(sw_dr->dr[sw_dr->win] != NULL){
+      closedir(sw_dr->dr[sw_dr->win]);
+    }
     sw_dr->dr[sw_dr->win] = opendir(name);
     if (sw_dr->dr[sw_dr->win] == NULL) {
       perror("Error opening directory");
