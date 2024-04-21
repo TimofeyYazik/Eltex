@@ -13,7 +13,6 @@ void DriverShell(){
   int num_tokens;
   input_user data = {0};
   const char folder[6] = "/bin/";
-  char utils_path[50] = {0};
   data.size = 100;
   data.arr = malloc(data.size);
   while (1) {
@@ -27,7 +26,7 @@ void DriverShell(){
         args[i] = tokens[i];
       }
       args[num_tokens] = NULL;
-      execv(utils_path, args);
+      execv(folder, args);
       perror("Execution failed");
       exit(EXIT_FAILURE);
     } else {
