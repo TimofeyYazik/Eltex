@@ -9,3 +9,6 @@ OBJECTS := $(patsubst %.c, %.o, $(FILES))
 
 shell: $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) -o $@ 
+
+clean:
+	rm -f *.o shell
