@@ -12,7 +12,7 @@ void DriverShell(){
   pid_t child_process;
   int num_tokens;
   input_user data = {0};
-  const char folder[6] = "/bin";
+  const char folder[6] = "/bin/";
   char utils_path[50] = {0};
   data.size = 100;
   data.arr = malloc(data.size);
