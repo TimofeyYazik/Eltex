@@ -26,7 +26,7 @@ void DriverShell(){
         args[i] = tokens[i];
       }
       args[num_tokens] = NULL;
-      execv(folder, args);
+      execvp(tokens[0], args);
       perror("Execution failed");
       exit(EXIT_FAILURE);
     } else {
