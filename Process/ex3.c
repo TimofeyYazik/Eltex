@@ -71,7 +71,6 @@ int main() {
     char **tokens = tokenize_string(data.arr, " ", &num_tokens);
     child_process = fork();
     if (!child_process) {
-      sprintf(utils_path, "%s%s", folder, tokens[0]);
       char *args[num_tokens + 1];
       for (int i = 0; i < num_tokens; i++) {
         args[i] = tokens[i];
