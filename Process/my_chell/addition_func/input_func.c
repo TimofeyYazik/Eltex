@@ -1,6 +1,7 @@
 #include "add_func.h"
 
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
 void safe_input(input_user *data) {
