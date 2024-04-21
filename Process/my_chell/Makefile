@@ -11,4 +11,4 @@ shell: $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) -o $@ 
 
 clean:
-	rm -f *.o shell
+	rm -f *.o shell $(OBJECTS)
