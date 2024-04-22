@@ -24,17 +24,17 @@ int main() {
     exit(EXIT_FAILURE);
   }
   while (1) {
-    safe_input(&data);
+    SafeInput(&data);
     if (!strcmp(data.arr, "exit")) break;
-    char **tokens = tokenize_string(data.arr, "|", &num_tokens);
+    char **tokens = TokenizeString(data.arr, "|", &num_tokens);
     if (num_tokens == 2) {
     if (pipe(pipe_message) == -1) {
       perror("Pipe creation failed");
       exit(EXIT_FAILURE);
     }
       tokens_pipe_write =
-          tokenize_string(tokens[0], " ", &num_tokens_pipe_write);
-      tokens_pipe_read = tokenize_string(tokens[1], " ", &num_tokens_pipe_read);
+          TokenizeString(tokens[0], " ", &num_tokens_pipe_write);
+      tokens_pipe_read = TokenizeString(tokens[1], " ", &num_tokens_pipe_read);
     }
     for (int i = 0; i < num_tokens; i++) {
       int num_tokens_pipe;
@@ -51,14 +51,14 @@ int main() {
             dup2(pipe_message[1], 1);
             buff = &tokens_pipe_write;
             num_tokens_pipe = num_tokens_pipe_write;
-          } else {
+          } else if (i == 1) {
             close(pipe_message[1]);
             dup2(pipe_message[0], 0);
             buff = &tokens_pipe_read;
             num_tokens_pipe = num_tokens_pipe_read;
           }
         } else {
-          *buff = tokenize_string(data.arr, " ", &num_tokens_pipe);
+          *buff = TokenizeString(data.arr, " ", &num_tokens_pipe);
         }
         char *args[num_tokens_pipe + 1];
         for (int j = 0; j < num_tokens_pipe; j++) {
@@ -70,6 +70,11 @@ int main() {
         exit(EXIT_FAILURE);
       } else {
         waitpid(child_pid, &wait_return, 0);
+        if(i == 0) {
+          close(pipe_message[1]);
+        } else if(i == 1) {
+          close(pipe_message[0]);
+        }
       }
     }
     for (int i = 0; i < num_tokens; i++) {
@@ -77,8 +82,6 @@ int main() {
     }
     free(tokens);
     if (num_tokens == 2) {
-      close(pipe_message[0]);
-      close(pipe_message[1]);
       for (int i = 0; i < num_tokens_pipe_write; i++) {
         free(tokens_pipe_write[i]);
       }

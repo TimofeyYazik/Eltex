@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-char **tokenize_string(const char *str, const char *delimiters, int *num_tokens) {
+char **TokenizeString(const char *str, const char *delimiters, int *num_tokens) {
     char *str_copy = strdup(str);
     if (str_copy == NULL) {
         perror("Memory allocation error");

@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-void safe_input(input_user *data) {
+void SafeInput(input_user *data) {
   memset(data->arr, 0, data->len_str);
   data->len_str = 0;
   char ch = 0;
