@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -g 
+CFLAGS := -g -Werror -Wextra  
 
 FILES := $(shell find . -name "*.c")
 OBJECTS := $(patsubst %.c, %.o, $(FILES))
