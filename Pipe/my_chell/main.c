@@ -59,8 +59,18 @@ int main() {
         execvp((*buff)[0], args);
       } else {
         waitpid(child_process, &wait_return, 0);
+        for(int j = 0; j < num_tokens_pipe; j++) {
+          free((*buff)[j]);
+        }
+        free(*buff);
+        free(tokens_pipe_write);
+        free(tokens_pipe_read);
       }
     }
+    for (int i = 0; i < num_tokens; i++) {
+      free(tokens[i]);
+    }
+    free(tokens);
   }
   free(data.arr);
   exit(EXIT_SUCCESS);
