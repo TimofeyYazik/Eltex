@@ -15,9 +15,9 @@ int main() {
   data.size = 100;
   data.arr = malloc(data.size);
   while (1) {
-    safe_input(&data);
+    SafeInput(&data);
     if (!strcmp(data.arr, "exit")) break;
-    char **tokens = tokenize_string(data.arr, " ", &num_tokens);
+    char **tokens = TokenizeString(data.arr, " ", &num_tokens);
     child_process = fork();
     if (!child_process) {
       char *args[num_tokens + 1];

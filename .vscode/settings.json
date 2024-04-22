@@ -6,6 +6,9 @@
     "string.h": "c",
     "cstdlib": "c",
     "main": "c",
-    "unistd.h": "c"
+    "unistd.h": "c",
+    "castom_type.h": "c",
+    "driver.h": "c",
+    "castom_type.H": "cpp"
   }
 }
