@@ -26,7 +26,6 @@ int main() {
   }
   while (1) {
     SafeInput(&data);
-    printf("%s\n", data.arr);
     if (!strcmp(data.arr, "exit")) break;
     char **tokens = TokenizeString(data.arr, "|", &num_tokens);
     if (num_tokens == 2) {
@@ -46,7 +45,7 @@ int main() {
         exit(EXIT_FAILURE);
       }
       if (child_pid == 0) {
-        if (num_tokens > 1) {
+        if (num_tokens == 2) {
           if (i == 0) {
             close(pipe_message[0]);
             dup2(pipe_message[1], 1);
@@ -67,17 +66,18 @@ int main() {
           args[j] = (*buff)[j];
         }
         args[num_tokens_pipe] = NULL;
-        printf("%s\n", (*buff)[0]);
         execvp(args[0], args);
         perror("Execution failed");
         exit(EXIT_FAILURE);
       } else {
         waitpid(child_pid, &wait_return, 0);
+        if(num_tokens == 2) {
         if(i == 0) {
           close(pipe_message[1]);
         } else if(i == 1) {
           close(pipe_message[0]);
         }
+        } 
       }
     }
     for (int i = 0; i < num_tokens; i++) {
