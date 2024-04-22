@@ -39,7 +39,7 @@ int main() {
     }
     for (int i = 0; i < num_tokens; i++) {
       int num_tokens_pipe;
-      char ***buff;
+      char ***buff = NULL;
       child_pid = fork();
       if (child_pid == -1) {
         perror("Fork failed");
