@@ -7,6 +7,7 @@
 #include "addition_func/add_func.h"
 #include "custom_type.h"
 
+
 int main() {
   int num_tokens_pipe_write = 0;
   int num_tokens_pipe_read = 0;
@@ -58,7 +59,8 @@ int main() {
             num_tokens_pipe = num_tokens_pipe_read;
           }
         } else {
-          *buff = TokenizeString(data.arr, " ", &num_tokens_pipe);
+          tokens_pipe_write = TokenizeString(data.arr, " ", &num_tokens_pipe);
+          buff = &tokens_pipe_write;
         }
         char *args[num_tokens_pipe + 1];
         for (int j = 0; j < num_tokens_pipe; j++) {
