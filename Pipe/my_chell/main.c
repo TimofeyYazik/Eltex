@@ -63,8 +63,6 @@ int main() {
           free((*buff)[j]);
         }
         free(*buff);
-        free(tokens_pipe_write);
-        free(tokens_pipe_read);
       }
     }
     for (int i = 0; i < num_tokens; i++) {
