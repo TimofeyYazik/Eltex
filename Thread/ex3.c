@@ -5,9 +5,13 @@
 #include <unistd.h> 
 #include <sys/syscall.h>
 
+#define NUM_SHOPS 5
+#define NUM_CUSTOMERS 3
+#define RESTOCK_PACKAGE_SIZE 5000
+
 pthread_t id_provider;
-char shop_close[5] = {0};
-int shops[5] = {0};
+char shop_close[NUM_SHOPS] = {0};
+int shops[NUM_SHOPS] = {0};
 pthread_mutex_t mutex_shops = PTHREAD_MUTEX_INITIALIZER; 
 
 void *customers_buy(void *argc){
@@ -18,6 +22,7 @@ void *customers_buy(void *argc){
     int i = 0;  
     printf("id thread = %d\n", id);
     printf("need %d\n", *customers);
+    
     pthread_mutex_lock(&mutex_shops);
     int shop_index = -1;
     for (; i < 5; i++) {
@@ -33,6 +38,7 @@ void *customers_buy(void *argc){
       sleep(2);
       continue;
     }
+    
     if (*customers >= shops[shop_index]) {
       *customers -= shops[shop_index];
       shops[shop_index] = 0;
@@ -49,11 +55,11 @@ void *customers_buy(void *argc){
 }
 
 void *provider(void *argc){
-  int package = 5000;
+  int package = RESTOCK_PACKAGE_SIZE;
   id_provider = pthread_self();
   
   while(1){
-    printf("id provider thread = %ld\n", id_provider);
+    printf("id provider thread = %d\n", id_provider);
     printf("+5000\n");
     
     pthread_mutex_lock(&mutex_shops);
@@ -72,8 +78,8 @@ void *provider(void *argc){
       continue;
     }
     
-    shops[shop_index] += package;
     shop_close[shop_index] = 0;
+    shops[shop_index] += package; // Restock the shop
     sleep(1);
   }
   
@@ -90,15 +96,15 @@ int main(){
     shops[i] = (rand() % (upper - lower + 1)) + lower;
   }
   
-  int customers_arr[3] = {100000}; 
+  int customers_arr[3] = {100000, 100000, 100000}; 
   
-  for(int i = 0; i < 3; i++){
+  for(int i = 0; i < NUM_CUSTOMERS; i++){
     pthread_create(&customers_pthread[i], NULL, customers_buy, &customers_arr[i]);
   }
   
   pthread_create(&provider_pthread, NULL, provider, NULL);
   
-  for(int i = 0; i < 3; i++){
+  for(int i = 0; i < NUM_CUSTOMERS; i++){
     pthread_join(customers_pthread[i], NULL);
   }
   
