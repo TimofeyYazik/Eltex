@@ -4,8 +4,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-
-
 #include "custom_type.h"
 #include "addition_func/add_func.h"
 
@@ -31,11 +29,7 @@ int main() {
       exit(EXIT_FAILURE);
     } else {
       waitpid(child_process, &wait_return, 0);
-      if(WIFEXITED(wait_return) == 0){ 
-        printf("%s is executed\n", data.arr);
-      } else {
-        printf("%s is not executed\n", data.arr);
-      }
+      wait_return = 0;
     }
     for (int i = 0; i < num_tokens; i++) {
       free(tokens[i]);
