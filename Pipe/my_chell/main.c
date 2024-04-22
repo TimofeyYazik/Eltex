@@ -33,8 +33,7 @@ int main() {
       perror("Pipe creation failed");
       exit(EXIT_FAILURE);
     }
-      tokens_pipe_write =
-          TokenizeString(tokens[0], " ", &num_tokens_pipe_write);
+      tokens_pipe_write = TokenizeString(tokens[0], " ", &num_tokens_pipe_write);
       tokens_pipe_read = TokenizeString(tokens[1], " ", &num_tokens_pipe_read);
     }
     for (int i = 0; i < num_tokens; i++) {
@@ -67,7 +66,7 @@ int main() {
         }
         args[num_tokens_pipe] = NULL;
         printf("%s\n", (*buff)[0]);
-        execvp((*buff)[0], args);
+        execvp(args[0], args);
         perror("Execution failed");
         exit(EXIT_FAILURE);
       } else {
