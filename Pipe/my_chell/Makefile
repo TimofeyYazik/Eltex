@@ -13,5 +13,5 @@ shell: $(OBJECTS)
 clean:
 	rm -f shell $(OBJECTS)
 
-formating:
+format:
 	clang-format --style=Google -i *.c

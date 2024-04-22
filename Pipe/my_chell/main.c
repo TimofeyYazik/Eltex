@@ -11,22 +11,27 @@ int main() {
   int num_tokens_pipe_write = 0;
   int num_tokens_pipe_read = 0;
   int pipe_message[2];
-  pipe(pipe_message);
   char **tokens_pipe_write;
   char **tokens_pipe_read;
-  char conveyor_commands = 0;
   int wait_return = 0;
-  pid_t child_process = 0;
+  pid_t child_pid = 0;
   int num_tokens = 0;
   input_user data = {0};
   data.size = 100;
   data.arr = malloc(data.size);
+  if (data.arr == NULL) {
+    perror("Memory allocation failed");
+    exit(EXIT_FAILURE);
+  }
   while (1) {
     safe_input(&data);
     if (!strcmp(data.arr, "exit")) break;
     char **tokens = tokenize_string(data.arr, "|", &num_tokens);
-    // printf("%d\n", num_tokens);
     if (num_tokens == 2) {
+    if (pipe(pipe_message) == -1) {
+      perror("Pipe creation failed");
+      exit(EXIT_FAILURE);
+    }
       tokens_pipe_write =
           tokenize_string(tokens[0], " ", &num_tokens_pipe_write);
       tokens_pipe_read = tokenize_string(tokens[1], " ", &num_tokens_pipe_read);
@@ -34,8 +39,12 @@ int main() {
     for (int i = 0; i < num_tokens; i++) {
       int num_tokens_pipe;
       char ***buff;
-      child_process = fork();
-      if (!child_process) {
+      child_pid = fork();
+      if (child_pid == -1) {
+        perror("Fork failed");
+        exit(EXIT_FAILURE);
+      }
+      if (child_pid == 0) {
         if (num_tokens > 1) {
           if (i == 0) {
             close(pipe_message[0]);
@@ -57,18 +66,28 @@ int main() {
         }
         args[num_tokens_pipe] = NULL;
         execvp((*buff)[0], args);
+        perror("Execution failed");
+        exit(EXIT_FAILURE);
       } else {
-        waitpid(child_process, &wait_return, 0);
-        for(int j = 0; j < num_tokens_pipe; j++) {
-          free((*buff)[j]);
-        }
-        free(*buff);
+        waitpid(child_pid, &wait_return, 0);
       }
     }
     for (int i = 0; i < num_tokens; i++) {
       free(tokens[i]);
     }
     free(tokens);
+    if (num_tokens == 2) {
+      close(pipe_message[0]);
+      close(pipe_message[1]);
+      for (int i = 0; i < num_tokens_pipe_write; i++) {
+        free(tokens_pipe_write[i]);
+      }
+      free(tokens_pipe_write);
+      for (int i = 0; i < num_tokens_pipe_read; i++) {
+        free(tokens_pipe_read[i]);
+      }
+      free(tokens_pipe_read);
+    }
   }
   free(data.arr);
   exit(EXIT_SUCCESS);
