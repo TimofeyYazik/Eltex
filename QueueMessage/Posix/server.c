@@ -16,7 +16,7 @@ int main(){
   mq_send(mqdes, &message, 20, 1);
   ssize_t k = 0;
   while (!k) {
-    k = mq_timedreceive(mqdes, &message, 20, &priority, &delay);
+    k = mq_timedreceive(mqdes, message, 20, &priority, &delay);
   }
   printf("%s", message);
   mq_close(mqdes);
