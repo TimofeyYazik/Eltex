@@ -1,5 +1,8 @@
-server: server.c
+server: server.o
 	gcc -g $< -lrt -o $@
 
-client: client.c
+client: client.o
 	gcc -g $< -lrt -o $@
+
+clean:
+	rm -f *.o server client
