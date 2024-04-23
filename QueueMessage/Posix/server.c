@@ -10,7 +10,7 @@
 
 int main() {
     char path[MAX_PATH_LENGTH] = "/server";
-    char message[20] = "hello";
+    char message[10] = "hello";
     struct mq_attr attr;                  
     attr.mq_flags = 0;            
     attr.mq_maxmsg = 50; 
@@ -23,7 +23,7 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    mq_send(mqdes, message, 20, 10);
+    mq_send(mqdes, message, 10, 10);
 
     mq_close(mqdes);
 
