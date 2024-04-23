@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h>
+#include <errno.h>
 
 #define MAX_PATH_LENGTH 256
 
