@@ -15,7 +15,7 @@ typedef struct{
 } Message;
 
 int main() {
-    char path[MAX_PATH_LENGTH] = "/indus";
+    char path[MAX_PATH_LENGTH] = "/my_message_queue";
     Message msg;
     sprintf(msg.text, "hello");
     struct mq_attr attr;                  
