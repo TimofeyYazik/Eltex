@@ -6,11 +6,13 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
+
 #define MAX_PATH_LENGTH 256
+#define MAX_MESSAGE_SIZE 1024  // Установите максимальный размер сообщения
 
 int main() {
     char path[MAX_PATH_LENGTH] = "/server";
-    char message[20];
+    char message[MAX_MESSAGE_SIZE];  // Увеличиваем размер буфера для сообщения
 
     mqd_t mqdes = mq_open(path, O_CREAT | O_RDONLY, 0666, NULL);
     if (mqdes == -1) {
@@ -19,7 +21,7 @@ int main() {
     }
 
     // Получаем сообщение из очереди
-    ssize_t bytes_read = mq_receive(mqdes, message, 20, NULL);
+    ssize_t bytes_read = mq_receive(mqdes, message, MAX_MESSAGE_SIZE, NULL);
     if (bytes_read == -1) {
         perror("mq_receive");
         exit(EXIT_FAILURE);
@@ -36,4 +38,3 @@ int main() {
 
     exit(EXIT_SUCCESS);
 }
-
