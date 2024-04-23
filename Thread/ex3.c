@@ -92,11 +92,11 @@ int main(){
   pthread_t provider_pthread;
   int lower = 5000, upper = 10000;
   
-  for(int i = 0; i < 5; i++){
+  for(int i = 0; i < NUM_SHOPS; i++){
     shops[i] = (rand() % (upper - lower + 1)) + lower;
   }
   
-  int customers_arr[3] = {100000, 100000, 100000}; 
+  int customers_arr[NUM_CUSTOMERS] = {100000, 100000, 100000}; 
   
   for(int i = 0; i < NUM_CUSTOMERS; i++){
     pthread_create(&customers_pthread[i], NULL, customers_buy, &customers_arr[i]);
