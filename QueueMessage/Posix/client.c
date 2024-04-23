@@ -10,10 +10,10 @@ char path[256] = "/Users/user/Eltex/QueueMessage/Posix";
 
 int main(){
   char message[20];
-  mqt_t mqdes = mq_open(path, O_CREAT | O_WRONLY | O_RDONLY);
+  mqd_t mqdes = mq_open(path, O_CREAT | O_WRONLY | O_RDONLY);
   mq_receive(mqdes, message, 20, 1);
   printf("%s\n", message);
-  strspy(message, "hi   ");
-  mq_send(mqdes, &message, 20, 1);
+  strcpy(message, "hi   ");
+  mq_send(mqdes, message, 20, 1);
   exit(EXIT_SUCCESS);
 }
