@@ -21,7 +21,7 @@ int main() {
     }
 
     // Получаем сообщение из очереди
-    ssize_t bytes_read = mq_receive(mqdes, message, MAX_MESSAGE_SIZE, NULL);
+    ssize_t bytes_read = mq_receive(mqdes, message, 20, NULL);
     if (bytes_read == -1) {
         perror("mq_receive");
         exit(EXIT_FAILURE);

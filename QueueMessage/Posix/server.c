@@ -19,7 +19,7 @@ int main() {
     }
 
     // Отправляем сообщение в очередь
-    mq_send(mqdes, message, 6, 10);
+    mq_send(mqdes, message, 20, 10);
 
     // Закрываем очередь
     mq_close(mqdes);
