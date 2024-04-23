@@ -14,7 +14,7 @@ typedef struct{
 } Message;
 
 int main() {
-    char path[MAX_PATH_LENGTH] = "/indus";
+    char path[MAX_PATH_LENGTH] = "indus";
     Message msg;
     sprintf(msg.text, "hello");
     struct mq_attr attr;                  
@@ -31,7 +31,7 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    ssize_t bytes_read = mq_receive(mqdes, &msg, sizeof(Message), NULL);
+    ssize_t bytes_read = mq_receive(mqdes, (char*)&msg, sizeof(Message), NULL);
     if (bytes_read == -1) {
         perror("mq_receive");mq_close(mqdes);
         mq_unlink(path);
