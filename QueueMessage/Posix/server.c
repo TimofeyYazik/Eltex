@@ -8,25 +8,32 @@
 
 #define MAX_PATH_LENGTH 256
 
+typedef struct{
+  char text[20];
+} Message;
+
 int main() {
-    char path[MAX_PATH_LENGTH] = "./";
-    char message[10] = "hello";
+    char path[MAX_PATH_LENGTH] = "/indus";
+    Message msg;
+    sprintf(msg.text, "hello");
     struct mq_attr attr;                  
     attr.mq_flags = 0;            
     attr.mq_maxmsg = 50; 
-    attr.mq_msgsize = 30;
+    attr.mq_msgsize = sizeof(Message);
     attr.mq_curmsgs = 0;         
 
-    mqd_t mqdes = mq_open(path, O_CREAT | O_WRONLY, 0666, &attr);
+    mqd_t mqdes = mq_open(path, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
     if (mqdes == -1) {
         perror("mq_open");
         exit(EXIT_FAILURE);
     }
 
-    mq_send(mqdes, message, 10, 10);
-
+    mq_send(mqdes, (char *)&msg, sizeof(Message), 1);
+    printf("sent: %s\n", msg.text);
+    printf("Press enter to exit\n");
+    getchar();
     mq_close(mqdes);
-
+    mq_unlink(path);
     exit(EXIT_SUCCESS);
 }
 
