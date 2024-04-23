@@ -17,6 +17,7 @@ int main() {
     mqd_t mqdes_cl = mq_open(path_client, O_CREAT | O_RDONLY, 0666, NULL);
     mqd_t mqdes = mq_open(path, O_CREAT | O_WRONLY, 0666, NULL);
     mq_send(mqdes, message, 20, 1);
+    sleep(5);
     mq_receive(mqdes_cl, message, 20, &priority);
     printf("%s\n", message);
     mq_close(mqdes);
