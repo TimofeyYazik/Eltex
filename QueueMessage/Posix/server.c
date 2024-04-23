@@ -14,7 +14,7 @@ typedef struct{
 } Message;
 
 int main() {
-    char path[MAX_PATH_LENGTH] = "/my_queue";
+    char MQ_NAME[10] = "/my_queue";
     Message msg;
     sprintf(msg.text, "hello");
     struct mq_attr attr;                  
@@ -23,7 +23,7 @@ int main() {
     attr.mq_msgsize = sizeof(msg);
     attr.mq_curmsgs = 0;         
 
-    mqd_t mqdes = mq_open(path, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
+    mqd_t mqdes = mq_open(MQ_NAME, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
     if (mqdes == -1) {
       fprintf(stderr, "mq_open failed with error: %d\n", errno);
       perror("mq_open");
