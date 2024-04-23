@@ -11,8 +11,16 @@
 int main() {
     char path[MAX_PATH_LENGTH] = "/server";
     char message[20] = "hello";
+    struct mq_attr attr;                  /* Атрибуты очереди */
 
-    mqd_t mqdes = mq_open(path, O_CREAT | O_WRONLY, 0666, NULL);
+    /* Установка атрибутов очереди */
+    attr.mq_flags = 0;            /* Флаги атрибутов: 0 или O_NONBLOCK */
+    attr.mq_maxmsg = 10; /* Максимальное количество сообщений в очереди */
+    attr.mq_msgsize = 21; /* Максимальный размер сообщения */
+    attr.mq_curmsgs = 0;           /* Текущее количество сообщений в очереди */
+
+
+    mqd_t mqdes = mq_open(path, O_CREAT | O_WRONLY, 0666, &attr);
     if (mqdes == -1) {
         perror("mq_open");
         exit(EXIT_FAILURE);
