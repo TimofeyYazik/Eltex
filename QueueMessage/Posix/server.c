@@ -24,8 +24,11 @@ int main() {
 
     mqd_t mqdes = mq_open(path, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
     if (mqdes == -1) {
-        perror("mq_open");
-        exit(EXIT_FAILURE);
+      fprintf(stderr, "mq_open failed with error: %d\n", errno);
+      perror("mq_open");
+      mq_close(mqdes);
+      mq_unlink(path);
+      exit(EXIT_FAILURE);
     }
 
     mq_send(mqdes, (char *)&msg, sizeof(Message), 1);
