@@ -9,7 +9,7 @@
 #define MAX_PATH_LENGTH 256
 
 int main() {
-    char path[MAX_PATH_LENGTH] = "/home/dinahumb/Eltex/QueueMessage/Posix";
+    char path[MAX_PATH_LENGTH] = "./";
     char message[10] = "hello";
     struct mq_attr attr;                  
     attr.mq_flags = 0;            
