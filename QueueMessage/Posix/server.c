@@ -6,10 +6,14 @@
 #include <time.h>
 
 
-char path[256] = "/Users/user/Eltex/QueueMessage/Posix/server";
-char path_client[256] = "/Users/user/Eltex/QueueMessage/Posix/client";
+#define MAX_PATH_LENGTH 256
 
-int main(){
+int main() {
+  char path[MAX_PATH_LENGTH];
+  char path_client[MAX_PATH_LENGTH];
+
+  sprintf(path, "/Users/user/Eltex/QueueMessage/Posix/server_%d", getpid());
+  sprintf(path_client, "/Users/user/Eltex/QueueMessage/Posix/client_%d", getpid());
   char message[20] = "hello";
   int priority = 1;
   mqd_t mqdes_cl = mq_open(path_client, O_CREAT | O_RDONLY);
