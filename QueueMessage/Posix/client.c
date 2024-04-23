@@ -12,9 +12,9 @@ int main(){
   int priority = 1;
   char message[20];
   mqd_t mqdes = mq_open(path, O_CREAT | O_WRONLY | O_RDONLY);
-  mq_receive(mqdes, message, 20, 1);
+  mq_receive(mqdes, message, 20, &priority);
   printf("%s\n", message);
   strcpy(message, "hi   ");
-  mq_send(mqdes, message, 20, &priority);
+  mq_send(mqdes, message, 20, 1);
   exit(EXIT_SUCCESS);
 }
