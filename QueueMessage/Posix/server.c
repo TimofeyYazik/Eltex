@@ -37,7 +37,7 @@ int main() {
     printf("Press enter to exit\n");
     getchar();
     mq_close(mqdes);
-    mq_unlink(path);
+    mq_unlink(MQ_NAME);
     exit(EXIT_SUCCESS);
 }
 
