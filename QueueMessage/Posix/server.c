@@ -28,7 +28,7 @@ int main() {
       fprintf(stderr, "mq_open failed with error: %d\n", errno);
       perror("mq_open");
       mq_close(mqdes);
-      mq_unlink(path);
+      mq_unlink(MQ_NAME);
       exit(EXIT_FAILURE);
     }
 
