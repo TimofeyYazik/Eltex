@@ -14,7 +14,7 @@ int main() {
     char path[MAX_PATH_LENGTH] = "/server";
     char message[MAX_MESSAGE_SIZE];  // Увеличиваем размер буфера для сообщения
 
-    mqd_t mqdes = mq_open(path, O_CREAT | O_RDONLY, 0666, NULL);
+    mqd_t mqdes = mq_open(path, O_CREAT | O_RDONLY);
     if (mqdes == -1) {
         perror("mq_open");
         exit(EXIT_FAILURE);
@@ -32,8 +32,6 @@ int main() {
 
     // Закрываем очередь
     mq_close(mqdes);
-
-    // Удаляем очередь
     mq_unlink(path);
 
     exit(EXIT_SUCCESS);
