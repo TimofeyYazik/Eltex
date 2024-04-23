@@ -16,12 +16,15 @@ int main() {
     mqd_t mqdes = mq_open(path, O_RDONLY);
     if (mqdes == -1) {
         perror("mq_open");
+        mq_close(mqdes);
+        mq_unlink(path);
         exit(EXIT_FAILURE);
     }
 
     ssize_t bytes_read = mq_receive(mqdes, message, 10, NULL);
     if (bytes_read == -1) {
-        perror("mq_receive");
+        perror("mq_receive");mq_close(mqdes);
+        mq_unlink(path);
         exit(EXIT_FAILURE);
     }
 
