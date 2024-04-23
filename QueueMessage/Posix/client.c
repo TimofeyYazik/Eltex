@@ -38,7 +38,7 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    printf("%s\n", message);
+    printf("%s\n", message.text);
 
     mq_close(mqdes);
 
