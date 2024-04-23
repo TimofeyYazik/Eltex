@@ -19,7 +19,7 @@ int main() {
     struct mq_attr attr;                  
     attr.mq_flags = 0;            
     attr.mq_maxmsg = 50; 
-    attr.mq_msgsize = sizeof(Message);
+    attr.mq_msgsize = sizeof(msg);
     attr.mq_curmsgs = 0;         
 
     mqd_t mqdes = mq_open(path, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
