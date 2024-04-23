@@ -6,7 +6,7 @@
 #include <time.h>
 
 
-char path[256] = "/Users/user/Eltex/QueueMessage/Posix";
+char path[256] = "/Users/user/Eltex/QueueMessage/Posix/server";
 char path_client[256] = "/Users/user/Eltex/QueueMessage/Posix/client";
 
 int main(){
