@@ -22,7 +22,6 @@ int main() {
   // strcpy(message, "hi  ");
   // mq_send(mqdes_cl, message, 20, 1);
   mq_close(mqdes);
-  mq_unlink(path);
   // mq_close(mqdes_cl);
   exit(EXIT_SUCCESS);
 }
