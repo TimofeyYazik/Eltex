@@ -11,9 +11,6 @@
 #define MAX_PATH_LENGTH 256
 
 int main() {
-  char path[MAX_PATH_LENGTH];
-  char path_client[MAX_PATH_LENGTH];
-
   char path[MAX_PATH_LENGTH] = "/Users/user/Eltex/QueueMessage/Posix/server";
   char path_client[MAX_PATH_LENGTH] = "/Users/user/Eltex/QueueMessage/Posix/client";
   int priority = 0;
