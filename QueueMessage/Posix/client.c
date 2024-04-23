@@ -10,7 +10,7 @@
 #define MAX_PATH_LENGTH 256
 
 int main() {
-    char path[MAX_PATH_LENGTH] = "/server";
+    char path[MAX_PATH_LENGTH] = "/home/dinahumb/Eltex/QueueMessage/Posix";
     char message[10] = {0};
 
     mqd_t mqdes = mq_open(path, O_RDONLY);
