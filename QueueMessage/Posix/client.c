@@ -15,8 +15,8 @@ int main() {
   char path_client[MAX_PATH_LENGTH] = "/Users/user/Eltex/QueueMessage/Posix/client";
   int priority = 0;
   char message[20];
-  mqd_t mqdes_cl = mq_open(path_client, O_CREAT | O_RDONLY);
-  mqd_t mqdes = mq_open(path, O_CREAT | O_WRONLY);
+  mqd_t mqdes_cl = mq_open(path_client, O_CREAT | O_RDONLY, 0666, NULL);
+  mqd_t mqdes = mq_open(path, O_CREAT | O_WRONLY, 0666, NULL);
   mq_receive(mqdes, message, 20, &priority);
   printf("%s\n", message);
   strcpy(message, "hi   ");
