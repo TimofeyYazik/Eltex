@@ -22,7 +22,7 @@ int main() {
     attr.mq_maxmsg = 50; 
     attr.mq_msgsize = sizeof(msg);
     attr.mq_curmsgs = 0;         
-
+fprintf(stderr, "Path: %s\n", MQ_NAME);
     mqd_t mqdes = mq_open(MQ_NAME, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
     if (mqdes == -1) {
       fprintf(stderr, "mq_open failed with error: %d\n", errno);
