@@ -14,7 +14,7 @@ int main() {
     char path[MAX_PATH_LENGTH] = "/server";
     char message[MAX_MESSAGE_SIZE];  // Увеличиваем размер буфера для сообщения
 
-    mqd_t mqdes = mq_open(path, O_CREAT | O_RDONLY);
+    mqd_t mqdes = mq_open(path, O_RDONLY);
     if (mqdes == -1) {
         perror("mq_open");
         exit(EXIT_FAILURE);
