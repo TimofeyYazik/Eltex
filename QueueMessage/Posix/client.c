@@ -26,8 +26,13 @@ int main() {
     attr.mq_curmsgs = 0;         
 
     mqd_t mqdes = mq_open(MQ_NAME, O_CREAT | O_RDONLY, S_IWUSR | S_IRUSR, &attr);
-    mqd_t mqdes_client = mq_open(MQ_NAME_CL, O_CREAT | O_WRONLY,  S_IWUSR | S_IRUSR, &attr);
     if (mqdes == -1) {
+      fprintf(stderr, "mq_open failed with error: %d\n", errno);
+      perror("mq_open");
+      exit(EXIT_FAILURE);
+    }
+    mqd_t mqdes_client = mq_open(MQ_NAME_CL, O_CREAT | O_WRONLY,  S_IWUSR | S_IRUSR, &attr);
+    if(mqdes_client == -1) {
       fprintf(stderr, "mq_open failed with error: %d\n", errno);
       perror("mq_open");
       mq_close(mqdes);
@@ -43,6 +48,7 @@ int main() {
     printf("%s\n", msg.text);
     strcpy(msg.text, "hi   ");
     mq_send(mqdes_client, (char*)&msg, sizeof(Message), 1);
+    
 
     mq_close(mqdes);
     mq_close(mqdes_client);
