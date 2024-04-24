@@ -38,7 +38,7 @@ int main() {
     printf("Press enter to request message\n");
     getchar();
     ssize_t bytes_read = mq_receive(mqdes_client, (char*)&msg, sizeof(Message), &priority);
-    printf("req: %s prio: %d", msg.text, priority);
+    printf("req: %s prio: %d\n", msg.text, priority);
     mq_close(mqdes);
     mq_close(mqdes_client);
     mq_unlink(MQ_NAME);
