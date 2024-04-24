@@ -36,8 +36,8 @@ int main() {
     }
     ssize_t bytes_read = mq_receive(mqdes, (char*)&msg, sizeof(Message), NULL);
     if (bytes_read == -1) {
-        perror("mq_receive");mq_close(mqdes);
-        mq_unlink(path);
+        perror("mq_receive");
+        mq_close(mqdes);
         exit(EXIT_FAILURE);
     }
 
