@@ -46,6 +46,7 @@ int main() {
     mq_send(mqdes_client, (char*)&msg, sizeof(Message), 1);
 
     mq_close(mqdes);
+    mq_close(mqdes_client);
 
     exit(EXIT_SUCCESS);
 }
