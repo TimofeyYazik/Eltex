@@ -14,8 +14,8 @@ typedef struct{
 } Message;
 
 int main() {
-    char MQ_NAME[10] = "/my_queue_server";
-    char MQ_NAME_CL[10] = "/my_queue_client";
+    char MQ_NAME[20] = "/my_queue_server";
+    char MQ_NAME_CL[20] = "/my_queue_client";
     Message msg;
     sprintf(msg.text, "hello");
     int priority = 0;
