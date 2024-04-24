@@ -31,7 +31,6 @@ int main() {
       fprintf(stderr, "mq_open failed with error: %d\n", errno);
       perror("mq_open");
       mq_close(mqdes);
-      mq_unlink(path);
       exit(EXIT_FAILURE);
     }
     ssize_t bytes_read = mq_receive(mqdes, (char*)&msg, sizeof(Message), NULL);
