@@ -31,7 +31,7 @@ void *ThreadSendClient(void *arg){
   while(1) {
     if(flag_len != list->len) {
     for (int i = list->len - flag_len; i < list->len; i++) {
-      ds_list->ds[ds_list->len] = mq_open(list->name[i], O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
+      ds_list->ds[ds_list->len - 1] = mq_open(list->name[i], O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
       ds_list->len++;
       if (ds_list->len == ds_list->size) {
         ds_list->size *= 2 - (ds_list->size / 2);
@@ -39,11 +39,11 @@ void *ThreadSendClient(void *arg){
       }
     }
     flag_len = list->len;
-    }
     for (int i = 0; i < ds_list->len; i++) {
       for(int j = 0; j < storage.len; j++) {
         mq_send(ds_list->ds[i], (char*)&storage.msg[j], sizeof(Message), 0);
       }
+    }
     }
     usleep(10000);
   }
@@ -65,15 +65,14 @@ void *ThreadReceiveClient(void *arg){
     perror("mq_open");
     exit(EXIT_FAILURE);
   }
-
   while(1) {
       mq_receive(ds_queue_server, (char*)&storage.msg + storage.len, sizeof(storage.msg[0]), NULL);
+      fprintf(stderr ,"check: %s\n", storage.msg[storage.len].text);
       storage.len++;
       if (storage.len == storage.size) {
         storage.size *= 2 - (storage.size / 2);
         storage.msg = realloc(storage.msg, sizeof(Message) * storage.size);
       }
-      fprintf(stderr ,"check: %s\n", storage.msg[storage.len - 1].text);
       usleep(10000);
   }
   mq_close(ds_queue_server);
