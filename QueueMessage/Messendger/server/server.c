@@ -131,6 +131,7 @@ void *ThreadRegisterClient(void *arg){
 }
 
 int main(){
+  mq_unlink(NAME_QUEUE_REGISTER);
   pthread_t thread_receive;
   pthread_t thread_register;
   pthread_t thread_send;
