@@ -67,7 +67,7 @@ void *ThreadReceiveClient(void *arg){
     exit(EXIT_FAILURE);
   }
   while(1) {
-      mq_receive(ds_queue_server, (char*)msg_buf, sizeof(Message), NULL);
+      mq_receive(ds_queue_server, (char*)&msg_buf, sizeof(Message), NULL);
       storage.msg[storage.len] = msg_buf;
       fprintf(stderr ,"check: %s\n", storage.msg[storage.len].text);
       storage.len++;
