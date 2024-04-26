@@ -64,6 +64,7 @@ void Register(){
       break;
     if (strcmp(request, "NO") == 0){
        name_is_register = 1;
+       memset(name, 0, MAX_NAME_LEN);
     }
   }
   mq_close(ds_queue);
