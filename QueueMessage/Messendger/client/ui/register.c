@@ -60,9 +60,9 @@ void Register(){
       perror("mq_receive");
       exit(EXIT_FAILURE);
     }
-    if (strcmp(name, "OK") == 0)
+    if (strcmp(request, "OK") == 0)
       break;
-    if (strcmp(name, "NO") == 0){
+    if (strcmp(request, "NO") == 0){
        name_is_register = 1;
     }
   }

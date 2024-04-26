@@ -8,8 +8,8 @@ OBJECTS := $(patsubst %.c, %.o, $(FILES))
 %.o: %.c
 	$(CC) $(CFLAGS)  -c $< -o $@
 
-messly: $(OBJECTS)
+client: $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) $(LIB) -o $@ 
 
 clean:
-	rm -f *.o messly $(OBJECTS)
+	rm -f *.o client $(OBJECTS)
