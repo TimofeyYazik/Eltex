@@ -101,8 +101,8 @@ void *ThreadRegisterClient(void *arg){
   attr.mq_maxmsg = 50;
   attr.mq_msgsize = MAX_NAME_LEN;
   attr.mq_curmsgs = 0;
-  list->len = 1;
   list->name[0] = malloc(sizeof(char) * MAX_NAME_LEN);
+  list->len = 0;
   char request_name[MAX_NAME_LEN] = {0};
   mqd_t ds_queue_register = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_RDWR, S_IWUSR | S_IRUSR, &attr);
   if (ds_queue_register == -1) {
@@ -135,6 +135,11 @@ void *ThreadRegisterClient(void *arg){
       }
         break;
       }
+    }
+    if(list->len == 0){
+      fprintf(stderr, "check status: %s\n", status_error);
+      mq_send(ds_queue_register, status_ok, MAX_NAME_LEN, 0);
+      list->len++;
     }
     memset(request_name, 0, MAX_NAME_LEN);
     sleep(1);
