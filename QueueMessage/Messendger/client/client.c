@@ -23,11 +23,11 @@ char name[MAX_NAME_LEN + 1] = {0};
 void *ThreadSendServer(void *arg){
   int x, y;
   getmaxyx(stdscr, y, x);
-  strcpy(msg.name, name);
   WINDOW *wnd = newwin(y / 4, x, (y / 4) * 3, 0);
   box(wnd, 0, 0);
   struct mq_attr attr;
   Message msg = {0};
+  strcpy(msg.name, name);
   attr.mq_flags = 0;
   attr.mq_maxmsg = 50;
   attr.mq_msgsize = sizeof(Message);
