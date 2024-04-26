@@ -71,7 +71,7 @@ void *ThreadReceiveClient(void *arg){
         storage.size *= 2 - (storage.size / 2);
         storage.msg = realloc(storage.msg, sizeof(Message) * storage.size);
       }
-      fprintf("check: %s\n", storage.msg[storage.len - 1].text);
+      fprintf(stderr ,"check: %s\n", storage.msg[storage.len - 1].text);
       usleep(10000);
   }
   mq_close(ds_queue_server);
@@ -97,7 +97,7 @@ void *ThreadRegisterClient(void *arg){
   }
   while(1) {
     mq_receive(ds_queue_register, request_name, MAX_NAME_LEN, NULL);
-    fprintf("check: %s\n", request_name);
+    fprintf(stderr, "check: %s\n", request_name);
     for(int i = 0; i < list->len; i++) {
       if (strcmp(list->name[i], request_name) == 0) {
         mq_send(ds_queue_register, BAD_STATUS, strlen(BAD_STATUS) + 1, 0);
