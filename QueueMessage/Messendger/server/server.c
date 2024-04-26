@@ -131,9 +131,12 @@ int main(){
   list.len = 0;
   list.size = 10;
   list.name = malloc(sizeof(char*) * list.size);
+  while (1)
+  {
   pthread_create(&thread_register, (void *)&list, ThreadRegisterClient, NULL);
   pthread_create(&thread_send, (void *)&list, ThreadSendClient, NULL);
   pthread_create(&thread_receive, (void *)&list, ThreadReceiveClient, NULL);
+  }
 
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
