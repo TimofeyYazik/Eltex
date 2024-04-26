@@ -154,10 +154,7 @@ void *ThreadStop(void *arg){
   fprintf(stderr, "ThreadStop start\n");
   while (stop_server)
   {
-    scanf("%4s", stop);
-    if (strcmp(stop, "exit") == 0) {
-      stop_server = 0;
-    }
+    scanf("%d", &stop);
   } 
 }
 
