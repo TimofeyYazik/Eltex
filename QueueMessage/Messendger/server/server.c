@@ -13,6 +13,7 @@
 
 MessageStorage storage = {0};
 
+volatile char stop_server = 1;
 
 void *ThreadSendClient(void *arg){
   fprintf(stderr, "ThreadSendClient start\n");
@@ -28,7 +29,7 @@ void *ThreadSendClient(void *arg){
   attr.mq_maxmsg = 50;
   attr.mq_msgsize = sizeof(Message);
   attr.mq_curmsgs = 0;
-  while(1) {
+  while(stop_server) {
     if(flag_len != list->len) {
       fprintf(stderr, "check name: %s\n", list->name[flag_len]);
       ds_list->ds[flag_len] = mq_open(list->name[flag_len], O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
@@ -50,7 +51,10 @@ void *ThreadSendClient(void *arg){
     }
     usleep(10000);
   }
-  exit(EXIT_SUCCESS);
+  for (int i = 0; i < ds_list->len; i++) {
+    mq_close(ds_list->ds[i]);
+  }
+  free(ds_list->ds);
 }
 
 void *ThreadReceiveClient(void *arg){
@@ -69,7 +73,7 @@ void *ThreadReceiveClient(void *arg){
     perror("mq_open");
     exit(EXIT_FAILURE);
   }
-  while(1) {
+  while(stop_server) {
       mq_receive(ds_queue_server, (char*)&msg_buf, sizeof(Message), NULL);
       storage.msg[storage.len] = msg_buf;
       fprintf(stderr ,"ThreadReceiveClient check: %s\n", storage.msg[storage.len].text);
@@ -106,7 +110,7 @@ void *ThreadRegisterClient(void *arg){
     perror("mq_open");
     exit(EXIT_FAILURE);
   }
-  while(1) {
+  while(stop_server) {
     if(mq_receive(ds_queue_register, request_name, MAX_NAME_LEN, NULL) == -1) {
       fprintf(stderr, "ThreadRegisterClient mq_receive failed with error: %d\n", errno);
       perror("mq_receive");
@@ -140,16 +144,30 @@ void *ThreadRegisterClient(void *arg){
   exit(EXIT_SUCCESS);
 }
 
+void *ThreadStop(void *arg){
+  char stop[5] = {0};
+  fprintf(stderr, "ThreadStop start\n");
+  while (stop_server)
+  {
+    scanf("%4s", stop);
+    if (strcmp(stop, "exit") == 0) {
+      stop_server = 0;
+    }
+  } 
+}
+
 int main(){
   mq_unlink(NAME_QUEUE_SERVER);
   mq_unlink(NAME_QUEUE_REGISTER);
   pthread_t thread_receive;
   pthread_t thread_register;
   pthread_t thread_send;
+  pthread_t thread_stop;
   NameList list;
   list.len = 0;
   list.size = 10;
   list.name = malloc(sizeof(char*) * list.size);
+  pthread_create(&thread_stop, NULL, ThreadStop, NULL);
   pthread_create(&thread_register, NULL, ThreadRegisterClient, (void *)&list);
   pthread_create(&thread_send, NULL, ThreadSendClient, (void *)&list);
   pthread_create(&thread_receive, NULL, ThreadReceiveClient, (void *)&list);
