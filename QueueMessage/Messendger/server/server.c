@@ -31,8 +31,8 @@ void *ThreadSendClient(void *arg){
   while(1) {
     if(flag_len != list->len) {
       fprintf(stderr, "check name: %s\n", list->name[flag_len]);
-      ds_list->ds[ds_list->len - 1] = mq_open(list->name[i], O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
-      if (ds_list->ds[ds_list->len - 1] == -1) {
+      ds_list->ds[flag_len] = mq_open(list->name[flag_len], O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
+      if (ds_list->ds[flag_len] == -1) {
         fprintf(stderr, "mq_open failed with error: %d\n", errno);
         perror("mq_open");
       }
@@ -107,6 +107,7 @@ void *ThreadRegisterClient(void *arg){
     exit(EXIT_FAILURE);
   }
   while(1) {
+    pthread_mutex_lock(&mutex_lock);
     if(mq_receive(ds_queue_register, request_name, MAX_NAME_LEN, NULL) == -1) {
       fprintf(stderr, "mq_receive failed with error: %d\n", errno);
       perror("mq_receive");
@@ -132,6 +133,7 @@ void *ThreadRegisterClient(void *arg){
         break;
       }
     }
+        pthread_mutex_unlock(&mutex_lock);
 
     memset(request_name, 0, MAX_NAME_LEN);
     sleep(1);
