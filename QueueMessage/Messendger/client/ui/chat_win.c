@@ -40,6 +40,7 @@ void MessageWindow(WINDOW *wnd, MessageStorage *msg){
 
 void InputMessageWindow(WINDOW *wnd, Message *msg){
   signal(SIGWINCH, SigWinch); 
+  box(wnd, 0, 0);
   curs_set(TRUE);
   wclear(wnd);
   wrefresh(wnd);

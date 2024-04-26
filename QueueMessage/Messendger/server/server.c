@@ -52,22 +52,22 @@ void *ThreadSendClient(void *arg){
 
 void *ThreadReceiveClient(void *arg){
   fprintf(stderr, "ThreadReceiveClient start\n");
+  storage.size = 50;
+  storage.msg = malloc(sizeof(Message) * storage.size);
   struct mq_attr attr;
   attr.mq_flags = 0;
   attr.mq_maxmsg = 50;
   attr.mq_msgsize = sizeof(Message);
   attr.mq_curmsgs = 0;
-  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_RDWR, S_IWUSR | S_IRUSR, &attr);
+  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_RDONLY, S_IWUSR | S_IRUSR, &attr);
   if (ds_queue_server == -1) {
     fprintf(stderr, "mq_open failed with error: %d\n", errno);
     perror("mq_open");
     exit(EXIT_FAILURE);
   }
 
-  storage.size = 50;
-  storage.msg = malloc(sizeof(Message) * storage.size);
   while(1) {
-      mq_receive(ds_queue_server, (char*)&storage.msg + storage.len, sizeof(Message), NULL);
+      mq_receive(ds_queue_server, (char*)&storage.msg + storage.len, sizeof(storage.msg[0]), NULL);
       storage.len++;
       if (storage.len == storage.size) {
         storage.size *= 2 - (storage.size / 2);

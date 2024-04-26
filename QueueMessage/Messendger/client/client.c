@@ -23,19 +23,23 @@ char name[MAX_NAME_LEN + 1] = {0};
 void *ThreadSendServer(void *arg){
   struct mq_attr attr;
   mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
+  Message msg = {0};
   attr.mq_flags = 0;
   attr.mq_maxmsg = 50;
-  attr.mq_msgsize = sizeof(Message);
+  attr.mq_msgsize = sizeof(msg);
   attr.mq_curmsgs = 0;
   int x, y;
   getmaxyx(stdscr, y, x);
-  Message msg = {0};
   strcpy(msg.name, name);
   WINDOW *wnd = newwin(y / 4, x, (y / 4) * 3, 0);
   box(wnd, 0, 0);
   while (1) {
     InputMessageWindow(wnd, &msg);
-    mq_send(ds_queue_server, (char*)&msg, sizeof(Message), 0);
+    printf("%d\n", sizeof(msg));
+    if(mq_send(ds_queue_server, (char*)&msg, sizeof(msg), 0) == -1){
+      perror("mq_send");
+    }
+    
   }
   mq_close(ds_queue_server);
 }
@@ -59,6 +63,7 @@ void *ThreadReceiveServer(void *arg){
   WINDOW *wnd = newwin(y / 4, x, (y / 4) * 3, 0);
   box(wnd, 0, 0);
   while (1) {
+    MessageWindow(wnd, &storage);
     mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL);
     storage.msg[storage.len] = msg;
     storage.len++;
@@ -66,7 +71,6 @@ void *ThreadReceiveServer(void *arg){
       storage.size *= 2 - (storage.size / 2);
       storage.msg = realloc(storage.msg, sizeof(Message) * storage.size);
     }
-    MessageWindow(wnd, &storage);
     usleep(10000);
     memset(msg.text, 0, sizeof(msg.text));
   }
