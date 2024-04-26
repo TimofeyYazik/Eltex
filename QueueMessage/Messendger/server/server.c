@@ -16,7 +16,8 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void *ThreadSendClient(void *arg){
   NameList *list = (NameList*)arg;
-  DsList ds_list;
+  DsList dlist;
+  DsList *ds_list = &dlist;
   ds_list->len = 0;
   ds_list->size = 10;
   ds_list->ds = malloc(sizeof(mqd_t) * ds_list.size);
