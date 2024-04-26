@@ -57,19 +57,20 @@ void *ThreadReceiveServer(void *arg){
   getmaxyx(stdscr, y, x);
   Message msg = {0};
   mqd_t ds_queue_connect = mq_open(name, O_CREAT | O_RDONLY, S_IWUSR | S_IRUSR, &attr);
-  WINDOW *wnd = newwin(y / 4, x, (y / 4) * 3, 0);
+  WINDOW *wnd = newwin((y / 4) * 3, x, 0, 0);
   box(wnd, 0, 0);
   while (1) {
     MessageWindow(wnd, &storage);
-    mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL);
+    if(mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL) == -1) perror("mq_receive"); 
+    
     storage.msg[storage.len] = msg;
     storage.len++;
     if (storage.len == storage.size) {
       storage.size *= 2 - (storage.size / 2);
       storage.msg = realloc(storage.msg, sizeof(Message) * storage.size);
     }
-    usleep(10000);
     memset(msg.text, 0, sizeof(msg.text));
+    memset(msg.name, 0, sizeof(msg.name));
   }
   mq_close(ds_queue_connect);
   mq_unlink(name);
