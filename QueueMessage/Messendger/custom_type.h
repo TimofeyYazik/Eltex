@@ -31,7 +31,7 @@ typedef struct{
 } NameList;
 
 typedef struct{
-  mqd_t *arr_queue;
+  mqd_t *ds;
   int len;
   int size;
 } DsList;
