@@ -17,23 +17,23 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 void *ThreadSendClient(void *arg){
   NameList *list = (NameList*)arg;
   DsList ds_list;
-  ds_list.len = 0;
-  ds_list.size = 10;
-  ds_list.ds = malloc(sizeof(mqd_t) * ds_list.size);
+  ds_list->len = 0;
+  ds_list->size = 10;
+  ds_list->ds = malloc(sizeof(mqd_t) * ds_list.size);
   int flag_len = 0;
   while(1) {
     if(flag_len != list->len) {
     for (int i = list->len - flag_len; i < list->len; i++) {
-      ds_list.ds[ds_list.len] = mq_open(list->name[i], O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
-      ds_list.len++;
-      if (ds_list.len == ds_list.size) {
-        ds_list.size *= 2 - (ds_list.size / 2);
-        ds_list.ds = realloc(ds_list.ds, sizeof(mqd_t) * ds_list.size);
+      ds_list->ds[ds_list.len] = mq_open(list->name[i], O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
+      ds_list->len++;
+      if (ds_list->len == ds_list->size) {
+        ds_list->size *= 2 - (ds_list->size / 2);
+        ds_list->ds = realloc(ds_list->ds, sizeof(mqd_t) * ds_list->size);
       }
     }
     flag_len = list->len;
     }
-    for (int i = 0; i < ds_list.len; i++) {
+    for (int i = 0; i < ds_list->len; i++) {
       for(int j = 0; j < storage.len; j++) {
         mq_send(ds_list.ds[i], storage.msg[j], sizeof(Message), 0);
       }
@@ -53,7 +53,6 @@ void *ThreadReceiveClient(void *arg){
   storage.size = 50;
   storage.msg = malloc(sizeof(Message) * storage.size);
   while(1) {
-    for (int i = 0; i < list->len; i++) {
       mq_receive(ds_queue_server, storage.msg + storage.len, sizeof(Message), NULL);
       storage.len++;
       if (storage.len == storage.size) {
