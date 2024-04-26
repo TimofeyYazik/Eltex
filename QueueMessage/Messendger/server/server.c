@@ -141,7 +141,7 @@ int main(){
   pthread_create(&thread_register, NULL, ThreadRegisterClient, (void *)&list);
   pthread_create(&thread_send, NULL, ThreadSendClient, (void *)&list);
   pthread_create(&thread_receive, NULL, ThreadReceiveClient, (void *)&list);
-  sleep(100000000000);
+  sleep(1215752192);
 
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
