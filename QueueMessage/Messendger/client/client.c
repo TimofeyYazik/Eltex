@@ -81,6 +81,7 @@ int main(){
   initscr();
   pthread_create(&thread_send, NULL, ThreadSendServer, NULL);
   pthread_create(&thread_receive, NULL, ThreadReceiveServer, NULL);
+  sleep(1215752192);
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
   endwin();
