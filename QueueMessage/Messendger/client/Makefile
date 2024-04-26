@@ -1,6 +1,6 @@
 CC := gcc
 CFLAGS := -g 
-LIB := -lcurses
+LIB := -lcurses -pthread -lrt
 
 FILES := $(shell find . -name "*.c")
 OBJECTS := $(patsubst %.c, %.o, $(FILES))
@@ -9,7 +9,7 @@ OBJECTS := $(patsubst %.c, %.o, $(FILES))
 	$(CC) $(CFLAGS)  -c $< -o $@
 
 messly: $(OBJECTS)
-	$(CC) $(CFLAGS) $(LIB) $(OBJECTS) -o $@ 
+	$(CC) $(CFLAGS) $(OBJECTS) $(LIB) -o $@ 
 
 clean:
 	rm -f *.o messly $(OBJECTS)
