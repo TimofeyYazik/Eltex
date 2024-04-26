@@ -52,6 +52,7 @@ void *ThreadSendClient(void *arg){
 
 void *ThreadReceiveClient(void *arg){
   fprintf(stderr, "ThreadReceiveClient start\n");
+  Message msg_buf = {0};
   storage.size = 50;
   storage.msg = malloc(sizeof(Message) * storage.size);
   struct mq_attr attr;
@@ -66,7 +67,8 @@ void *ThreadReceiveClient(void *arg){
     exit(EXIT_FAILURE);
   }
   while(1) {
-      mq_receive(ds_queue_server, (char*)&storage.msg + storage.len, sizeof(storage.msg[0]), NULL);
+      mq_receive(ds_queue_server, (char*)msg_buf, sizeof(Message), NULL);
+      storage.msg[storage.len] = msg_buf;
       fprintf(stderr ,"check: %s\n", storage.msg[storage.len].text);
       storage.len++;
       if (storage.len == storage.size) {
@@ -74,6 +76,8 @@ void *ThreadReceiveClient(void *arg){
         storage.msg = realloc(storage.msg, sizeof(Message) * storage.size);
       }
       usleep(10000);
+      memset(msg_buf.text, 0, sizeof(msg_buf.text));
+      memset(msg_buf.name, 0, sizeof(msg_buf.name));
   }
   mq_close(ds_queue_server);
   mq_unlink(NAME_QUEUE_SERVER);
