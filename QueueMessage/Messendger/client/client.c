@@ -24,7 +24,6 @@ void *ThreadSendServer(void *arg){
   int x, y;
   getmaxyx(stdscr, y, x);
   WINDOW *wnd = newwin(y / 4, x, (y / 4) * 3, 0);
-  box(wnd, 0, 0);
   struct mq_attr attr;
   Message msg = {0};
   strcpy(msg.name, name);
