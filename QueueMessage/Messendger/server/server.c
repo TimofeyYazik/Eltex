@@ -20,12 +20,12 @@ void *ThreadSendClient(void *arg){
   DsList *ds_list = &dlist;
   ds_list->len = 0;
   ds_list->size = 10;
-  ds_list->ds = malloc(sizeof(mqd_t) * ds_list.size);
+  ds_list->ds = malloc(sizeof(mqd_t) * ds_list->size);
   int flag_len = 0;
   while(1) {
     if(flag_len != list->len) {
     for (int i = list->len - flag_len; i < list->len; i++) {
-      ds_list->ds[ds_list.len] = mq_open(list->name[i], O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
+      ds_list->ds[ds_list->len] = mq_open(list->name[i], O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
       ds_list->len++;
       if (ds_list->len == ds_list->size) {
         ds_list->size *= 2 - (ds_list->size / 2);
@@ -36,7 +36,7 @@ void *ThreadSendClient(void *arg){
     }
     for (int i = 0; i < ds_list->len; i++) {
       for(int j = 0; j < storage.len; j++) {
-        mq_send(ds_list.ds[i], storage.msg[j], sizeof(Message), 0);
+        mq_send(ds_list->ds[i], (char*)&storage.msg[j], sizeof(Message), 0);
       }
     }
     usleep(10000);
@@ -54,14 +54,13 @@ void *ThreadReceiveClient(void *arg){
   storage.size = 50;
   storage.msg = malloc(sizeof(Message) * storage.size);
   while(1) {
-      mq_receive(ds_queue_server, storage.msg + storage.len, sizeof(Message), NULL);
+      mq_receive(ds_queue_server, (char*)&storage.msg + storage.len, sizeof(Message), NULL);
       storage.len++;
       if (storage.len == storage.size) {
         storage.size *= 2 - (storage.size / 2);
         storage.msg = realloc(storage.msg, sizeof(Message) * storage.size);
       }
-    }
-    usleep(10000);
+  usleep(10000);
   }
   mq_close(ds_queue_server);
   mq_unlink(NAME_QUEUE_SERVER);
