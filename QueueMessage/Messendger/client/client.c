@@ -59,7 +59,7 @@ void *ThreadReceiveServer(void *arg){
   WINDOW *wnd = newwin(y / 4, x, (y / 4) * 3, 0);
   box(wnd, 0, 0);
   while (1) {
-    mq_receive(ds_queue_server, (char*)&msg, sizeof(Message), NULL);
+    mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL);
     storage.msg[storage.len] = msg;
     storage.len++;
     if (storage.len == storage.size) {
@@ -79,8 +79,8 @@ int main(){
   pthread_t thread_receive;
   Register();
   initscr();
-  pthread_create(&thread_send, NULL, ThreadSendServer, (void *)&ds_queue_client);
-  pthread_create(&thread_receive, NULL, ThreadReceiveServer, (void *)&ds_queue_server);
+  pthread_create(&thread_send, NULL, ThreadSendServer, NULL);
+  pthread_create(&thread_receive, NULL, ThreadReceiveServer, NULL);
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
   endwin();

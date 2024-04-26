@@ -9,6 +9,12 @@
     "unistd.h": "c",
     "castom_type.h": "c",
     "driver.h": "c",
-    "castom_type.H": "cpp"
+    "castom_type.H": "cpp",
+    "fcntl.h": "c",
+    "time.h": "c",
+    "termios.h": "c",
+    "ioctl.h": "c",
+    "signal.h": "c",
+    "pthread.h": "c"
   }
 }
