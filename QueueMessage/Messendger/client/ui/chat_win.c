@@ -17,25 +17,26 @@ extern name[MAX_NAME_LEN + 1];
   
 #define MAX_PATH_LENGTH 256
 
-void MessageWindow(WINDOW *wnd, Message **msg){
+void MessageWindow(WINDOW *wnd, MessageStorage *msg){
   signal(SIGWINCH, SigWinch); 
   curs_set(TRUE);
   wclear(wnd);
   box(wnd, 0, 0);
   wrefresh(wnd);
   wmove(wnd, 2, 4);
-  wprintw(wnd,"Enter your name: ");
+  for (int i = 0; i < msg->len; i++) {
+    wprintw(wnd, "%s: %s\n", msg->msg[i].name, msg->msg[i].text);
+  }
   wrefresh(wnd);
-  delwin(wnd);
 }
 
-void UserWindow(WINDOW *wnd, Message **msg){
-  signal(SIGWINCH, SigWinch); 
-  curs_set(TRUE);
-  wclear(wnd);
-  box(wnd, 0, 0);
-  wrefresh(wnd);
-}
+// void UserWindow(WINDOW *wnd, Message **msg){
+//   signal(SIGWINCH, SigWinch); 
+//   curs_set(TRUE);
+//   wclear(wnd);
+//   box(wnd, 0, 0);
+//   wrefresh(wnd);
+// }
 
 void InputMessageWindow(WINDOW *wnd, Message *msg){
   signal(SIGWINCH, SigWinch); 
