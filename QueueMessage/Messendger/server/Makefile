@@ -9,7 +9,7 @@ OBJECTS := $(patsubst %.c, %.o, $(FILES))
 	$(CC) $(CFLAGS)  -c $< -o $@
 
 server: $(OBJECTS)
-	$(CC) $(CFLAGS) $(LIB) $(OBJECTS) -o $@ 
+	$(CC) $(CFLAGS)  $(OBJECTS) $(LIB) -o $@ 
 
 clean:
 	rm -f *.o server $(OBJECTS)
