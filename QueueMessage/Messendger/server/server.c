@@ -33,7 +33,7 @@ void *ThreadSendClient(void *arg){
       fprintf(stderr, "check name: %s\n", list->name[flag_len]);
       ds_list->ds[flag_len] = mq_open(list->name[flag_len], O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
       if (ds_list->ds[flag_len] == -1) {
-        fprintf(stderr, "mq_open failed with error: %d\n", errno);
+        fprintf(stderr, "ThreadReceiveClient mq_open failed with error: %d\n", errno);
         perror("mq_open");
       }
       ds_list->len++;
@@ -44,7 +44,7 @@ void *ThreadSendClient(void *arg){
       flag_len = list->len;
       for (int i = 0; i < ds_list->len; i++) {
         for(int j = 0; j < storage.len; j++) {
-          if(mq_send(ds_list->ds[i], (char*)&storage.msg[j], sizeof(Message), 0) == -1) perror("mq_send");
+          if(mq_send(ds_list->ds[i], (char*)&storage.msg[j], sizeof(Message), 0) == -1) perror("ThreadReceiveClient mq_send");
         }
       }
     }
@@ -65,14 +65,14 @@ void *ThreadReceiveClient(void *arg){
   attr.mq_curmsgs = 0;
   mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_RDONLY, S_IWUSR | S_IRUSR, &attr);
   if (ds_queue_server == -1) {
-    fprintf(stderr, "mq_open failed with error: %d\n", errno);
+    fprintf(stderr, "ThreadReceiveClient mq_open failed with error: %d\n", errno);
     perror("mq_open");
     exit(EXIT_FAILURE);
   }
   while(1) {
       mq_receive(ds_queue_server, (char*)&msg_buf, sizeof(Message), NULL);
       storage.msg[storage.len] = msg_buf;
-      fprintf(stderr ,"check: %s\n", storage.msg[storage.len].text);
+      fprintf(stderr ,"ThreadReceiveClient check: %s\n", storage.msg[storage.len].text);
       storage.len++;
       if (storage.len == storage.size) {
         storage.size *= 2 - (storage.size / 2);
@@ -102,13 +102,13 @@ void *ThreadRegisterClient(void *arg){
   char request_name[MAX_NAME_LEN] = {0};
   mqd_t ds_queue_register = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_RDWR, S_IWUSR | S_IRUSR, &attr);
   if (ds_queue_register == -1) {
-    fprintf(stderr, "mq_open failed with error: %d\n", errno);
+    fprintf(stderr, "ThreadRegisterClient mq_open failed with error: %d\n", errno);
     perror("mq_open");
     exit(EXIT_FAILURE);
   }
   while(1) {
     if(mq_receive(ds_queue_register, request_name, MAX_NAME_LEN, NULL) == -1) {
-      fprintf(stderr, "mq_receive failed with error: %d\n", errno);
+      fprintf(stderr, "ThreadRegisterClient mq_receive failed with error: %d\n", errno);
       perror("mq_receive");
       exit(EXIT_FAILURE);
     }
