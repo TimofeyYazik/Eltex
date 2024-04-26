@@ -28,7 +28,7 @@ void Register(){
   struct mq_attr attr;
   attr.mq_flags = 0;
   attr.mq_maxmsg = 50;
-  attr.mq_msgsize = sizeof(name);
+  attr.mq_msgsize = MAX_NAME_LEN;
   attr.mq_curmsgs = 0;
   mqd_t ds_queue = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_RDWR, S_IWUSR | S_IRUSR, &attr);
   WINDOW * wnd;
@@ -49,7 +49,7 @@ void Register(){
     wrefresh(wnd);
     name[0] = '/';
     wgetnstr(wnd, name + 1, MAX_NAME_LEN - 2); 
-    if (mq_send(ds_queue, name, strlen(name) + 1, 0) == -1)
+    if (mq_send(ds_queue, name, MAX_NAME_LEN, 0) == -1)
     {
       perror("mq_send");
       exit(EXIT_FAILURE);

@@ -84,7 +84,7 @@ void *ThreadRegisterClient(void *arg){
   struct mq_attr attr;
   attr.mq_flags = 0;
   attr.mq_maxmsg = 50;
-  attr.mq_msgsize = sizeof(Message);
+  attr.mq_msgsize = MAX_NAME_LEN;
   attr.mq_curmsgs = 0;
   list->len = 1;
   list->name[0] = malloc(sizeof(char) * MAX_NAME_LEN);
