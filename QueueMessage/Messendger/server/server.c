@@ -31,7 +31,7 @@ void *ThreadSendClient(void *arg){
   attr.mq_curmsgs = 0;
   while(stop_server) {
     if(flag_len != list->len) {
-      fprintf(stderr, "check name: %s\n", list->name[flag_len]);
+      fprintf(stderr, "ThreadSendClient check name: %d %s\n", flag_len,list->name[flag_len]);
       ds_list->ds[flag_len] = mq_open(list->name[flag_len], O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
       if (ds_list->ds[flag_len] == -1) {
         fprintf(stderr, "ThreadReceiveClient mq_open failed with error: %d\n", errno);
@@ -116,7 +116,7 @@ void *ThreadRegisterClient(void *arg){
       perror("mq_receive");
       exit(EXIT_FAILURE);
     }
-    fprintf(stderr, "check name: %s\n", request_name);
+    fprintf(stderr, "ThreadRegisterClient check name: %s\n", request_name);
     for(int i = 0; i < list->len; i++) {
       if (strcmp(list->name[i], request_name) == 0) {
         fprintf(stderr, "check status: %s\n", status_error);
