@@ -82,6 +82,8 @@ void *ThreadReceiveClient(void *arg){
 }
 
 void *ThreadRegisterClient(void *arg){
+  char status_ok[MAX_NAME_LEN] = GOOD_STATUS;
+  char status_error[MAX_NAME_LEN] = BAD_STATUS;
   fprintf(stderr, "ThreadRegisterClient start\n");
   NameList *list = (NameList*)arg;
   struct mq_attr attr;
@@ -104,16 +106,16 @@ void *ThreadRegisterClient(void *arg){
       perror("mq_receive");
       exit(EXIT_FAILURE);
     }
-    fprintf(stderr, "check: %s\n", request_name);
+    fprintf(stderr, "check name: %s\n", request_name);
     for(int i = 0; i < list->len; i++) {
       if (strcmp(list->name[i], request_name) == 0) {
-        mq_send(ds_queue_register, BAD_STATUS, strlen(BAD_STATUS) + 1, 0);
+        mq_send(ds_queue_register, status_error, MAX_NAME_LEN, 0);
         break;
       }
       if (i == list->len - 1) {
         list->name[list->len] = malloc(sizeof(char) * MAX_NAME_LEN);
         strcpy(list->name[list->len], request_name);
-        mq_send(ds_queue_register, GOOD_STATUS, strlen(GOOD_STATUS) + 1, 0);
+        mq_send(ds_queue_register, status_ok, MAX_NAME_LEN, 0);
         break;
       }
     }

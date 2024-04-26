@@ -24,7 +24,7 @@ void SigWinch(int signo)
 
 void Register(){
   char name_is_register = 0;
-  char request[3] = {0};
+  char request[MAX_NAME_LEN] = {0};
   struct mq_attr attr;
   attr.mq_flags = 0;
   attr.mq_maxmsg = 50;
@@ -55,7 +55,7 @@ void Register(){
       exit(EXIT_FAILURE);
     }
     sleep(5);
-    if (mq_receive(ds_queue, request, strlen("OK") + 1, NULL) == -1)
+    if (mq_receive(ds_queue, request, MAX_NAME_LEN, NULL) == -1)
     {
       perror("mq_receive");
       exit(EXIT_FAILURE);
