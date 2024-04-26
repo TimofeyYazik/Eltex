@@ -35,7 +35,7 @@ void *ThreadSendServer(void *arg){
   box(wnd, 0, 0);
   while (1) {
     InputMessageWindow(wnd, &msg);
-    printf("%d\n", sizeof(msg));
+
     if(mq_send(ds_queue_server, (char*)&msg, sizeof(msg), 0) == -1){
       perror("mq_send");
     }

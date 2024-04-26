@@ -118,15 +118,15 @@ void *ThreadRegisterClient(void *arg){
         strcpy(list->name[list->len], request_name);
         fprintf(stderr, "check status: %s\n", status_ok);
         mq_send(ds_queue_register, status_ok, MAX_NAME_LEN, 0);
+        list->len++;
+        if(list->len == list->size) {
+        list->size *= 2 - (list->size / 2);
+        list->name = realloc(list->name, sizeof(char*) * list->size);
+      }
         break;
       }
     }
 
-    list->len++;
-    if(list->len == list->size) {
-      list->size *= 2 - (list->size / 2);
-      list->name = realloc(list->name, sizeof(char*) * list->size);
-    }
     memset(request_name, 0, MAX_NAME_LEN);
     sleep(5);
   }

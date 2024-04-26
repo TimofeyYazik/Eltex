@@ -40,14 +40,13 @@ void MessageWindow(WINDOW *wnd, MessageStorage *msg){
 
 void InputMessageWindow(WINDOW *wnd, Message *msg){
   signal(SIGWINCH, SigWinch); 
-  box(wnd, 0, 0);
   curs_set(TRUE);
   wclear(wnd);
   wrefresh(wnd);
+  box(wnd, 0, 0);
   wmove(wnd, 2, 4);
   wprintw(wnd,"Enter your message: ");
-  wgetnstr(wnd, msg->text, MAX_TEXT_LEN);
   wrefresh(wnd);
-  exit(EXIT_SUCCESS);
+  wgetnstr(wnd, msg->text, MAX_TEXT_LEN);
 }
 
