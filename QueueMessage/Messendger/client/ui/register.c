@@ -54,7 +54,7 @@ void Register(){
       perror("mq_send");
       exit(EXIT_FAILURE);
     }
-    sleep(1);
+    sleep(5);
     if (mq_receive(ds_queue, request, strlen("OK") + 1, NULL) == -1)
     {
       perror("mq_receive");

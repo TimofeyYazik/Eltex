@@ -15,6 +15,7 @@ MessageStorage storage = {0};
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void *ThreadSendClient(void *arg){
+  fprintf(stderr, "ThreadSendClient start\n");
   NameList *list = (NameList*)arg;
   DsList dlist;
   DsList *ds_list = &dlist;
@@ -50,6 +51,7 @@ void *ThreadSendClient(void *arg){
 }
 
 void *ThreadReceiveClient(void *arg){
+  fprintf(stderr, "ThreadReceiveClient start\n");
   struct mq_attr attr;
   attr.mq_flags = 0;
   attr.mq_maxmsg = 50;
@@ -80,6 +82,7 @@ void *ThreadReceiveClient(void *arg){
 }
 
 void *ThreadRegisterClient(void *arg){
+  fprintf(stderr, "ThreadRegisterClient start\n");
   NameList *list = (NameList*)arg;
   struct mq_attr attr;
   attr.mq_flags = 0;
