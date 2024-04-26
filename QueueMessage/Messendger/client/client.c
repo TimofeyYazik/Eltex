@@ -21,7 +21,7 @@ char name[MAX_NAME_LEN + 1] = {0};
 
 void *ThreadSendServer(void *arg){
   int x, y;
-  mq_attr attr;
+  struct mq_attr attr;
   int x, y;
   getmaxyx(stdscr, y, x);
   WINDOW * wnd = newwin((y / 4) * 3, x, 0, 0);
@@ -50,7 +50,7 @@ void *ThreadReceiveServer(void *arg){
   storage.msg = malloc(sizeof(Message) * storage.size);
   int x, y;
   int num_message = 0;
-  mq_attr attr;
+  struct mq_attr attr;
   attr.mq_flags = 0;
   attr.mq_maxmsg = 50;
   attr.mq_msgsize = sizeof(Message);
@@ -88,7 +88,7 @@ int main(){
   endwin();
   exit(EXIT_SUCCESS);
 }
-  // mq_attr attr;
+  // struct mq_attr attr;
   // attr.mq_flags = 0;
   // attr.mq_maxmsg = 50;
   // attr.mq_msgsize = sizeof(Message);

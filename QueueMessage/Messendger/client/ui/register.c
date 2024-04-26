@@ -24,7 +24,7 @@ void SigWinch(int signo)
 void Register(){
   char name_is_register = 0;
   char request[3] = {0};
-  mq_attr attr;
+  struct mq_attr attr;
   attr.mq_flags = 0;
   attr.mq_maxmsg = 50;
   attr.mq_msgsize = sizeof(name);

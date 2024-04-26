@@ -6,10 +6,10 @@
 #define MAX_NAME_LEN 16
 #define MAX_TEXT_LEN 128
 #define MAX_PATH_LENGTH 256
-#define  NAME_QUEUE_REGISTER "/register";
-#define  NAME_QUEUE_SERVER "/server";
-#define  GOOD_STATUS "OK";
-#define  BAD_STATUS "NO";
+#define  NAME_QUEUE_REGISTER "/register"
+#define  NAME_QUEUE_SERVER "/server"
+#define  GOOD_STATUS "OK"
+#define  BAD_STATUS "NO"
 
 typedef struct{
   int id;
@@ -31,7 +31,7 @@ typedef struct{
 } NameList;
 
 typedef struct{
-  dqm_t *arr_queue;
+  mqd_t *arr_queue;
   int len;
   int size;
 } DsList;

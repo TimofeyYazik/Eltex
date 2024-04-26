@@ -44,12 +44,12 @@ void *ThreadSendClient(void *arg){
 }
 
 void *ThreadReceiveClient(void *arg){
-  mq_attr attr;
+  struct mq_attr attr;
   attr.mq_flags = 0;
   attr.mq_maxmsg = 50;
   attr.mq_msgsize = sizeof(Message);
   attr.mq_curmsgs = 0;
-  dmq_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_RDWR, S_IWUSR | S_IRUSR, &attr);
+  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_RDWR, S_IWUSR | S_IRUSR, &attr);
   storage.size = 50;
   storage.msg = malloc(sizeof(Message) * storage.size);
   while(1) {
@@ -70,7 +70,7 @@ void *ThreadReceiveClient(void *arg){
 
 void *ThreadRegisterClient(void *arg){
   NameList *list = (NameList*)arg;
-  mq_attr attr;
+  struct mq_attr attr;
   attr.mq_flags = 0;
   attr.mq_maxmsg = 50;
   attr.mq_msgsize = sizeof(Message);
@@ -78,7 +78,7 @@ void *ThreadRegisterClient(void *arg){
   list->len = 1;
   list->name[0] = malloc(sizeof(char) * MAX_NAME_LEN);
   char request_name[MAX_NAME_LEN] = {0};
-  dmq_t ds_queue_register = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_RDWR, S_IWUSR | S_IRUSR, &attr);
+  mqd_t ds_queue_register = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_RDWR, S_IWUSR | S_IRUSR, &attr);
   while(1) {
     mq_receive(ds_queue_register, request_name, MAX_NAME_LEN, NULL);
     for(int i = 0; i < list->len; i++) {
