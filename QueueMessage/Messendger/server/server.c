@@ -109,16 +109,19 @@ void *ThreadRegisterClient(void *arg){
     fprintf(stderr, "check name: %s\n", request_name);
     for(int i = 0; i < list->len; i++) {
       if (strcmp(list->name[i], request_name) == 0) {
+        fprintf(stderr, "check status: %s\n", status_error);
         mq_send(ds_queue_register, status_error, MAX_NAME_LEN, 0);
         break;
       }
       if (i == list->len - 1) {
         list->name[list->len] = malloc(sizeof(char) * MAX_NAME_LEN);
         strcpy(list->name[list->len], request_name);
+        fprintf(stderr, "check status: %s\n", status_ok);
         mq_send(ds_queue_register, status_ok, MAX_NAME_LEN, 0);
         break;
       }
     }
+
     list->len++;
     if(list->len == list->size) {
       list->size *= 2 - (list->size / 2);
