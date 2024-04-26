@@ -21,25 +21,23 @@ char name[MAX_NAME_LEN + 1] = {0};
 
 
 void *ThreadSendServer(void *arg){
-  struct mq_attr attr;
-  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
-  Message msg = {0};
-  attr.mq_flags = 0;
-  attr.mq_maxmsg = 50;
-  attr.mq_msgsize = sizeof(msg);
-  attr.mq_curmsgs = 0;
   int x, y;
   getmaxyx(stdscr, y, x);
   strcpy(msg.name, name);
   WINDOW *wnd = newwin(y / 4, x, (y / 4) * 3, 0);
   box(wnd, 0, 0);
+  struct mq_attr attr;
+  Message msg = {0};
+  attr.mq_flags = 0;
+  attr.mq_maxmsg = 50;
+  attr.mq_msgsize = sizeof(Message);
+  attr.mq_curmsgs = 0;
+  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
   while (1) {
     InputMessageWindow(wnd, &msg);
-
-    if(mq_send(ds_queue_server, (char*)&msg, sizeof(msg), 0) == -1){
+    if(mq_send(ds_queue_server, (char*)&msg, sizeof(Message), 0) == -1){
       perror("mq_send");
     }
-    
   }
   mq_close(ds_queue_server);
 }
