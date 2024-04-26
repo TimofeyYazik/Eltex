@@ -22,6 +22,11 @@ void *ThreadSendClient(void *arg){
   ds_list->size = 10;
   ds_list->ds = malloc(sizeof(mqd_t) * ds_list->size);
   int flag_len = 0;
+  struct mq_attr attr;
+  attr.mq_flags = 0;
+  attr.mq_maxmsg = 50;
+  attr.mq_msgsize = sizeof(Message);
+  attr.mq_curmsgs = 0;
   while(1) {
     if(flag_len != list->len) {
     for (int i = list->len - flag_len; i < list->len; i++) {
