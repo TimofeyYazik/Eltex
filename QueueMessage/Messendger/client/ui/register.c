@@ -6,6 +6,7 @@
 #include <termios.h>
 #include <unistd.h>
 #include <errno.h>
+#include <string.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <pthread.h>
@@ -70,5 +71,4 @@ void Register(){
   refresh();
   delwin(wnd);
   endwin();
-  return name;
-}
+  }

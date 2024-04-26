@@ -13,7 +13,7 @@
 
 #include "ui.h"
 
-extern name[MAX_NAME_LEN + 1];
+extern char name[MAX_NAME_LEN];
   
 #define MAX_PATH_LENGTH 256
 
