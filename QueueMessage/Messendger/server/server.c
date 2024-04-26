@@ -30,20 +30,23 @@ void *ThreadSendClient(void *arg){
   attr.mq_curmsgs = 0;
   while(1) {
     if(flag_len != list->len) {
-    for (int i = list->len - flag_len; i < list->len; i++) {
+      fprintf(stderr, "check name: %s\n", list->name[flag_len]);
       ds_list->ds[ds_list->len - 1] = mq_open(list->name[i], O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
+      if (ds_list->ds[ds_list->len - 1] == -1) {
+        fprintf(stderr, "mq_open failed with error: %d\n", errno);
+        perror("mq_open");
+      }
       ds_list->len++;
       if (ds_list->len == ds_list->size) {
         ds_list->size *= 2 - (ds_list->size / 2);
         ds_list->ds = realloc(ds_list->ds, sizeof(mqd_t) * ds_list->size);
       }
-    }
-    flag_len = list->len;
-    for (int i = 0; i < ds_list->len; i++) {
-      for(int j = 0; j < storage.len; j++) {
-        mq_send(ds_list->ds[i], (char*)&storage.msg[j], sizeof(Message), 0);
+      flag_len = list->len;
+      for (int i = 0; i < ds_list->len; i++) {
+        for(int j = 0; j < storage.len; j++) {
+          if(mq_send(ds_list->ds[i], (char*)&storage.msg[j], sizeof(Message), 0) == -1) perror("mq_send");
+        }
       }
-    }
     }
     usleep(10000);
   }
