@@ -138,6 +138,7 @@ void *ThreadRegisterClient(void *arg){
     }
     if(list->len == 0){
       fprintf(stderr, "check status: %s\n", status_ok);
+      strcpy(list->name[list->len], request_name);
       mq_send(ds_queue_register, status_ok, MAX_NAME_LEN, 0);
       list->len++;
     }
