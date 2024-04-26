@@ -12,7 +12,7 @@
 #include "../custom_type.h"
 
 MessageStorage storage = {0};
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
 
 void *ThreadSendClient(void *arg){
   fprintf(stderr, "ThreadSendClient start\n");
@@ -107,7 +107,6 @@ void *ThreadRegisterClient(void *arg){
     exit(EXIT_FAILURE);
   }
   while(1) {
-    pthread_mutex_lock(&mutex_lock);
     if(mq_receive(ds_queue_register, request_name, MAX_NAME_LEN, NULL) == -1) {
       fprintf(stderr, "mq_receive failed with error: %d\n", errno);
       perror("mq_receive");
@@ -133,8 +132,6 @@ void *ThreadRegisterClient(void *arg){
         break;
       }
     }
-        pthread_mutex_unlock(&mutex_lock);
-
     memset(request_name, 0, MAX_NAME_LEN);
     sleep(1);
   }
