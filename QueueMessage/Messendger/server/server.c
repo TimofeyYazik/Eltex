@@ -123,7 +123,7 @@ void *ThreadRegisterClient(void *arg){
       list->name = realloc(list->name, sizeof(char*) * list->size);
     }
     memset(request_name, 0, MAX_NAME_LEN);
-    usleep(10000);
+    sleep(5);
   }
   mq_close(ds_queue_register);
   mq_unlink(NAME_QUEUE_REGISTER);
