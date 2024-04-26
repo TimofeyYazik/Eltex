@@ -96,7 +96,11 @@ void *ThreadRegisterClient(void *arg){
     exit(EXIT_FAILURE);
   }
   while(1) {
-    mq_receive(ds_queue_register, request_name, MAX_NAME_LEN, NULL);
+    if(mq_receive(ds_queue_register, request_name, MAX_NAME_LEN, NULL) == -1) {
+      fprintf(stderr, "mq_receive failed with error: %d\n", errno);
+      perror("mq_receive");
+      exit(EXIT_FAILURE);
+    }
     fprintf(stderr, "check: %s\n", request_name);
     for(int i = 0; i < list->len; i++) {
       if (strcmp(list->name[i], request_name) == 0) {
