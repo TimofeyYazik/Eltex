@@ -34,6 +34,8 @@ void *ThreadSendServer(void *arg){
   mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
   while (1) {
     InputMessageWindow(wnd, &msg);
+    wprintw(wnd, "%s: %s\n", msg.name, msg.text);
+    wrefresh(wnd);
     if(mq_send(ds_queue_server, (char *)&msg, sizeof(Message), 0) == -1){
       perror("mq_send");
     }
