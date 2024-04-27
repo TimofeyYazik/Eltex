@@ -39,7 +39,7 @@ void *ThreadSendClient(void *arg){
       }
       ds_list->len++;
       if (ds_list->len == ds_list->size) {
-        ds_list->size *= 2 - (ds_list->size / 2);
+        ds_list->size = 2 * ds_list->size - (ds_list->size / 2);
         ds_list->ds = realloc(ds_list->ds, sizeof(mqd_t) * ds_list->size);
       }
       flag_len = list->len;
@@ -52,7 +52,7 @@ void *ThreadSendClient(void *arg){
         if(mq_send(ds_list->ds[i], (char*)&storage.msg[j], sizeof(Message), 0) == -1) perror("ThreadReceiveClient mq_send");
       }
     }
-    usleep(10000);
+    sleep(5);
   }
   for (int i = 0; i < ds_list->len; i++) {
     mq_close(ds_list->ds[i]);
@@ -137,7 +137,7 @@ void *ThreadRegisterClient(void *arg){
         mq_send(ds_queue_register, status_ok, MAX_NAME_LEN, 0);
         list->len++;
         if(list->len == list->size) {
-        list->size *= 2 - (list->size / 2);
+        list->size = 2 * list->size - (list->size / 2);
         list->name = realloc(list->name, sizeof(char*) * list->size);
       }
         break;

@@ -78,11 +78,12 @@ void *ThreadReceiveServer(void *arg){
     MsgCopy(&storage.msg[storage.len], &msg);
     storage.len++;
     if (storage.len == storage.size) {
-      storage.size *= 2 - (storage.size / 2);
+      storage.size = storage.size * 2 - (storage.size / 2);
       storage.msg = realloc(storage.msg, sizeof(Message) * storage.size);
     }
     memset(msg.text, 0, sizeof(msg.text));
     memset(msg.name, 0, sizeof(msg.name));
+    sleep(5);
   }
   mq_close(ds_queue_connect);
   mq_unlink(name);
