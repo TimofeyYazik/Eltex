@@ -34,12 +34,9 @@ void *ThreadSendServer(void *arg){
   mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
   while (1) {
     InputMessageWindow(wnd, &msg);
-    wprintw(wnd, "%s: %s\n", msg.name, msg.text);
-    wrefresh(wnd);
     if(mq_send(ds_queue_server, (char *)&msg, sizeof(Message), 0) == -1){
       perror("mq_send");
     }
-    sleep(1);
   }
   mq_close(ds_queue_server);
 }
@@ -81,9 +78,7 @@ void *ThreadReceiveServer(void *arg){
       storage.size = storage.size * 2 - (storage.size / 2);
       storage.msg = realloc(storage.msg, sizeof(Message) * storage.size);
     }
-    memset(msg.text, 0, sizeof(msg.text));
-    memset(msg.name, 0, sizeof(msg.name));
-    sleep(5);
+    usleep(10000);
   }
   mq_close(ds_queue_connect);
   mq_unlink(name);
