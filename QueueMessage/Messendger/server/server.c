@@ -12,7 +12,6 @@
 #include "../custom_type.h"
 
 MessageStorage storage = {0};
-
 volatile int stop_server = 1;
 
 void *ThreadSendClient(void *arg){

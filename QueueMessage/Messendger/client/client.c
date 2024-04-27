@@ -16,7 +16,7 @@
 #include "ui/ui.h"
 #include "../custom_type.h"
 
-char name[MAX_NAME_LEN + 1] = {0};
+char name[MAX_NAME_LEN] = {0};
 MessageStorage storage;
 
 
