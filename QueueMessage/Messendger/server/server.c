@@ -168,7 +168,7 @@ void *ThreadStop(void *arg){
   fprintf(stderr, "ThreadStop start\n");
   while (stop_server)
   {
-    scanf("%c", &stop_server);
+    scanf("%d", &stop_server);
     printf("stop_server = %d\n", stop_server);
   } 
 }
