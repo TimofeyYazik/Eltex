@@ -57,6 +57,11 @@ void *ThreadReceiveServer(void *arg){
   getmaxyx(stdscr, y, x);
   Message msg = {0};
   mqd_t ds_queue_connect = mq_open(name, O_CREAT | O_RDONLY, S_IWUSR | S_IRUSR, &attr);
+  if (ds_queue_connect == -1) {
+    fprintf(stderr, "ThreadReceiveServer mq_open failed with error: %d\n", errno);
+    perror("mq_open");
+    exit(EXIT_FAILURE);
+  }
   WINDOW *wnd = newwin((y / 4) * 3, x, 0, 0);
   box(wnd, 0, 0);
   while (1) {
@@ -77,6 +82,15 @@ void *ThreadReceiveServer(void *arg){
 }
 
 int main(){
+    mq_unlink("/lp");
+  mq_unlink("/kl");
+  mq_unlink("/hi");
+  mq_unlink("/j");
+  mq_unlink("/l");
+  mq_unlink("/nigger");
+  mq_unlink("/user");
+  mq_unlink("/hi");
+  
   pthread_t thread_send;
   pthread_t thread_receive;
   Register();
