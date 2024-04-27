@@ -65,6 +65,7 @@ void *ThreadSendClient(void *arg){
     mq_close(ds_list->ds[i]);
   }
   free(ds_list->ds);
+  fprintf(stderr, "ThreadSendClient end\n");
 }
 void MsgCopy(Message *dst, Message *src){
   strcpy(dst->name, src->name);
@@ -102,7 +103,8 @@ void *ThreadReceiveClient(void *arg){
   }
   mq_close(ds_queue_server);
   mq_unlink(NAME_QUEUE_SERVER);
-  exit(EXIT_SUCCESS);
+  free(storage.msg);
+  printf("ThreadReceiveClient end\n");
 }
 
 void *ThreadRegisterClient(void *arg){
@@ -161,8 +163,8 @@ void *ThreadRegisterClient(void *arg){
   }
   mq_close(ds_queue_register);
   mq_unlink(NAME_QUEUE_REGISTER);
-  exit(EXIT_SUCCESS);
-}
+  printf("ThreadRegisterClient exit\n");
+  }
 
 void *ThreadStop(void *arg){
   fprintf(stderr, "ThreadStop start\n");
@@ -171,6 +173,7 @@ void *ThreadStop(void *arg){
     scanf("%d", &stop_server);
     printf("stop_server = %d\n", stop_server);
   } 
+  printf("ThreadStop exit\n");
 }
 
 int main(){
@@ -196,6 +199,7 @@ int main(){
   pthread_create(&thread_register, NULL, ThreadRegisterClient, (void *)&list);
   pthread_create(&thread_send, NULL, ThreadSendClient, (void *)&list);
   pthread_create(&thread_receive, NULL, ThreadReceiveClient, (void *)&list);
+
   sleep(1215752192);
 
   pthread_join(thread_send, NULL);
