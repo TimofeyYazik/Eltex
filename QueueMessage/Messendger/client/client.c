@@ -89,10 +89,12 @@ void *ThreadUserWindow(void *arg){
   getmaxyx(stdscr, y, x);
   WINDOW *wnd = newwin((y / 4) * 3, x / 4, 0, (x / 4) * 3);
   NameList list;
+  int storage_len = storage.len;
   list.len = 0;
   list.size = 10;
   list.name = malloc(sizeof(char *) * list.size);
   while(1){
+    if(storage.len != storage_len){
     UserWindow(wnd, &list);
     for(int i = 0; i < storage.len; i++){
       list.name[list.len] = malloc(sizeof(char) * MAX_NAME_LEN);
@@ -103,7 +105,9 @@ void *ThreadUserWindow(void *arg){
         list.name = realloc(list.name, sizeof(char*) * list.size);
       }
     }
-    usleep(1000);
+    storage_len = storage.len;
+    }
+    sleep(1);
   }
 }
 int main(){
