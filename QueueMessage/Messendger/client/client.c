@@ -93,10 +93,21 @@ void *ThreadUserWindow(void *arg){
   list.len = 0;
   list.size = 10;
   list.name = malloc(sizeof(char *) * list.size);
+  int flag = 0;
   while(1){
-    if(storage.len != storage_len){
-    UserWindow(wnd, &list);
-    for(int i = 0; i < storage.len; i++){
+  if(storage.len != storage_len){
+    for(int i = storage_len; i < storage.len; i++){
+      for(int j = 0; j < list.len; j++){
+        if(strcmp(storage.msg[i].name, list.name[j]) == 0){
+          flag = 1;
+          break;
+          }
+        }
+      if(flag == 1) break;
+      }
+    }
+    if(flag) break;
+    for(int i = storage_len; i < storage.len; i++){
       list.name[list.len] = malloc(sizeof(char) * MAX_NAME_LEN);
       strcpy(list.name[list.len], storage.msg[i].name);
       list.len++;
@@ -104,9 +115,11 @@ void *ThreadUserWindow(void *arg){
         list.size = 2 * list.size - (list.size / 2);
         list.name = realloc(list.name, sizeof(char*) * list.size);
       }
+    UserWindow(wnd, &list);
     }
     storage_len = storage.len;
     }
+    flag = 0;
     sleep(1);
   }
 }
