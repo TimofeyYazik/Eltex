@@ -43,6 +43,12 @@ void *ThreadSendClient(void *arg){
         ds_list->size = 2 * ds_list->size - (ds_list->size / 2);
         ds_list->ds = realloc(ds_list->ds, sizeof(mqd_t) * ds_list->size);
       }
+      for (int i = flag_len; i < ds_list->len; i++) {
+        for(int j = 0; j < storage.len; j++) {
+          if(mq_send(ds_list->ds[i], (char*)&storage.msg[j], sizeof(Message), 0) == -1) 
+          perror("ThreadReceiveClient mq_send");
+        }
+      }
       flag_len = list->len;
     }
     if(storage.len != storage_len) {
