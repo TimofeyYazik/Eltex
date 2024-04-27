@@ -47,9 +47,7 @@ void *ThreadSendClient(void *arg){
     }
     if(storage.len != storage_len) {
     for (int i = 0; i < ds_list->len; i++) {
-      for(int j = 0; j < storage.len; j++) {
-        fprintf(stderr, "ThreadSendClient send: %s\n", storage.msg[j].name);
-        fprintf(stderr, "ThreadSendClient send: %s\n", storage.msg[j].text);
+      for(int j = storage_len; j < storage.len; j++) {
         if(mq_send(ds_list->ds[i], (char*)&storage.msg[j], sizeof(Message), 0) == -1) perror("ThreadReceiveClient mq_send");
       }
     }
