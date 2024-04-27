@@ -39,7 +39,7 @@ void *ThreadSendServer(void *arg){
     if(mq_send(ds_queue_server, (char *)&msg, sizeof(Message), 0) == -1){
       perror("mq_send");
     }
-    
+    sleep(1);
   }
   mq_close(ds_queue_server);
 }
