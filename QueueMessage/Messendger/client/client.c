@@ -105,7 +105,6 @@ void *ThreadUserWindow(void *arg){
         }
       if(flag == 1) break;
       }
-    }
     if(flag) break;
     for(int i = storage_len; i < storage.len; i++){
       list.name[list.len] = malloc(sizeof(char) * MAX_NAME_LEN);
@@ -115,9 +114,9 @@ void *ThreadUserWindow(void *arg){
         list.size = 2 * list.size - (list.size / 2);
         list.name = realloc(list.name, sizeof(char*) * list.size);
       }
-    UserWindow(wnd, &list);
     }
-    storage_len = storage.len;
+      UserWindow(wnd, &list);
+      storage_len = storage.len;
     }
     flag = 0;
     sleep(1);
