@@ -29,6 +29,7 @@ void *ThreadSendClient(void *arg){
   attr.mq_maxmsg = 50;
   attr.mq_msgsize = sizeof(Message);
   attr.mq_curmsgs = 0;
+  int storage_len = storage.len;
   while(stop_server) {
     if(flag_len != list->len) {
       fprintf(stderr, "ThreadSendClient check name: flag_len = %d list->len =%d %s\n", flag_len, list->len, list->name[flag_len]);
@@ -44,7 +45,7 @@ void *ThreadSendClient(void *arg){
       }
       flag_len = list->len;
     }
-     
+    if(storage.len != storage_len) {
     for (int i = 0; i < ds_list->len; i++) {
       for(int j = 0; j < storage.len; j++) {
         fprintf(stderr, "ThreadSendClient send: %s\n", storage.msg[j].name);
@@ -52,7 +53,9 @@ void *ThreadSendClient(void *arg){
         if(mq_send(ds_list->ds[i], (char*)&storage.msg[j], sizeof(Message), 0) == -1) perror("ThreadReceiveClient mq_send");
       }
     }
-    sleep(5);
+    storage_len = storage.len; 
+    }
+    usleep(10000);
   }
   for (int i = 0; i < ds_list->len; i++) {
     mq_close(ds_list->ds[i]);
