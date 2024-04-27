@@ -24,7 +24,7 @@ void MessageWindow(WINDOW *wnd, MessageStorage *msg){
   box(wnd, 0, 0);
   wrefresh(wnd);
   for (int i = 0; i < msg->len; i++) {
-    mwprintw(wnd, 2, 4, "%s: %s\n", msg->msg[i].name, msg->msg[i].text);
+    mvwprintw(wnd, 2, 4, "%s: %s\n", msg->msg[i].name, msg->msg[i].text);
   }
   wrefresh(wnd);
 }
