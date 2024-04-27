@@ -89,16 +89,6 @@ void *ThreadReceiveServer(void *arg){
 }
 
 int main(){
-    mq_unlink("/lp");
-  mq_unlink("/kl");
-  mq_unlink("/hi");
-  mq_unlink("/j");
-  mq_unlink("/l");
-  mq_unlink("/nigger");
-  mq_unlink("/user");
-  mq_unlink("/hi");
-  mq_unlink(NAME_QUEUE_SERVER);
-  mq_unlink(NAME_QUEUE_REGISTER);
   pthread_t thread_send;
   pthread_t thread_receive;
   Register();
