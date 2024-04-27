@@ -56,6 +56,10 @@ void *ThreadSendClient(void *arg){
   }
   free(ds_list->ds);
 }
+void MsgCopy(Message *dst, Message *src){
+  strcpy(dst->name, src->name);
+  strcpy(dst->text, src->text);
+}
 
 void *ThreadReceiveClient(void *arg){
   fprintf(stderr, "ThreadReceiveClient start\n");
@@ -75,11 +79,11 @@ void *ThreadReceiveClient(void *arg){
   }
   while(stop_server) {
       mq_receive(ds_queue_server, (char*)&msg_buf, sizeof(Message), NULL);
-      storage.msg[storage.len] = msg_buf;
+      MsgCopy(&storage.msg[storage.len], &msg_buf);
       fprintf(stderr ,"ThreadReceiveClient check: %s\n", storage.msg[storage.len].text);
       storage.len++;
       if (storage.len == storage.size) {
-        storage.size *= 2 - (storage.size / 2);
+        storage.size = storage.size * 2 - (storage.size / 2);
         storage.msg = realloc(storage.msg, sizeof(Message) * storage.size);
       }
       usleep(10000);
