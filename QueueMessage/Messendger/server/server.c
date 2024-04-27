@@ -13,7 +13,7 @@
 
 MessageStorage storage = {0};
 
-volatile char stop_server = 1;
+volatile int stop_server = 1;
 
 void *ThreadSendClient(void *arg){
   fprintf(stderr, "ThreadSendClient start\n");
