@@ -23,9 +23,8 @@ void MessageWindow(WINDOW *wnd, MessageStorage *msg){
   wclear(wnd);
   box(wnd, 0, 0);
   wrefresh(wnd);
-  wmove(wnd, 2, 4);
   for (int i = 0; i < msg->len; i++) {
-    wprintw(wnd, "%s: %s\n", msg->msg[i].name, msg->msg[i].text);
+    mwprintw(wnd, 2, 4, "%s: %s\n", msg->msg[i].name, msg->msg[i].text);
   }
   wrefresh(wnd);
 }
