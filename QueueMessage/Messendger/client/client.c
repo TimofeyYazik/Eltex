@@ -105,8 +105,6 @@ void *ThreadUserWindow(void *arg){
     }
     usleep(1000);
   }
-  mq_close(ds_queue_user);
-  mq_unlink(NAME_QUEUE_USER);
 }
 int main(){
   pthread_t thread_send;
