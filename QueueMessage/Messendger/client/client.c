@@ -67,7 +67,7 @@ void *ThreadReceiveServer(void *arg){
     perror("mq_open");
     exit(EXIT_FAILURE);
   }
-  WINDOW *wnd = newwin((y / 4) * 3, x, 0, 0);
+  WINDOW *wnd = newwin((y / 4) * 3, (x / 4) * 3, 0, 0);
   box(wnd, 0, 0);
   while (1) {
     MessageWindow(wnd, &storage);
