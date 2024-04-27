@@ -41,6 +41,11 @@ void *ThreadSendServer(void *arg){
   mq_close(ds_queue_server);
 }
 
+void MsgCopy(Message *dst, Message *src){
+  strcpy(dst->name, src->name);
+  strcpy(dst->text, src->text);
+}
+
 void *ThreadReceiveServer(void *arg){
   int size = 0;
   MessageStorage storage;
@@ -67,8 +72,7 @@ void *ThreadReceiveServer(void *arg){
   while (1) {
     MessageWindow(wnd, &storage);
     if(mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL) == -1) perror("mq_receive"); 
-    
-    storage.msg[storage.len] = msg;
+    MsgCopy(&storage.msg[storage.len], &msg);
     storage.len++;
     if (storage.len == storage.size) {
       storage.size *= 2 - (storage.size / 2);
