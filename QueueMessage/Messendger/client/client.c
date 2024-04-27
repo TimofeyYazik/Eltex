@@ -17,7 +17,7 @@
 #include "../custom_type.h"
 
 char name[MAX_NAME_LEN + 1] = {0};
-
+MessageStorage storage;
 
 
 void *ThreadSendServer(void *arg){
@@ -48,7 +48,6 @@ void MsgCopy(Message *dst, Message *src){
 
 void *ThreadReceiveServer(void *arg){
   int size = 0;
-  MessageStorage storage;
   storage.len = 0;
   storage.size = 50;
   storage.msg = malloc(sizeof(Message) * storage.size);
@@ -84,12 +83,39 @@ void *ThreadReceiveServer(void *arg){
   mq_unlink(name);
 }
 
+
+void *ThreadUserWindow(void *arg){
+  int x, y;
+  getmaxyx(stdscr, y, x);
+  WINDOW *wnd = newwin((y / 4) * 3, x / 4, 0, (x / 4) * 3);
+  NameList list;
+  list.len = 0;
+  list.size = 10;
+  list.name = malloc(sizeof(char *) * list.size);
+  while(1){
+    UserWindow(wnd, &list);
+    for(int i = 0; i < storage.len; i++){
+      list.name[list.len] = malloc(sizeof(char) * MAX_NAME_LEN);
+      strcpy(list.name[list.len], storage.msg[i].name);
+      list.len++;
+      if(list.len == list.size){
+        list.size = 2 * list.size - (list.size / 2);
+        list.name = realloc(list.name, sizeof(char*) * list.size);
+      }
+    }
+    usleep(1000);
+  }
+  mq_close(ds_queue_user);
+  mq_unlink(NAME_QUEUE_USER);
+}
 int main(){
   pthread_t thread_send;
   pthread_t thread_receive;
+  pthread_t thread_user;
   Register();
   initscr();
   pthread_create(&thread_send, NULL, ThreadSendServer, NULL);
+  pthread_create(&thread_user, NULL, ThreadUserWindow, NULL);
   pthread_create(&thread_receive, NULL, ThreadReceiveServer, NULL);
   sleep(1215752192);
   pthread_join(thread_send, NULL);

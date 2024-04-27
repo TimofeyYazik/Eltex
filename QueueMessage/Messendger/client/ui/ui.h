@@ -8,5 +8,6 @@ void MessageWindow(WINDOW *wnd, MessageStorage *msg);
 void InputMessageWindow(WINDOW *wnd, Message *msg);
 void SigWinch(int signo);
 void Register();
+void UserWindow(WINDOW *wnd, NameList *list);
 
 #endif //UI_H

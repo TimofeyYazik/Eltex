@@ -29,13 +29,16 @@ void MessageWindow(WINDOW *wnd, MessageStorage *msg){
   wrefresh(wnd);
 }
 
-// void UserWindow(WINDOW *wnd, Message **msg){
-//   signal(SIGWINCH, SigWinch); 
-//   curs_set(TRUE);
-//   wclear(wnd);
-//   box(wnd, 0, 0);
-//   wrefresh(wnd);
-// }
+void UserWindow(WINDOW *wnd, NameList *list){
+  signal(SIGWINCH, SigWinch); 
+  curs_set(TRUE);
+  wclear(wnd);
+  box(wnd, 0, 0);
+  for(int i = 0; i < list->len; i++){
+    mvwprintw(wnd, i + 2, 4, "%s\n", list->name[i]);
+  }
+  wrefresh(wnd);
+}
 
 void InputMessageWindow(WINDOW *wnd, Message *msg){
   signal(SIGWINCH, SigWinch); 

@@ -185,6 +185,7 @@ int main(){
   mq_unlink("/nigger");
   mq_unlink("/user");
   mq_unlink("/hi");
+  mq_unlink("/niger");
   mq_unlink(NAME_QUEUE_SERVER);
   mq_unlink(NAME_QUEUE_REGISTER);
   pthread_t thread_receive;
@@ -205,6 +206,6 @@ int main(){
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
   pthread_join(thread_register, NULL);
-  
+  pthread_join(thread_stop, NULL);
   exit(EXIT_SUCCESS);
 }
