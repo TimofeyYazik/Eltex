@@ -8,6 +8,7 @@
 #define MAX_PATH_LENGTH 256
 #define  NAME_QUEUE_REGISTER "/register"
 #define  NAME_QUEUE_SERVER "/server"
+#define  NAME_QUEUE_NAME "/name"
 #define  GOOD_STATUS "OK"
 #define  BAD_STATUS "NO"
 

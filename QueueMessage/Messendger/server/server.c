@@ -164,14 +164,13 @@ void *ThreadRegisterClient(void *arg){
   exit(EXIT_SUCCESS);
 }
 
-// void *ThreadStop(void *arg){
-//   char stop[5] = {0};
-//   fprintf(stderr, "ThreadStop start\n");
-//   while (stop_server)
-//   {
-//     scanf("%d", &stop);
-//   } 
-// }
+void *ThreadStop(void *arg){
+  fprintf(stderr, "ThreadStop start\n");
+  while (stop_server)
+  {
+    scanf("%d", &stop_server);
+  } 
+}
 
 int main(){
   mq_unlink("/lp");
@@ -192,7 +191,7 @@ int main(){
   list.len = 0;
   list.size = 10;
   list.name = malloc(sizeof(char*) * list.size);
-  // pthread_create(&thread_stop, NULL, ThreadStop, NULL);
+  pthread_create(&thread_stop, NULL, ThreadStop, NULL);
   pthread_create(&thread_register, NULL, ThreadRegisterClient, (void *)&list);
   pthread_create(&thread_send, NULL, ThreadSendClient, (void *)&list);
   pthread_create(&thread_receive, NULL, ThreadReceiveClient, (void *)&list);
