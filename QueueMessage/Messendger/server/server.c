@@ -200,7 +200,7 @@ int main(){
   pthread_create(&thread_send, NULL, ThreadSendClient, (void *)&list);
   pthread_create(&thread_receive, NULL, ThreadReceiveClient, (void *)&list);
 
-  sleep(1215752192);
+  while(stop_server);
 
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
