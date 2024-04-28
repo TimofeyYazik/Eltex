@@ -34,14 +34,21 @@ void *ThreadSendServer(void *arg){
   attr.mq_maxmsg = 50;
   attr.mq_msgsize = sizeof(Message);
   attr.mq_curmsgs = 0;
+  mqd_t ds_queue_receive = mq_open(name, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
   mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
   while (stop_client) {
     InputMessageWindow(wnd, &msg);
+    if (!strcmp(msg.text, "/exit")) {
+      stop_client = 0;  
+      mq_send(ds_queue_server, (char *)&msg, sizeof(Message), 0);
+      break;
+    }
     if(mq_send(ds_queue_server, (char *)&msg, sizeof(Message), 0) == -1){
       perror("mq_send");
     }
   }
   mq_close(ds_queue_server);
+  mq_close(ds_queue_receive);
 }
 
 
