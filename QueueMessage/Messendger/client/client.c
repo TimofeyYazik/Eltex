@@ -1,10 +1,8 @@
 #include <curses.h>
 #include <stdlib.h>
-#include <signal.h>
 #include <string.h>
 #include <sys/ioctl.h>
 #include <mqueue.h>
-#include <termios.h>
 #include <unistd.h>
 #include <time.h>
 #include <unistd.h>
@@ -18,7 +16,12 @@
 
 char name[MAX_NAME_LEN] = {0};
 MessageStorage storage;
+int stop_client = 1;
 
+void MsgCopy(Message *dst, Message *src){
+  strcpy(dst->name, src->name);
+  strcpy(dst->text, src->text);
+}
 
 void *ThreadSendServer(void *arg){
   int x, y;
@@ -32,7 +35,7 @@ void *ThreadSendServer(void *arg){
   attr.mq_msgsize = sizeof(Message);
   attr.mq_curmsgs = 0;
   mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
-  while (1) {
+  while (stop_client) {
     InputMessageWindow(wnd, &msg);
     if(mq_send(ds_queue_server, (char *)&msg, sizeof(Message), 0) == -1){
       perror("mq_send");
@@ -41,10 +44,6 @@ void *ThreadSendServer(void *arg){
   mq_close(ds_queue_server);
 }
 
-void MsgCopy(Message *dst, Message *src){
-  strcpy(dst->name, src->name);
-  strcpy(dst->text, src->text);
-}
 
 void *ThreadReceiveServer(void *arg){
   int size = 0;
@@ -66,9 +65,11 @@ void *ThreadReceiveServer(void *arg){
     perror("mq_open");
     exit(EXIT_FAILURE);
   }
+
   WINDOW *wnd = newwin((y / 4) * 3, (x / 4) * 3, 0, 0);
   box(wnd, 0, 0);
-  while (1) {
+
+  while (stop_client) {
     MessageWindow(wnd, &storage);
     if(mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL) == -1) perror("mq_receive"); 
     MsgCopy(&storage.msg[storage.len], &msg);
@@ -79,6 +80,7 @@ void *ThreadReceiveServer(void *arg){
     }
     usleep(10000);
   }
+
   mq_close(ds_queue_connect);
   mq_unlink(name);
 }
@@ -94,7 +96,7 @@ void *ThreadUserWindow(void *arg){
   list.size = 10;
   list.name = malloc(sizeof(char *) * list.size);
   int flag = 1;
-  while(1){
+  while(stop_client){
   if(storage.len != storage_len){
     for(int i = storage_len; i < storage.len; i++){
       for(int j = 0; j < list.len; j++){
@@ -129,6 +131,7 @@ int main(){
   sleep(1215752192);
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
+  pthread_join(thread_user, NULL);
   endwin();
   exit(EXIT_SUCCESS);
 }
