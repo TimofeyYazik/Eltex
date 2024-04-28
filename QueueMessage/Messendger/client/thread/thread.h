@@ -14,6 +14,7 @@
 #include <sys/stat.h>
 #include <pthread.h>
 
+#include "../ui/ui.h"
 #include "../../custom_type.h"
 
 void MsgCopy(Message *dst, Message *src);

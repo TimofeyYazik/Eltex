@@ -1,17 +1,3 @@
-#include <curses.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <mqueue.h>
-#include <unistd.h>
-#include <time.h>
-#include <unistd.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <pthread.h>
-
-#include "ui/ui.h"
 #include "thread/thread.h"
 
 char name[MAX_NAME_LEN] = {0};
