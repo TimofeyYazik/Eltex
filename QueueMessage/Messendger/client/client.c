@@ -12,7 +12,7 @@
 #include <pthread.h>
 
 #include "ui/ui.h"
-#include "../thread/thread.h"
+#include "thread/thread.h"
 
 char name[MAX_NAME_LEN] = {0};
 MessageStorage storage;
