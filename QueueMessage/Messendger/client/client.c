@@ -49,6 +49,7 @@ void *ThreadSendServer(void *arg){
   }
   mq_close(ds_queue_server);
   mq_close(ds_queue_receive);
+  delwin(wnd);
 }
 
 
@@ -87,7 +88,7 @@ void *ThreadReceiveServer(void *arg){
     }
     usleep(10000);
   }
-
+  delwin(wnd);
   mq_close(ds_queue_connect);
   mq_unlink(name);
 }
@@ -125,6 +126,8 @@ void *ThreadUserWindow(void *arg){
     flag = 1;
     sleep(1);
   }
+  delwin(wnd);
+  free(list.name);
 }
 int main(){
   pthread_t thread_send;
@@ -136,10 +139,11 @@ int main(){
   pthread_create(&thread_user, NULL, ThreadUserWindow, NULL);
   pthread_create(&thread_receive, NULL, ThreadReceiveServer, NULL);
   while (stop_client);
+  endwin();
   
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
   pthread_join(thread_user, NULL);
-  endwin();
+  free(storage.msg);
   exit(EXIT_SUCCESS);
 }
