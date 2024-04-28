@@ -89,7 +89,6 @@ void *ThreadReceiveClient(void *arg){
   }
   while(stop_server) {
     mq_receive(ds_queue_server, (char*)&msg_buf, sizeof(Message), NULL);
-    if(msg_buf.name[0] == 0) break;
     MsgCopy(&storage.msg[storage.len], &msg_buf);
     fprintf(stderr ,"ThreadReceiveClient check: %s\n", storage.msg[storage.len].text);
     storage.len++;
@@ -185,7 +184,7 @@ void *ThreadStop(void *arg){
   {
     scanf("%d", &stop_server);
   } 
-  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_RDONLY, S_IWUSR | S_IRUSR, &attr1);
+  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr1);
   mqd_t ds_queue_register = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
   mq_send(ds_queue_register, stop_regis, MAX_NAME_LEN, 0);
   mq_send(ds_queue_server, (char*)&stop_receive, sizeof(Message), 0);
