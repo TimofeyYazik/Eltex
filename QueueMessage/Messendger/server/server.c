@@ -189,6 +189,8 @@ void *ThreadStop(void *arg){
   mqd_t ds_queue_register = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
   mq_send(ds_queue_register, stop_regis, MAX_NAME_LEN, 0);
   mq_send(ds_queue_server, stop_receive, sizeof(Message), 0);
+  mq_close(ds_queue_server);
+  mq_close(ds_queue_register);
   printf("ThreadStop exit\n");
 }
 
