@@ -1,197 +1,7 @@
-#include <mqueue.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <time.h>
-#include <unistd.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <pthread.h>
-
-#include "../custom_type.h"
+#include "thread.h"
 
 MessageStorage storage = {0};
 volatile int stop_server = 1;
-
-void *ThreadSendClient(void *arg){
-  fprintf(stderr, "ThreadSendClient start\n");
-  NameList *list = (NameList*)arg;
-  DsList dlist;
-  DsList *ds_list = &dlist;
-  ds_list->len = 0;
-  ds_list->size = 10;
-  ds_list->ds = malloc(sizeof(mqd_t) * ds_list->size);
-  int flag_len = 0;
-  struct mq_attr attr;
-  attr.mq_flags = 0;
-  attr.mq_maxmsg = 50;
-  attr.mq_msgsize = sizeof(Message);
-  attr.mq_curmsgs = 0;
-  int storage_len = storage.len;
-  while(stop_server) {
-    if(flag_len != list->len) {
-      fprintf(stderr, "ThreadSendClient check name: flag_len = %d list->len =%d %s\n", flag_len, list->len, list->name[flag_len]);
-      ds_list->ds[flag_len] = mq_open(list->name[flag_len], O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
-      if (ds_list->ds[flag_len] == -1) {
-        fprintf(stderr, "ThreadSendClient mq_open failed with error: %d\n", errno);
-        perror("mq_open");
-      }
-      ds_list->len++;
-      if (ds_list->len == ds_list->size) {
-        ds_list->size = 2 * ds_list->size - (ds_list->size / 2);
-        ds_list->ds = realloc(ds_list->ds, sizeof(mqd_t) * ds_list->size);
-      }
-      for (int i = flag_len; i < ds_list->len; i++) {
-        for(int j = 0; j < storage.len; j++) {
-          if(mq_send(ds_list->ds[i], (char*)&storage.msg[j], sizeof(Message), 0) == -1) 
-          perror("ThreadReceiveClient mq_send");
-        }
-      }
-      flag_len = list->len;
-    }
-    if(storage.len != storage_len) {
-    for (int i = 0; i < ds_list->len; i++) {
-      for(int j = storage_len; j < storage.len; j++) {
-        if(mq_send(ds_list->ds[i], (char*)&storage.msg[j], sizeof(Message), 0) == -1) perror("ThreadReceiveClient mq_send");
-      }
-    }
-    storage_len = storage.len; 
-    }
-    usleep(10000);
-  }
-  for (int i = 0; i < ds_list->len; i++) {
-    mq_close(ds_list->ds[i]);
-  }
-  free(ds_list->ds);
-  fprintf(stderr, "ThreadSendClient end\n");
-}
-void MsgCopy(Message *dst, Message *src){
-  strcpy(dst->name, src->name);
-  strcpy(dst->text, src->text);
-}
-
-void *ThreadReceiveClient(void *arg){
-  fprintf(stderr, "ThreadReceiveClient start\n");
-  Message msg_buf = {0};
-  storage.size = 50;
-  storage.msg = malloc(sizeof(Message) * storage.size);
-  struct mq_attr attr;
-  attr.mq_flags = 0;
-  attr.mq_maxmsg = 50;
-  attr.mq_msgsize = sizeof(Message);
-  attr.mq_curmsgs = 0;
-  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_RDONLY, S_IWUSR | S_IRUSR, &attr);
-  if (ds_queue_server == -1) {
-    fprintf(stderr, "ThreadReceiveClient mq_open failed with error: %d\n", errno);
-    perror("mq_open");
-    exit(EXIT_FAILURE);
-  }
-  while(stop_server) {
-    mq_receive(ds_queue_server, (char*)&msg_buf, sizeof(Message), NULL);
-    MsgCopy(&storage.msg[storage.len], &msg_buf);
-    fprintf(stderr ,"ThreadReceiveClient check: %s\n", storage.msg[storage.len].text);
-    storage.len++;
-    if (storage.len == storage.size) {
-      storage.size = storage.size * 2 - (storage.size / 2);
-      storage.msg = realloc(storage.msg, sizeof(Message) * storage.size);
-    }
-    usleep(10000);
-    memset(msg_buf.text, 0, sizeof(msg_buf.text));
-    memset(msg_buf.name, 0, sizeof(msg_buf.name));
-  }
-  mq_close(ds_queue_server);
-  mq_unlink(NAME_QUEUE_SERVER);
-  free(storage.msg);
-  printf("ThreadReceiveClient end\n");
-}
-
-void *ThreadRegisterClient(void *arg){
-  char status_ok[MAX_NAME_LEN] = GOOD_STATUS;
-  char status_error[MAX_NAME_LEN] = BAD_STATUS;
-  fprintf(stderr, "ThreadRegisterClient start\n");
-  NameList *list = (NameList*)arg;
-  struct mq_attr attr;
-  attr.mq_flags = 0;
-  attr.mq_maxmsg = 50;
-  attr.mq_msgsize = MAX_NAME_LEN;
-  attr.mq_curmsgs = 0;
-  list->name[0] = malloc(sizeof(char) * MAX_NAME_LEN);
-  list->len = 0;
-  char request_name[MAX_NAME_LEN] = {0};
-  mqd_t ds_queue_register = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_RDWR, S_IWUSR | S_IRUSR, &attr);
-  if (ds_queue_register == -1) {
-    fprintf(stderr, "ThreadRegisterClient mq_open failed with error: %d\n", errno);
-    perror("mq_open");
-    exit(EXIT_FAILURE);
-  }
-  while(stop_server) {
-    if(mq_receive(ds_queue_register, request_name, MAX_NAME_LEN, NULL) == -1) {
-      fprintf(stderr, "ThreadRegisterClient mq_receive failed with error: %d\n", errno);
-      perror("mq_receive");
-      exit(EXIT_FAILURE);
-    }
-    fprintf(stderr, "ThreadRegisterClient check name: %s\n", request_name);
-    for(int i = 0; i < list->len; i++) {
-      if (strcmp(list->name[i], request_name) == 0) {
-        fprintf(stderr, "check status: %s\n", status_error);
-        mq_send(ds_queue_register, status_error, MAX_NAME_LEN, 0);
-        break;
-      }
-      if (i == list->len - 1) {
-        list->name[list->len] = malloc(sizeof(char) * MAX_NAME_LEN);
-        strcpy(list->name[list->len], request_name);
-        fprintf(stderr, "check status: %s\n", status_ok);
-        mq_send(ds_queue_register, status_ok, MAX_NAME_LEN, 0);
-        list->len++;
-        if(list->len == list->size) {
-        list->size = 2 * list->size - (list->size / 2);
-        list->name = realloc(list->name, sizeof(char*) * list->size);
-      }
-        break;
-      }
-    }
-    if(list->len == 0){
-      fprintf(stderr, "check 0 status: %s\n", status_ok);
-      strcpy(list->name[list->len], request_name);
-      mq_send(ds_queue_register, status_ok, MAX_NAME_LEN, 0);
-      list->len++;
-    }
-    memset(request_name, 0, MAX_NAME_LEN);
-    sleep(1);
-  }
-  mq_close(ds_queue_register);
-  mq_unlink(NAME_QUEUE_REGISTER);
-  printf("ThreadRegisterClient exit\n");
-  }
-
-void *ThreadStop(void *arg){
-  struct mq_attr attr;
-  attr.mq_flags = 0;
-  attr.mq_maxmsg = 50;
-  attr.mq_msgsize = MAX_NAME_LEN;
-  attr.mq_curmsgs = 0;
-
-  struct mq_attr attr1;
-  attr1.mq_flags = 0;
-  attr1.mq_maxmsg = 50;
-  attr1.mq_msgsize = sizeof(Message);
-  attr1.mq_curmsgs = 0;
-  fprintf(stderr, "ThreadStop start\n");
-  char stop_regis[MAX_NAME_LEN] = {0};
-  Message stop_receive = {0};
-  while (stop_server)
-  {
-    scanf("%d", &stop_server);
-  } 
-  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr1);
-  mqd_t ds_queue_register = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
-  mq_send(ds_queue_register, stop_regis, MAX_NAME_LEN, 0);
-  mq_send(ds_queue_server, (char*)&stop_receive, sizeof(Message), 0);
-  mq_close(ds_queue_server);
-  mq_close(ds_queue_register);
-  printf("ThreadStop exit\n");
-}
 
 int main(){
   mq_unlink("/lp");
@@ -217,12 +27,14 @@ int main(){
   pthread_create(&thread_register, NULL, ThreadRegisterClient, (void *)&list);
   pthread_create(&thread_send, NULL, ThreadSendClient, (void *)&list);
   pthread_create(&thread_receive, NULL, ThreadReceiveClient, (void *)&list);
-
   while(stop_server);
-
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
   pthread_join(thread_register, NULL);
   pthread_join(thread_stop, NULL);
+  free(storage.msg);
+  for(int i = 0; i < list.len; i++){
+    free(list.name[i]);
+  }
   exit(EXIT_SUCCESS);
 }
