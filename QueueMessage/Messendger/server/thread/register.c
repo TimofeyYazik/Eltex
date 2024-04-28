@@ -2,6 +2,9 @@
 
 #include "thread.h"
 
+extern MessageStorage storage;
+extern volatile int stop_server;
+
 void *ThreadRegisterClient(void *arg){
   char status_ok[MAX_NAME_LEN] = GOOD_STATUS;
   char status_error[MAX_NAME_LEN] = BAD_STATUS;

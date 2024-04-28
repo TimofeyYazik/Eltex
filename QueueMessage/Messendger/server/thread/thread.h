@@ -14,7 +14,7 @@
 
 #include "../../custom_type.h"
 
-inline void MsgCopy(Message *dst, Message *src);
+void MsgCopy(Message *dst, Message *src);
 void *ThreadStop(void *arg);
 void *ThreadSendClient(void *arg);
 void *ThreadReceiveClient(void *arg);

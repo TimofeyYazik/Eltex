@@ -1,5 +1,8 @@
 #include "thread.h"
 
+extern MessageStorage storage;
+extern volatile int stop_server;
+
 void *ThreadSendClient(void *arg){
   fprintf(stderr, "ThreadSendClient start\n");
   NameList *list = (NameList*)arg;
