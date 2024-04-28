@@ -1,4 +1,4 @@
-#include "thread.h"
+#include "thread/thread.h"
 
 MessageStorage storage = {0};
 volatile int stop_server = 1;
