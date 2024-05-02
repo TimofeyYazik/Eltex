@@ -55,14 +55,17 @@ void *CustomersBuy(void *argc){
 
 void *Provider(void *argc){
   int i = 0;
+  int prev_provided = -1;
   while (1) {
     for(i = 0; i < NUM_SHOPS; i++){
-      if(shops[i].is_closed) continue;
+      if(shops[i].is_closed || prev_provided == i) continue;
       pthread_mutex_lock(&shops[i].mutex);
+      prev_provided = i;
       shops[i].is_closed = 1;
       shops[i].product += RESTOCK_PACKAGE_SIZE;
       shops[i].is_closed = 0;
       pthread_mutex_unlock(&shops[i].mutex);
+      break;
     }
     if(i == NUM_SHOPS) printf("Provider is out of shops\n"); 
     else printf("Provider restocked shop %d\n", i);
