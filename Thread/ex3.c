@@ -41,13 +41,17 @@ void *CustomersBuy(void *argc){
         prev_product = shops[i].product;
         shops[i].product = 0;
       }
+     sleep(2);
      shops[i].is_closed = 0;
      pthread_mutex_unlock(&shops[i].mutex);
      printf("Customer %d bought %d from shop %d\n", client->id, prev_product, i);
      printf("Customer %d has %d package\n", client->id, client->package);
+     break;
    } 
-   if(i == NUM_SHOPS) printf("Customer %d is out of shops\n", client->id);
-   sleep(2);
+   if(i == NUM_SHOPS) {
+    printf("Customer %d is out of shops\n", client->id);
+    sleep(2);
+   }
   }
   printf("Customer %d is out of packages\n", client->id);
   return NULL;
@@ -55,22 +59,23 @@ void *CustomersBuy(void *argc){
 
 void *Provider(void *argc){
   int i = 0;
-  int prev_provided = 0;
+  int prev_provided = -1;
   while (1) {
-    for(i = prev_provided; i < NUM_SHOPS; i++){
-      if(shops[i].is_closed) continue;
+    for(i = 0; i < NUM_SHOPS; i++){
+      if(shops[i].is_closed || prev_provided == i) continue;
+      prev_provided = i;
       pthread_mutex_lock(&shops[i].mutex);
       shops[i].is_closed = 1;
       shops[i].product += RESTOCK_PACKAGE_SIZE;
+      sleep(1);
       shops[i].is_closed = 0;
       pthread_mutex_unlock(&shops[i].mutex);
       break;
     }
-    prev_provided++;
-    if(prev_provided == NUM_SHOPS) prev_provided = 0;
-    if(i == NUM_SHOPS) printf("Provider is out of shops\n"); 
+    // prev_provided++;
+    // if(prev_provided == NUM_SHOPS) prev_provided = 0;
+    if(i == NUM_SHOPS) {printf("Provider is out of shops\n"); sleep(1);}
     else printf("Provider restocked shop %d\n", i);
-    sleep(1);
   }
 }
 
