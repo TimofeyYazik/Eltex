@@ -55,18 +55,19 @@ void *CustomersBuy(void *argc){
 
 void *Provider(void *argc){
   int i = 0;
-  int prev_provided = -1;
+  int prev_provided = 0;
   while (1) {
-    for(i = 0; i < NUM_SHOPS; i++){
-      if(shops[i].is_closed || prev_provided == i) continue;
+    for(i = prev_provided; i < NUM_SHOPS; i++){
+      if(shops[i].is_closed) continue;
       pthread_mutex_lock(&shops[i].mutex);
-      prev_provided = i;
       shops[i].is_closed = 1;
       shops[i].product += RESTOCK_PACKAGE_SIZE;
       shops[i].is_closed = 0;
       pthread_mutex_unlock(&shops[i].mutex);
       break;
     }
+    prev_provided++;
+    if(prev_provided == NUM_SHOPS) prev_provided = 0;
     if(i == NUM_SHOPS) printf("Provider is out of shops\n"); 
     else printf("Provider restocked shop %d\n", i);
     sleep(1);
@@ -74,7 +75,7 @@ void *Provider(void *argc){
 }
 
 int main(){
-  srand(time(NULL));   // Initialization, should only be called once.
+  srand(time(NULL));   \
   pthread_t customers_pthread[3];
   pthread_t provider_pthread;
   int lower = 5000, upper = 10000;
