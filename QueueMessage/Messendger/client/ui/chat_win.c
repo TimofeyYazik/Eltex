@@ -23,11 +23,11 @@ void MessageWindow(WINDOW *wnd, MessageStorage *msg , int y){
   wclear(wnd);
   box(wnd, 0, 0);
   wrefresh(wnd);
-  int y = 0;
+  int y_change = 0;
   if(msg->len > y){
-    y = msg->len - y;
+    y_change = msg->len - y;
   }
-  for (int i = y; i < msg->len; i++) {
+  for (int i = y_change; i < msg->len; i++) {
     mvwprintw(wnd, i + 2, 4, "%s: %s\n", msg->msg[i].name, msg->msg[i].text);
   }
   wrefresh(wnd);
