@@ -34,7 +34,7 @@ void Register(){
   if (ds_queue == -1) {
     fprintf(stderr, "Register mq_open failed with error: %d\n", errno);
     perror("mq_open");
-    return NULL;
+    return;
   }
   WINDOW * wnd;
   initscr();
