@@ -4,7 +4,6 @@ MessageStorage storage = {0};
 volatile int stop_server = 1;
 
 int main(){
-  mq_unlink("/hi");
   pthread_t thread_receive;
   pthread_t thread_register;
   pthread_t thread_send;
