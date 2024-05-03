@@ -19,12 +19,12 @@ extern char name[MAX_NAME_LEN];
 
 void MessageWindow(WINDOW *wnd, MessageStorage *msg , int y){
   signal(SIGWINCH, SigWinch); 
-  curs_set(TRUE);
+  curs_set(FALSE);
   wclear(wnd);
   box(wnd, 0, 0);
   wrefresh(wnd);
   int y_shift = 0;
-  if((msg->len - 5) > y){
+  if((msg->len - 10) > y){
     y_shift = msg->len - y;
   }
   for (int i = y_shift, j = 0; i < msg->len; i++, j++) {
@@ -35,7 +35,7 @@ void MessageWindow(WINDOW *wnd, MessageStorage *msg , int y){
 
 void UserWindow(WINDOW *wnd, NameList *list){
   signal(SIGWINCH, SigWinch); 
-  curs_set(TRUE);
+  curs_set(FALSE);
   wclear(wnd);
   box(wnd, 0, 0);
   for(int i = 0; i < list->len; i++){
