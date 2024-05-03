@@ -25,8 +25,8 @@ void MessageWindow(WINDOW *wnd, MessageStorage *msg , int y){
   box(wnd, 0, 0);
   wrefresh(wnd);
   int y_shift = 0;
-  if(msg->len > (y1 - 4)){
-    y_shift = msg->len - y1;
+  if(msg->len > (y1 - 6)){
+    y_shift = msg->len - (y1 - 6);
     y1 = msg->len - 6;
   }
   for (int i = y_shift, j = 0; i < msg->len; i++, j++) {
