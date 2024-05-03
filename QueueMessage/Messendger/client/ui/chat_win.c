@@ -20,14 +20,14 @@ extern char name[MAX_NAME_LEN];
 void MessageWindow(WINDOW *wnd, MessageStorage *msg , int y){
   signal(SIGWINCH, SigWinch); 
   curs_set(FALSE);
-  int y1 = y;
+  int y1 = y - 3;
   wclear(wnd);
   box(wnd, 0, 0);
   wrefresh(wnd);
   int y_shift = 0;
-  if(msg->len > (y1 - 6)){
-    y_shift = msg->len - (y1 - 6);
-    y1 = msg->len - 6;
+  if(msg->len > y1){
+    y_shift = msg->len - y1;
+    y1 = (msg->len - 3);
   }
   for (int i = y_shift, j = 0; i < msg->len; i++, j++) {
     mvwprintw(wnd, j + 2, 4, "%s: %s\n", msg->msg[i].name, msg->msg[i].text);
