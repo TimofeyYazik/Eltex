@@ -22,13 +22,12 @@ void *ThreadRegisterClient(void *arg){
   if (ds_queue_register == -1) {
     fprintf(stderr, "ThreadRegisterClient mq_open failed with error: %d\n", errno);
     perror("mq_open");
-    exit(EXIT_FAILURE);
+    return NULL;
   }
   while(stop_server) {
     if(mq_receive(ds_queue_register, request_name, MAX_NAME_LEN, NULL) == -1) {
       fprintf(stderr, "ThreadRegisterClient mq_receive failed with error: %d\n", errno);
       perror("mq_receive");
-      exit(EXIT_FAILURE);
     }
     fprintf(stderr, "ThreadRegisterClient check name: %s\n", request_name);
     for(int i = 0; i < list->len; i++) {

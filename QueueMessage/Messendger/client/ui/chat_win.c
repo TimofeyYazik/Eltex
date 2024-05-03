@@ -17,13 +17,17 @@ extern char name[MAX_NAME_LEN];
   
 #define MAX_PATH_LENGTH 256
 
-void MessageWindow(WINDOW *wnd, MessageStorage *msg){
+void MessageWindow(WINDOW *wnd, MessageStorage *msg , int y){
   signal(SIGWINCH, SigWinch); 
   curs_set(TRUE);
   wclear(wnd);
   box(wnd, 0, 0);
   wrefresh(wnd);
-  for (int i = 0; i < msg->len; i++) {
+  int y = 0;
+  if(msg->len > y){
+    y = msg->len - y;
+  }
+  for (int i = y; i < msg->len; i++) {
     mvwprintw(wnd, i + 2, 4, "%s: %s\n", msg->msg[i].name, msg->msg[i].text);
   }
   wrefresh(wnd);

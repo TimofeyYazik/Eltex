@@ -9,6 +9,10 @@ void *ThreadReceiveServer(void *arg){
   storage.len = 0;
   storage.size = 50;
   storage.msg = malloc(sizeof(Message) * storage.size);
+  if(storage.msg == NULL) {
+    perror("malloc");
+    return NULL;
+  }
   int x, y;
   int num_message = 0;
   struct mq_attr attr;
@@ -22,14 +26,14 @@ void *ThreadReceiveServer(void *arg){
   if (ds_queue_connect == -1) {
     fprintf(stderr, "ThreadReceiveServer mq_open failed with error: %d\n", errno);
     perror("mq_open");
-    exit(EXIT_FAILURE);
+    return NULL;
   }
 
   WINDOW *wnd = newwin((y / 4) * 3, (x / 4) * 3, 0, 0);
   box(wnd, 0, 0);
 
   while (stop_client) {
-    MessageWindow(wnd, &storage);
+    MessageWindow(wnd, &storage, (y / 4) * 3);
     if(mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL) == -1) perror("mq_receive"); 
     MsgCopy(&storage.msg[storage.len], &msg);
     storage.len++;

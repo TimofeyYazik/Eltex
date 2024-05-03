@@ -21,7 +21,18 @@ void *ThreadSendServer(void *arg){
   attr.mq_msgsize = sizeof(Message);
   attr.mq_curmsgs = 0;
   mqd_t ds_queue_receive = mq_open(name, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
+  if(ds_queue_receive == -1) {
+    fprintf(stderr, "ThreadSendServer mq_open failed with error: %d\n", errno);
+    perror("mq_open");
+    return NULL;
+  }
   mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
+  if(ds_queue_server == -1) {
+    fprintf(stderr, "ThreadSendServer mq_open failed with error: %d\n", errno);
+    perror("mq_open");
+    mq_close(ds_queue_receive);
+    return NULL;
+  }
   while (stop_client) {
     InputMessageWindow(wnd, &msg);
     if (!strcmp(msg.text, "/exit")) {

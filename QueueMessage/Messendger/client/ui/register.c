@@ -31,6 +31,11 @@ void Register(){
   attr.mq_msgsize = MAX_NAME_LEN;
   attr.mq_curmsgs = 0;
   mqd_t ds_queue = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_RDWR, S_IWUSR | S_IRUSR, &attr);
+  if (ds_queue == -1) {
+    fprintf(stderr, "Register mq_open failed with error: %d\n", errno);
+    perror("mq_open");
+    return NULL;
+  }
   WINDOW * wnd;
   initscr();
   signal(SIGWINCH, SigWinch); 
@@ -39,7 +44,7 @@ void Register(){
   while (1) {
     clear();
     getmaxyx(stdscr, y, x);
-    wnd = newwin(y / 2, x / 2, (y - y / 2) / 2, (x - x / 2) / 2);
+    wnd = newwin(y / 3, x / 3, (y / 3) * 2, (x / 3) * 2);
     box(wnd, 0, 0);
     wmove(wnd, 2, 4);
     if (name_is_register == 0)

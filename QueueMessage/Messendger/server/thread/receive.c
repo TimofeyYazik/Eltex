@@ -23,7 +23,7 @@ void *ThreadReceiveClient(void *arg){
   if (ds_queue_server == -1) {
     fprintf(stderr, "ThreadReceiveClient mq_open failed with error: %d\n", errno);
     perror("mq_open");
-    exit(EXIT_FAILURE);
+    return NULL;
   }
   while(stop_server) {
     mq_receive(ds_queue_server, (char*)&msg_buf, sizeof(Message), NULL);
