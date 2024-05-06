@@ -18,6 +18,7 @@ void *ThreadSendClient(void *arg){
   int storage_len = storage->len;
   while(cont->stop_server) {
     if(flag_len != list->len) {
+      if(flag_len > list->len) flag_len = list->len - 1;
       fprintf(stderr, "ThreadSendClient check name: flag_len = %d list->len =%d %s\n", flag_len, list->len, list->name[flag_len]);
       ds_list->ds[flag_len] = mq_open(list->name[flag_len], O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
       if (ds_list->ds[flag_len] == -1) {
