@@ -45,6 +45,7 @@ void *ThreadRegisterClient(void *arg){
         mq_send(ds_queue_register, status_ok, MAX_NAME_LEN, 0);
         sprintf(server_message.text, "new client: %s", list->name[list->len]);
         MsgCopy(&storage.msg[storage.len], &server_message);
+        fprintf(stderr, "check MSG: %s %d\n", storage.msg[storage.len].text, storage.len);
         storage.len++;
         if(storage.len == storage.size) {
           storage.size = 2 * storage.size - (storage.size / 2);
@@ -64,6 +65,7 @@ void *ThreadRegisterClient(void *arg){
       mq_send(ds_queue_register, status_ok, MAX_NAME_LEN, 0);
       sprintf(server_message.text, "new client: %s", list->name[list->len]);
       MsgCopy(&storage.msg[storage.len], &server_message);
+      fprintf(stderr, "check MSG: %s %d\n", storage.msg[storage.len].text, storage.len);
       storage.len++;
       list->len++;
     }
