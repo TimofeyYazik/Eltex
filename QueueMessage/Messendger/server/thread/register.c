@@ -58,9 +58,9 @@ void *ThreadRegisterClient(void *arg){
       fprintf(stderr, "check 0 status: %s\n", status_ok);
       strcpy(list->name[list->len], request_name);
       mq_send(ds_queue_register, status_ok, MAX_NAME_LEN, 0);
-      sprintf(server_message.text, "new client: %s", list->name[list->len]);
-      MsgCopy(&storage.msg[storage.len], &server_message);
-      storage.len++;
+      // sprintf(server_message.text, "new client: %s", list->name[list->len]);
+      // MsgCopy(&storage.msg[storage.len], &server_message);
+      // storage.len++;
       list->len++;
     }
     memset(request_name, 0, MAX_NAME_LEN);
