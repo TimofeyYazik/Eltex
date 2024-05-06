@@ -16,7 +16,6 @@ void *ThreadUserWindow(void *arg){
   int flag = 1;
   while(stop_client){
   if(storage.len != storage_len){
-    if(!strcmp(storage.msg[storage.len - 1].name, "/server")) break;
     for(int i = storage_len; i < storage.len; i++){
       for(int j = 0; j < list.len; j++){
         flag = strcmp(list.name[j], storage.msg[i].name);
