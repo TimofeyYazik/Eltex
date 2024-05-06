@@ -1,9 +1,8 @@
 #include "thread.h"
 
-extern MessageStorage storage;
-extern volatile int stop_server;
 
 void *ThreadStop(void *arg){
+  Controller *cont = (Controller*)arg;
   struct mq_attr attr;
   attr.mq_flags = 0;
   attr.mq_maxmsg = 50;
@@ -18,8 +17,8 @@ void *ThreadStop(void *arg){
   fprintf(stderr, "ThreadStop start\n");
   char stop_regis[MAX_NAME_LEN] = {0};
   Message stop_receive = {0};
-  while (stop_server) {
-    scanf("%d", &stop_server);
+  while (cont->stop_server) {
+    scanf("%d", &cont->stop_server);
   } 
   mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr1);
   if(ds_queue_server == -1) {

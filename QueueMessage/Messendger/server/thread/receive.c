@@ -1,19 +1,23 @@
 #include "thread.h"
 
-extern MessageStorage storage;
-extern volatile int stop_server;
-
 
 void MsgCopy(Message *dst, Message *src){
   strcpy(dst->name, src->name);
   strcpy(dst->text, src->text);
 }
+void ShiftList(NameList *list, int index){
+  for(int i = index; i < list->len - 1; i++){
+    strcpy(list->name[i], list->name[i + 1]);
+  }
+  list->len--;
+}
 
 void *ThreadReceiveClient(void *arg){
   fprintf(stderr, "ThreadReceiveClient start\n");
+  Controller *cont = (Controller*)arg;
+  MessageStorage *storage = cont->storage;
+  NameList *list = cont->list;
   Message msg_buf = {0};
-  storage.size = 50;
-  storage.msg = malloc(sizeof(Message) * storage.size);
   struct mq_attr attr;
   attr.mq_flags = 0;
   attr.mq_maxmsg = 50;
@@ -25,22 +29,26 @@ void *ThreadReceiveClient(void *arg){
     perror("mq_open");
     return NULL;
   }
-  while(stop_server) {
+  while(cont->stop_server) {
     mq_receive(ds_queue_server, (char*)&msg_buf, sizeof(Message), NULL);
     if(!strcmp(msg_buf.text, "/exit")){
       sprintf(msg_buf.text, "client is out: %s", msg_buf.name);
+      for(int i = 0; i < list->len; i++) {
+        if(strcmp(list->name[i], msg_buf.name) == 0){
+          ShiftList(list, i);
+          break;
+        }
+      }
       sprintf(msg_buf.name, "/server");
     }
-    MsgCopy(&storage.msg[storage.len], &msg_buf);
-    fprintf(stderr ,"ThreadReceiveClient check: %s\n", storage.msg[storage.len].text);
-    storage.len++;
-    if (storage.len == storage.size) {
-      storage.size = storage.size * 2 - (storage.size / 2);
-      storage.msg = realloc(storage.msg, sizeof(Message) * storage.size);
+    MsgCopy(&storage->msg[storage->len], &msg_buf);
+    fprintf(stderr ,"ThreadReceiveClient check: %s\n", storage->msg[storage->len].text);
+    storage->len++;
+    if (storage->len == storage->size) {
+      storage->size = storage->size * 2 - (storage->size / 2);
+      storage->msg = realloc(storage->msg, sizeof(Message) * storage->size);
     }
     usleep(10000);
-    memset(msg_buf.text, 0, sizeof(msg_buf.text));
-    memset(msg_buf.name, 0, sizeof(msg_buf.name));
   }
   mq_close(ds_queue_server);
   mq_unlink(NAME_QUEUE_SERVER);

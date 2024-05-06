@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "thread.h"
 
 extern MessageStorage storage;
@@ -11,14 +9,15 @@ void *ThreadRegisterClient(void *arg){
   Message server_message = {0};
   sprintf(server_message.name, "/server");
   fprintf(stderr, "ThreadRegisterClient start\n");
-  NameList *list = (NameList*)arg;
+  Controller *cont = (Controller*)arg;
   struct mq_attr attr;
   attr.mq_flags = 0;
   attr.mq_maxmsg = 50;
   attr.mq_msgsize = MAX_NAME_LEN;
   attr.mq_curmsgs = 0;
-  list->name[0] = malloc(sizeof(char) * MAX_NAME_LEN);
-  list->len = 0;
+  NameList *list = cont->list;
+  MessageStorage *storage = cont->storage;
+  cont->list->name[0] = malloc(sizeof(char) * MAX_NAME_LEN);
   char request_name[MAX_NAME_LEN] = {0};
   mqd_t ds_queue_register = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_RDWR, S_IWUSR | S_IRUSR, &attr);
   if (ds_queue_register == -1) {
@@ -26,7 +25,7 @@ void *ThreadRegisterClient(void *arg){
     perror("mq_open");
     return NULL;
   }
-  while(stop_server) {
+  while(cont->stop_server) {
     if(mq_receive(ds_queue_register, request_name, MAX_NAME_LEN, NULL) == -1) {
       fprintf(stderr, "ThreadRegisterClient mq_receive failed with error: %d\n", errno);
       perror("mq_receive");
@@ -44,12 +43,12 @@ void *ThreadRegisterClient(void *arg){
         fprintf(stderr, "check status: %s\n", status_ok);
         mq_send(ds_queue_register, status_ok, MAX_NAME_LEN, 0);
         sprintf(server_message.text, "new client: %s", list->name[list->len]);
-        MsgCopy(&storage.msg[storage.len], &server_message);
-        fprintf(stderr, "check MSG: %s %d\n", storage.msg[storage.len].text, storage.len);
-        storage.len++;
-        if(storage.len == storage.size) {
-          storage.size = 2 * storage.size - (storage.size / 2);
-          storage.msg = realloc(storage.msg, sizeof(Message) * storage.size);
+        MsgCopy(&storage->msg[storage->len], &server_message);
+        fprintf(stderr, "check MSG: %s %d\n", storage->msg[storage->len].text, storage->len);
+        storage->len++;
+        if(storage->len == storage->size) {
+          storage->size = 2 * storage->size - (storage->size / 2);
+          storage->msg = realloc(storage->msg, sizeof(Message) * storage->size);
         }
         list->len++;
         if(list->len == list->size) {
@@ -64,9 +63,9 @@ void *ThreadRegisterClient(void *arg){
       strcpy(list->name[list->len], request_name);
       mq_send(ds_queue_register, status_ok, MAX_NAME_LEN, 0);
       sprintf(server_message.text, "new client: %s", list->name[list->len]);
-      MsgCopy(&storage.msg[storage.len], &server_message);
-      fprintf(stderr, "check MSG: %s %d\n", storage.msg[storage.len].text, storage.len);
-      storage.len++;
+      MsgCopy(&storage->msg[storage->len], &server_message);
+      fprintf(stderr, "check MSG: %s %d\n", storage->msg[storage->len].text, storage->len);
+      storage->len++;
       list->len++;
     }
     memset(request_name, 0, MAX_NAME_LEN);

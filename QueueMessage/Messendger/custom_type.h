@@ -35,4 +35,10 @@ typedef struct{
   int size;
 } DsList;
 
+typedef struct{
+  int stop_server;
+  NameList *list;
+  MessageStorage *storage;
+} Controller;
+
 #endif // CUSTOM_TYPE_H_
