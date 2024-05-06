@@ -8,6 +8,8 @@ extern volatile int stop_server;
 void *ThreadRegisterClient(void *arg){
   char status_ok[MAX_NAME_LEN] = GOOD_STATUS;
   char status_error[MAX_NAME_LEN] = BAD_STATUS;
+  Message server_message = {0};
+  sprintf(server_message.name, "/server");
   fprintf(stderr, "ThreadRegisterClient start\n");
   NameList *list = (NameList*)arg;
   struct mq_attr attr;
@@ -41,11 +43,14 @@ void *ThreadRegisterClient(void *arg){
         strcpy(list->name[list->len], request_name);
         fprintf(stderr, "check status: %s\n", status_ok);
         mq_send(ds_queue_register, status_ok, MAX_NAME_LEN, 0);
+        sprintf(server_message.text, "new client: %s", list->name[list->len]);
+        MsgCopy(&storage.msg[storage.len], &server_message);
+        storage.len++;
         list->len++;
         if(list->len == list->size) {
-        list->size = 2 * list->size - (list->size / 2);
-        list->name = realloc(list->name, sizeof(char*) * list->size);
-      }
+          list->size = 2 * list->size - (list->size / 2);
+          list->name = realloc(list->name, sizeof(char*) * list->size);
+        }
         break;
       }
     }
@@ -53,6 +58,9 @@ void *ThreadRegisterClient(void *arg){
       fprintf(stderr, "check 0 status: %s\n", status_ok);
       strcpy(list->name[list->len], request_name);
       mq_send(ds_queue_register, status_ok, MAX_NAME_LEN, 0);
+      sprintf(server_message.text, "new client: %s", list->name[list->len]);
+      MsgCopy(&storage.msg[storage.len], &server_message);
+      storage.len++;
       list->len++;
     }
     memset(request_name, 0, MAX_NAME_LEN);
