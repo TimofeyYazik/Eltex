@@ -67,7 +67,7 @@ void *ThreadReceiveClient(void *arg){
   }
   mq_close(ds_queue_server);
   mq_close(ds_queue_register);
-  for(int i = 0; i < list->size; i++) mq_unlink(list->name[i])
+  for(int i = 0; i < list->size; i++) mq_unlink(list->name[i]);
   mq_unlink(NAME_QUEUE_REGISTER);
   mq_unlink(NAME_QUEUE_SERVER);
   printf("ThreadReceiveClient end\n");
