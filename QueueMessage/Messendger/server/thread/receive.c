@@ -54,14 +54,15 @@ void *ThreadReceiveClient(void *arg){
     if(msg_buf.status == IS_ONLINE){
       MsgCopy(&storage->msg[storage->len], &msg_buf);
       fprintf(stderr ,"ThreadReceiveClient check: %s\n", storage->msg[storage->len].text);
-      printf("ThreadReceiveClient check: %s\n", storage->msg[storage->len].text);
-      
+      printf("ThreadReceiveClient check: %s %d\n", storage->msg[storage->len].text, storage->len);
       storage->len++;
       if (storage->len == storage->size) StorageMemRealloc(storage);
     }
     usleep(10000);
   }
   mq_close(ds_queue_server);
+  mq_close(ds_queue_register);
+  mq_unlink(NAME_QUEUE_REGISTER);
   mq_unlink(NAME_QUEUE_SERVER);
   printf("ThreadReceiveClient end\n");
 }
