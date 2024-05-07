@@ -41,11 +41,15 @@ int main(){
   pthread_join(thread_receive, NULL);
   pthread_join(thread_register, NULL);
   pthread_join(thread_stop, NULL);
+  printf("storage free!\n");
   free(storage.msg);
+  printf("list free!\n");
   for(int i = 0; i < list.len; i++){
     free(list.name[i]);
   }
   free(list.name);  
+  printf("ds_list free!\n");
+  free(ds_list.ds);
   exit(EXIT_SUCCESS);
 }
 

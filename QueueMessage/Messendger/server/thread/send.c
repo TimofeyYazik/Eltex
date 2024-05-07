@@ -47,5 +47,5 @@ void *ThreadSendClient(void *arg){
     mq_close(ds_list->ds[i]);
   }
   fprintf(stderr, "ThreadSendClient end\n");
-  free(ds_list->ds);
+  return NULL;
 }
