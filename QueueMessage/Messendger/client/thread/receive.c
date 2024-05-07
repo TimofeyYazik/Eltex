@@ -31,6 +31,25 @@ void *ThreadReceiveServer(void *arg){
     }
     mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL);
     fprintf(f, "%s\n", msg.text);
+    if(msg.status == IS_SERVER_MESSAGE) {
+      if(strstr(msg.text, "new client:")){
+        list->name[list->len] = malloc(sizeof(char) * MAX_NAME_LEN);
+        strcpy(list->name[list->len], msg.name);
+        list->len++;
+        if(list->len == list->size) ListMemRealloc(list);
+      }
+      if(strstr(msg.text, "client is out: ")){
+        for (int i = 0; i < list->len; i++) {
+          if(strcmp(list->name[i], msg.name) == 0) {
+            ShiftList(list, i);
+            break;
+          }
+        }
+      }
+      pthread_mutex_lock(&mutex);
+      UserWindow(wnd, list);
+      pthread_mutex_unlock(&mutex);
+    }
     if(msg.status == IS_SHOTDOWN) break;
     if(msg.status == IS_ONLINE){  
       MsgCopy(&storage->msg[storage->len], &msg);

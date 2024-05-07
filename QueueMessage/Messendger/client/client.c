@@ -12,17 +12,14 @@ int main(){
   pthread_t thread_send;
   pthread_t thread_stop;
   pthread_t thread_receive;
-  pthread_t thread_user;
   Register(&cont);
   initscr();
   pthread_create(&thread_stop, NULL, ThreadStop, (void *)&cont);
-  pthread_create(&thread_user, NULL, ThreadUserWindow, (void *)&cont);
   pthread_create(&thread_send, NULL, ThreadSendServer, (void *)&cont);
   pthread_create(&thread_receive, NULL, ThreadReceiveServer, (void *)&cont);
   pthread_join(thread_stop, NULL);
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
-  pthread_join(thread_user, NULL);
   endwin();
   for (int i = 0; i < list.len; i++) {
     free(list.name[i]);

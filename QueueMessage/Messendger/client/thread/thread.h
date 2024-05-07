@@ -22,7 +22,6 @@
 void *ThreadStop(void *arg);
 void *ThreadSendServer(void *arg);
 void *ThreadReceiveServer(void *arg);
-void *ThreadUserWindow(void *arg);
 
 
 #endif //THREAD_H_
