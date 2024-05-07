@@ -17,7 +17,7 @@ int main(){
   pthread_create(&thread_send, NULL, ThreadSendServer, (void *)&cont);
   pthread_create(&thread_user, NULL, ThreadUserWindow, (void *)&cont);
   pthread_create(&thread_receive, NULL, ThreadReceiveServer, (void *)&cont);
-  while (cont->stop_client);
+  while (cont.stop_client);
   endwin();
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
@@ -26,7 +26,7 @@ int main(){
     free(list.name[i]);
   }
   free(list.name);
-  free(storage->msg);
+  free(storage.msg);
   exit(EXIT_SUCCESS);
 }
 
