@@ -14,7 +14,7 @@ void *ThreadStop(void *arg){
       break;
     }
   }
-  mq_close(cont->ds_queue_connect);
+  mq_close(ds_queue_connect);
   fprintf(stderr, "ThreadStop end\n");
   return NULL;
 }
