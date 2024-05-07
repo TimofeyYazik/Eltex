@@ -13,6 +13,7 @@
 #define  BAD_STATUS 6
 #define GOOD_STATUS 7
 
+#define IS_SERVER_MESSAGE -2
 #define IS_SHOTDOWN -1
 #define IS_REG 2
 #define IS_OUT 0

@@ -4,6 +4,7 @@ extern pthread_mutex_t mutex;
 
 void *ThreadReceiveServer(void *arg){
   mode_t mode_mqueue = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
+  FILE *f = fopen("test", "w");
   ControllerClient *cont = (ControllerClient*)arg;
   NameList *list = cont->list;
   MessageStorage *storage = cont->storage;
@@ -29,6 +30,7 @@ void *ThreadReceiveServer(void *arg){
       pthread_mutex_unlock(&mutex);
     }
     mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL);
+    fprintf(f, "%s\n", msg.text);
     if(msg.status == IS_SHOTDOWN) break;
     if(msg.status == IS_ONLINE){  
       MsgCopy(&storage->msg[storage->len], &msg);
@@ -37,6 +39,7 @@ void *ThreadReceiveServer(void *arg){
     }
   }
   delwin(wnd);
+  fclose(f);
   mq_close(ds_queue_connect);
   mq_unlink(cont->name);
   return NULL;
