@@ -1,12 +1,15 @@
-OBJ := *.c = *.o
+
 
 %.o: %.c
 	gcc -c -g $< -o $@
 
 all: libmess.a
 
-libmess.a: $(OBJ)
-	ar rcs $@ $(OBJ)
+obj:
+	gcc -c -g *.c
+
+libmess.a: obj
+	ar rcs $@ *.o
 	cp $@ ../client
 	cp $@ ../server
 
