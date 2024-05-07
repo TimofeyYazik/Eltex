@@ -1,5 +1,4 @@
-FILES := *.c
-OBJ := $(patsubst %.c, %.o, $(FILES))
+OBJ := *.c = *.o
 
 %.o: %.c
 	gcc -c -g $< -o $@
