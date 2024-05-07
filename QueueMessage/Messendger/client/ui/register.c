@@ -35,11 +35,11 @@ void Register(ControllerClient *cont) {
     wrefresh(wnd);
     wgetnstr(wnd, cont->name + 1, MAX_NAME_LEN - 2); 
     strcpy(request.name, cont->name);
-    if (mq_send(ds_queue_server, (char *)&request, MAX_NAME_LEN, 0) == -1) {
+    if (mq_send(ds_queue_server, (char *)&request, sizeof(Message), 0) == -1) {
       perror("mq_send");
       exit(EXIT_FAILURE);
     }
-    if (mq_receive(ds_queue_register, (char *)&response, MAX_NAME_LEN, NULL) == -1) {
+    if (mq_receive(ds_queue_register, (char *)&response, sizeof(Message), NULL) == -1) {
       perror("mq_receive");
       exit(EXIT_FAILURE);
     }
