@@ -26,9 +26,9 @@ void *ThreadReceiveServer(void *arg){
 
   while (cont->stop_client) {
     if(storage->len != len_storage){
-      pthread_mutex_lock(&mutex);
+      // pthread_mutex_lock(&mutex);
       MessageWindow(wnd, storage, (y / 4) * 3);
-      pthread_mutex_unlock(&mutex);
+      // pthread_mutex_unlock(&mutex);
     }
     mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL);
     fprintf(f, "%s\n", msg.text);
@@ -47,9 +47,9 @@ void *ThreadReceiveServer(void *arg){
           }
         }
       }
-      pthread_mutex_lock(&mutex);
+      // pthread_mutex_lock(&mutex);
       UserWindow(wnd, list);
-      pthread_mutex_unlock(&mutex);
+      // pthread_mutex_unlock(&mutex);
     }
     if(msg.status == IS_SHOTDOWN) break;
     if(msg.status == IS_ONLINE){  

@@ -21,9 +21,9 @@ void *ThreadSendServer(void *arg){
     return NULL;
   }
   while (cont->stop_client) {
-    pthread_mutex_lock(&mutex);
+    // pthread_mutex_lock(&mutex);
     InputMessageWindow(wnd, &msg);
-    pthread_mutex_unlock(&mutex);
+    // pthread_mutex_unlock(&mutex);
     if (!strcmp(msg.text, "/exit")) {
       cont->stop_client = 0;  
       msg.status = IS_OUT;
