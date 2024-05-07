@@ -10,3 +10,6 @@ libmess.a: $(OBJ)
 	ar rcs $@ $(OBJ)
 	cp $@ ../client
 	cp $@ ../server
+
+clean:
+	rm -rf *.o libmess.a
