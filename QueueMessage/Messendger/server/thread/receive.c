@@ -54,6 +54,8 @@ void *ThreadReceiveClient(void *arg){
     if(msg_buf.status == IS_ONLINE){
       MsgCopy(&storage->msg[storage->len], &msg_buf);
       fprintf(stderr ,"ThreadReceiveClient check: %s\n", storage->msg[storage->len].text);
+      printf("ThreadReceiveClient check: %s\n", storage->msg[storage->len].text);
+      
       storage->len++;
       if (storage->len == storage->size) StorageMemRealloc(storage);
     }
