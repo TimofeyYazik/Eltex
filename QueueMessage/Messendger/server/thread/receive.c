@@ -32,7 +32,7 @@ void *ThreadReceiveClient(void *arg){
       for(int i = 0; i < list->len; i++) {
         if(strcmp(list->name[i], msg_buf.name) == 0){
           ShiftDsList(cont->ds_list, i);
-          // mq_unlink(list->name[i]);
+          mq_unlink(list->name[i]);
           ShiftList(list, i);
           break;
         }

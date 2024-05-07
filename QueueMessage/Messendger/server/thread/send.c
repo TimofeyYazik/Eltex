@@ -9,8 +9,8 @@ void *ThreadSendClient(void *arg){
   DsList *ds_list = cont->ds_list;
   struct mq_attr attr;
   InitAttr(&attr, sizeof(Message));
-  int list_len = list->len;
-  int storage_len = storage->len;
+  int list_len = 0;
+  int storage_len = 0;
   while(cont->stop_server) {
     if(list_len > list->len) { 
       list_len = list->len;

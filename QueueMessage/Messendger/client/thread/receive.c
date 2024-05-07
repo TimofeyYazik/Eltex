@@ -14,12 +14,12 @@ void *ThreadReceiveServer(void *arg){
   getmaxyx(stdscr, y, x);
   Message msg = {0};
   mqd_t ds_queue_connect = mq_open(cont->name, O_CREAT | O_RDONLY, mode_mqueue, &attr);
-  fprintf(f, cont->name);
   if (ds_queue_connect == -1) {
     fprintf(stderr, "ThreadReceiveServer mq_open failed with error: %d\n", errno);
     perror("mq_open");
     return NULL;
   }
+
   int len_storage = 0;  
   WINDOW *wnd = newwin((y / 4) * 3, (x / 4) * 3, 0, 0);
   box(wnd, 0, 0);
@@ -61,6 +61,5 @@ void *ThreadReceiveServer(void *arg){
   delwin(wnd);
   fclose(f);
   mq_close(ds_queue_connect);
-  mq_unlink(cont->name);
   return NULL;
 }
