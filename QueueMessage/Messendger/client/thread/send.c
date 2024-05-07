@@ -13,17 +13,10 @@ void *ThreadSendServer(void *arg){
   Message msg = {0};
   strcpy(msg.name, name);
   InitAttr(&attr, sizeof(Message));
-  mqd_t ds_queue_receive = mq_open(name, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
-  if(ds_queue_receive == -1) {
-    fprintf(stderr, "ThreadSendServer mq_open failed with error: %d\n", errno);
-    perror("mq_open");
-    return NULL;
-  }
-  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
+  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY | O_NONBLOCK, S_IWUSR | S_IRUSR, &attr);
   if(ds_queue_server == -1) {
     fprintf(stderr, "ThreadSendServer mq_open failed with error: %d\n", errno);
     perror("mq_open");
-    mq_close(ds_queue_receive);
     return NULL;
   }
   while (cont->stop_server) {
@@ -38,7 +31,6 @@ void *ThreadSendServer(void *arg){
     }
   }
   mq_close(ds_queue_server);
-  mq_close(ds_queue_receive);
   delwin(wnd);
   printf("ThreadSendServer end\n");
   return NULL;

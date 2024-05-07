@@ -17,7 +17,7 @@ void *ThreadReceiveServer(void *arg){
   InitAttr(&attr, sizeof(Message));
   getmaxyx(stdscr, y, x);
   Message msg = {0};
-  mqd_t ds_queue_connect = mq_open(name, O_CREAT | O_RDONLY, S_IWUSR | S_IRUSR, &attr);
+  mqd_t ds_queue_connect = mq_open(name, O_CREAT | O_RDONLY | O_NONBLOCK, S_IWUSR | S_IRUSR, &attr);
   if (ds_queue_connect == -1) {
     fprintf(stderr, "ThreadReceiveServer mq_open failed with error: %d\n", errno);
     perror("mq_open");
@@ -30,13 +30,19 @@ void *ThreadReceiveServer(void *arg){
   while (cont->stop_server) {
     MessageWindow(wnd, storage, (y / 4) * 3);
     if(mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL) == -1) perror("mq_receive"); 
+    if(strcmp(msg.name, "") == 0) {
+      usleep(500000);
+      continue;
+    }
     MsgCopy(&storage->msg[storage->len], &msg);
     storage->len++;
     if (storage->len == storage->size) {
       storage->size = storage->size * 2 - (storage->size / 2);
       storage->msg = realloc(storage->msg, sizeof(Message) * storage->size);
     }
-    usleep(10000);
+    memset(&msg.name, 0, MAX_NAME_LEN);
+    memset(&msg.text, 0, MAX_TEXT_LEN);
+    usleep(500000);
   }
   delwin(wnd);
   mq_close(ds_queue_connect);
