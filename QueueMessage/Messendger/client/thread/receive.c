@@ -23,12 +23,14 @@ void *ThreadReceiveServer(void *arg){
     perror("mq_open");
     return NULL;
   }
-
+  int len_storage = 0;  
   WINDOW *wnd = newwin((y / 4) * 3, (x / 4) * 3, 0, 0);
   box(wnd, 0, 0);
 
   while (cont->stop_server) {
-    MessageWindow(wnd, storage, (y / 4) * 3);
+    if(storage->len != len_storage){
+      MessageWindow(wnd, storage, (y / 4) * 3);
+    }
     if(mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL) == -1) perror("mq_receive"); 
     if(strcmp(msg.name, "") == 0) {
       usleep(500000);
