@@ -1,8 +1,5 @@
 #include "thread.h"
 
-extern MessageStorage storage;
-extern volatile int stop_server;
-
 void *ThreadRegisterClient(void *arg){
   char status_ok[MAX_NAME_LEN] = GOOD_STATUS;
   char status_error[MAX_NAME_LEN] = BAD_STATUS;
@@ -59,7 +56,7 @@ void *ThreadRegisterClient(void *arg){
       storage->len++;
       list->len++;
     }
-    sleep(1);
+    usleep(100000);
   }
   mq_close(ds_queue_register);
   mq_unlink(NAME_QUEUE_REGISTER);

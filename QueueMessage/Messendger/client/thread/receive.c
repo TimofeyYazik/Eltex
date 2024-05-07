@@ -31,8 +31,8 @@ void *ThreadReceiveServer(void *arg){
     if(storage->len != len_storage){
       MessageWindow(wnd, storage, (y / 4) * 3);
     }
-    if(mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL) == -1) perror("mq_receive"); 
-    if(strcmp(msg.name, "") == 0) {
+    mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL); 
+    if(msg.text[0] == 0) {
       usleep(500000);
       continue;
     }
