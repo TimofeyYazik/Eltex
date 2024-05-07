@@ -42,8 +42,6 @@ int main(){
   pthread_join(thread_register, NULL);
   pthread_join(thread_stop, NULL);
   free(storage.msg);
-  printf("Bye!\n");
-  printf("%d\n" , list.len);
   for(int i = 0; i < list.len; i++){
     free(list.name[i]);
   }
