@@ -33,6 +33,7 @@ void *ThreadSendClient(void *arg){
       list_len = list->len;
     }
     if(storage->len != storage_len) {
+      printf("ThreadSendClient check: storage->len = %d storage_len = %d\n", storage->len, storage_len);
       for (int i = 0; i < ds_list->len; i++) {
         for(int j = storage_len; j < storage->len; j++) {
           if(mq_send(ds_list->ds[i], (char*)&storage->msg[j], sizeof(Message), 0) == -1) 
