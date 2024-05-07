@@ -11,10 +11,7 @@ void *ThreadRegisterClient(void *arg){
   fprintf(stderr, "ThreadRegisterClient start\n");
   Controller *cont = (Controller*)arg;
   struct mq_attr attr;
-  attr.mq_flags = 0;
-  attr.mq_maxmsg = 50;
-  attr.mq_msgsize = MAX_NAME_LEN;
-  attr.mq_curmsgs = 0;
+  InitAttr(&attr, MAX_NAME_LEN);
   NameList *list = cont->list;
   MessageStorage *storage = cont->storage;
   cont->list->name[0] = malloc(sizeof(char) * MAX_NAME_LEN);
@@ -46,15 +43,9 @@ void *ThreadRegisterClient(void *arg){
         MsgCopy(&storage->msg[storage->len], &server_message);
         fprintf(stderr, "check MSG: %s %d\n", storage->msg[storage->len].text, storage->len);
         storage->len++;
-        if(storage->len == storage->size) {
-          storage->size = 2 * storage->size - (storage->size / 2);
-          storage->msg = realloc(storage->msg, sizeof(Message) * storage->size);
-        }
+        if(storage->len == storage->size) StorageMemRealloc(storage);
         list->len++;
-        if(list->len == list->size) {
-          list->size = 2 * list->size - (list->size / 2);
-          list->name = realloc(list->name, sizeof(char*) * list->size);
-        }
+        if(list->len == list->size) ListMemRealloc(list);
         break;
       }
     }

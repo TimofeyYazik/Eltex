@@ -39,6 +39,7 @@ typedef struct{
   int stop_server;
   NameList *list;
   MessageStorage *storage;
+  DsList *ds_list;
 } Controller;
 
 #endif // CUSTOM_TYPE_H_

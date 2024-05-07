@@ -1,25 +1,20 @@
 #include "thread.h"
 
 extern char name[MAX_NAME_LEN];
-extern MessageStorage storage;
-extern int stop_client;
 
 void *ThreadReceiveServer(void *arg){
+  Controller *cont = (Controller*)arg;
+  NameList *list = cont->list;
+  MessageStorage *storage = cont->storage;
   int size = 0;
-  storage.len = 0;
-  storage.size = 50;
-  storage.msg = malloc(sizeof(Message) * storage.size);
-  if(storage.msg == NULL) {
+  if(storage->msg == NULL) {
     perror("malloc");
     return NULL;
   }
   int x, y;
   int num_message = 0;
   struct mq_attr attr;
-  attr.mq_flags = 0;
-  attr.mq_maxmsg = 50;
-  attr.mq_msgsize = sizeof(Message);
-  attr.mq_curmsgs = 0;
+  InitAttr(&attr, sizeof(Message));
   getmaxyx(stdscr, y, x);
   Message msg = {0};
   mqd_t ds_queue_connect = mq_open(name, O_CREAT | O_RDONLY, S_IWUSR | S_IRUSR, &attr);
@@ -32,14 +27,14 @@ void *ThreadReceiveServer(void *arg){
   WINDOW *wnd = newwin((y / 4) * 3, (x / 4) * 3, 0, 0);
   box(wnd, 0, 0);
 
-  while (stop_client) {
+  while (cont->stop_server) {
     MessageWindow(wnd, &storage, (y / 4) * 3);
     if(mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL) == -1) perror("mq_receive"); 
-    MsgCopy(&storage.msg[storage.len], &msg);
-    storage.len++;
-    if (storage.len == storage.size) {
-      storage.size = storage.size * 2 - (storage.size / 2);
-      storage.msg = realloc(storage.msg, sizeof(Message) * storage.size);
+    MsgCopy(&storage->msg[storage->len], &msg);
+    storage->len++;
+    if (storage->len == storage->size) {
+      storage->size = storage->size * 2 - (storage->size / 2);
+      storage->msg = realloc(storage->msg, sizeof(Message) * storage->size);
     }
     usleep(10000);
   }

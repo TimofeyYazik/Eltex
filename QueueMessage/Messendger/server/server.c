@@ -1,22 +1,19 @@
 #include "thread/thread.h"
 
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+void inline _InitController(Controller *cont, NameList *list, MessageStorage *storage, DsList *ds_list);
+
 int main(){
   pthread_t thread_receive;
   pthread_t thread_register;
   pthread_t thread_send;
   pthread_t thread_stop;
+  DsList ds_list;
   NameList list;
-  list.len = 0;
-  list.size = 10;
-  list.name = malloc(sizeof(char*) * list.size);
   MessageStorage storage;
-  storage.len = 0;
-  storage.size = 50;
-  storage.msg = malloc(sizeof(Message) * storage.size);
   Controller cont;
-  cont.stop_server = 1;
-  cont.list = &list;
-  cont.storage = &storage;
+  _InitController(&cont, &list, &storage, &ds_list);
   pthread_create(&thread_stop, NULL, ThreadStop, (void *)&cont);
   pthread_create(&thread_register, NULL, ThreadRegisterClient, (void *)&cont);
   pthread_create(&thread_send, NULL, ThreadSendClient, (void *)&cont);
@@ -32,4 +29,25 @@ int main(){
   }
   free(list.name);  
   exit(EXIT_SUCCESS);
+}
+
+
+static inline void _InitController(Controller *cont, NameList *list, MessageStorage *storage, DsList *ds_list){
+  ds_list->len = 0;
+  ds_list->size = 10;
+  ds_list->ds = malloc(sizeof(mqd_t) * ds_list->size);
+
+  list->len = 0;
+  list->size = 10;
+  list->name = malloc(sizeof(char*) * list.size);
+
+  storage->len = 0;
+  storage->size = 50;
+  storage->msg = malloc(sizeof(Message) * storage.size);
+
+  cont->stop_server = 1;
+
+  cont->list = list;
+  cont->storage = storage;
+  cont->ds_list = ds_list;
 }

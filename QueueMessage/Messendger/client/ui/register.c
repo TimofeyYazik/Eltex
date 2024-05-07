@@ -12,6 +12,7 @@
 #include <pthread.h>
 
 #include "ui.h"
+#include "../thread/thread.h"
 
 extern char name[MAX_NAME_LEN];
 
@@ -26,10 +27,7 @@ void Register(){
   char name_is_register = 0;
   char request[MAX_NAME_LEN] = {0};
   struct mq_attr attr;
-  attr.mq_flags = 0;
-  attr.mq_maxmsg = 50;
-  attr.mq_msgsize = MAX_NAME_LEN;
-  attr.mq_curmsgs = 0;
+  InitAttr(&attr, MAX_NAME_LEN);
   mqd_t ds_queue = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_RDWR, S_IWUSR | S_IRUSR, &attr);
   if (ds_queue == -1) {
     fprintf(stderr, "Register mq_open failed with error: %d\n", errno);

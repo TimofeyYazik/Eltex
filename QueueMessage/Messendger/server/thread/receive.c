@@ -1,17 +1,5 @@
 #include "thread.h"
 
-
-void MsgCopy(Message *dst, Message *src){
-  strcpy(dst->name, src->name);
-  strcpy(dst->text, src->text);
-}
-void ShiftList(NameList *list, int index){
-  for(int i = index; i < list->len - 1; i++){
-    strcpy(list->name[i], list->name[i + 1]);
-  }
-  list->len--;
-}
-
 void *ThreadReceiveClient(void *arg){
   fprintf(stderr, "ThreadReceiveClient start\n");
   Controller *cont = (Controller*)arg;
@@ -19,10 +7,7 @@ void *ThreadReceiveClient(void *arg){
   NameList *list = cont->list;
   Message msg_buf = {0};
   struct mq_attr attr;
-  attr.mq_flags = 0;
-  attr.mq_maxmsg = 50;
-  attr.mq_msgsize = sizeof(Message);
-  attr.mq_curmsgs = 0;
+  InitAttr(&attr, sizeof(Message));
   mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_RDONLY, S_IWUSR | S_IRUSR, &attr);
   if (ds_queue_server == -1) {
     fprintf(stderr, "ThreadReceiveClient mq_open failed with error: %d\n", errno);
@@ -36,6 +21,7 @@ void *ThreadReceiveClient(void *arg){
       for(int i = 0; i < list->len; i++) {
         if(strcmp(list->name[i], msg_buf.name) == 0){
           ShiftList(list, i);
+          ShiftDsList(&cont->ds_list, i);
           break;
         }
       }
@@ -44,10 +30,7 @@ void *ThreadReceiveClient(void *arg){
     MsgCopy(&storage->msg[storage->len], &msg_buf);
     fprintf(stderr ,"ThreadReceiveClient check: %s\n", storage->msg[storage->len].text);
     storage->len++;
-    if (storage->len == storage->size) {
-      storage->size = storage->size * 2 - (storage->size / 2);
-      storage->msg = realloc(storage->msg, sizeof(Message) * storage->size);
-    }
+    if (storage->len == storage->size) StorageMemRealloc(storage);
     usleep(10000);
   }
   mq_close(ds_queue_server);
