@@ -11,10 +11,10 @@ void *ThreadStop(void *arg){
     if(cont->stop_client == 0) {
       mqd_t ds_queue_connect = mq_open(cont->name, O_CREAT | O_RDONLY, S_IWUSR | S_IRUSR, &attr);
       mq_send(ds_queue_connect, (char*)&stop_receive, sizeof(Message), 0);
+      mq_close(ds_queue_connect);
       break;
     }
   }
-  mq_close(ds_queue_connect);
   fprintf(stderr, "ThreadStop end\n");
   return NULL;
 }
