@@ -9,8 +9,11 @@ void *ThreadStop(void *arg){
   InitAttr(&attr, MAX_NAME_LEN);
   InitAttr(&attr1, sizeof(Message));
   fprintf(stderr, "ThreadStop start\n");
-  char stop_regis[MAX_NAME_LEN] = {0};
+  char stop_regis[MAX_NAME_LEN];
+  stop_regis[0] = 4;
+
   Message stop_receive = {0};
+  stop_receive.text[0] = 4;
   while (cont->stop_server) {
     scanf("%d", &cont->stop_server);
   } 

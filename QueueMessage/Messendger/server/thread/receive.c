@@ -17,6 +17,7 @@ void *ThreadReceiveClient(void *arg){
   }
   while(cont->stop_server) {
     mq_receive(ds_queue_server, (char*)&msg_buf, sizeof(Message), NULL);
+    if(msg_buf.name[0] == 4) break;
     if(!strcmp(msg_buf.text, "/exit")){
       sprintf(msg_buf.text, "client is out: %s", msg_buf.name);
       for(int i = 0; i < list->len; i++) {

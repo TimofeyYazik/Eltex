@@ -25,6 +25,7 @@ void *ThreadRegisterClient(void *arg){
       fprintf(stderr, "ThreadRegisterClient mq_receive failed with error: %d\n", errno);
       perror("mq_receive");
     }
+    if(request_name[0] == 4) break;
     fprintf(stderr, "ThreadRegisterClient check name: %s\n", request_name);
     for(int i = 0; i < list->len; i++) {
       if (strcmp(list->name[i], request_name) == 0) {
