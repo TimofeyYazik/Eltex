@@ -49,6 +49,7 @@ void Register(ControllerClient *cont) {
   mq_close(ds_queue_register);
   mq_close(ds_queue_server);
   wrefresh(wnd);
+  refresh();
   delwin(wnd);
   endwin();
   }
