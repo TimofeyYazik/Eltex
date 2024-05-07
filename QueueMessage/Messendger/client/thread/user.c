@@ -32,7 +32,7 @@ void *ThreadUserWindow(void *arg){
         list->name = realloc(list->name, sizeof(char*) * list->size);
       }
     }
-    UserWindow(wnd, &list);
+    UserWindow(wnd, list);
     storage_len = storage->len;
   }
     sleep(1);
