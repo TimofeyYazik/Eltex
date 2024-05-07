@@ -19,7 +19,7 @@ int main(){
   pthread_create(&thread_send, NULL, ThreadSendServer, (void *)&cont);
   pthread_create(&thread_user, NULL, ThreadUserWindow, (void *)&cont);
   pthread_create(&thread_receive, NULL, ThreadReceiveServer, (void *)&cont);
-  while (cont.stop_server);
+  while (cont.stop_client) sleep(1);
   endwin();
   pthread_join(thread_stop, NULL);
   pthread_join(thread_send, NULL);
@@ -42,7 +42,7 @@ static inline void _InitControllerClient(ControllerClient *cont, NameList *list,
   storage->size = 50;
   storage->msg = malloc(sizeof(Message) * storage->size);
 
-  cont->stop_server = 1;
+  cont->stop_client = 1;
 
   cont->list = list;
   cont->storage = storage;
