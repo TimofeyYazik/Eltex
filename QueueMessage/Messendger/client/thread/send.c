@@ -22,6 +22,7 @@ void *ThreadSendServer(void *arg){
     InputMessageWindow(wnd, &msg);
     if (!strcmp(msg.text, "/exit")) {
       cont->stop_client = 0;  
+      msg.status = IS_OUT;
       mq_send(ds_queue_server, (char *)&msg, sizeof(Message), 0);
       break;
     }

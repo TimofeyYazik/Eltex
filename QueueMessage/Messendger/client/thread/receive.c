@@ -25,7 +25,7 @@ void *ThreadReceiveServer(void *arg){
       MessageWindow(wnd, storage, (y / 4) * 3);
     }
     mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL);
-    if(!strcmp(msg.text, "/exit")) break;
+    if(msg.status == IS_SHOTDOWN) break;
     if(strstr(msg.text, "new client:") && !strcmp(msg.text, storage->msg[storage->len - 1].text)) {
       continue;
     }
@@ -35,5 +35,6 @@ void *ThreadReceiveServer(void *arg){
   }
   delwin(wnd);
   mq_close(ds_queue_connect);
+  mq_unlink(cont->name);
   return NULL;
 }
