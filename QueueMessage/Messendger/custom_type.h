@@ -13,6 +13,7 @@
 #define  BAD_STATUS "NO"
 
 typedef struct{
+  int status;
   char name[MAX_NAME_LEN];
   char text[MAX_TEXT_LEN];
 } Message;
