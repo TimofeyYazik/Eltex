@@ -28,7 +28,7 @@ void *ThreadReceiveServer(void *arg){
   box(wnd, 0, 0);
 
   while (cont->stop_server) {
-    MessageWindow(wnd, &storage, (y / 4) * 3);
+    MessageWindow(wnd, storage, (y / 4) * 3);
     if(mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL) == -1) perror("mq_receive"); 
     MsgCopy(&storage->msg[storage->len], &msg);
     storage->len++;
