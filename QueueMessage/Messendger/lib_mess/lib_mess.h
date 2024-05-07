@@ -2,6 +2,8 @@
 #define LIB_MESS_H_
 
 #include "../custom_type.h"
+#include <stdlib.h>
+#include <string.h>
 
 void ShiftList(NameList *list, int index);
 void InitAttr(struct mq_attr *attr, size_t size);
