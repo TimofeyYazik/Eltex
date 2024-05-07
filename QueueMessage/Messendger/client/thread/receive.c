@@ -31,8 +31,10 @@ void *ThreadReceiveServer(void *arg){
     }
     mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL);
     if(msg.status == IS_SERVER_MESSAGE) {
+      fprintf(stderr, "ThreadReceiveServer check: text = %s len = %d status = %d\n", msg.text, storage->len, msg.status);
       if(strstr(msg.text, "new client:")){
-        list->name[list->len] = malloc(sizeof(char) * MAX_NAME_LEN);
+        if(list->name[list->len] == NULL) 
+          list->name[list->len] = malloc(sizeof(char) * MAX_NAME_LEN);
         strcpy(list->name[list->len], msg.name);
         list->len++;
         if(list->len == list->size) ListMemRealloc(list);

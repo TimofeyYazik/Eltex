@@ -51,18 +51,17 @@ void *ThreadReceiveClient(void *arg){
       if(i == list->len) {
         request.status = GOOD_STATUS;
         mq_send(ds_queue_register, (char*)&request, sizeof(Message), 0);
-        if(list->name[list->len] == NULL) list->name[list->len] = malloc(sizeof(char) * MAX_NAME_LEN);
-        strcpy(list->name[list->len], msg_buf.name);
-        list->len++;
-        if(list->len == list->size) ListMemRealloc(list);
         request.status = IS_SERVER_MESSAGE;
         strcpy(request.name, msg_buf.name);
         sprintf(request.text, "new client: %s", msg_buf.name);
         MsgCopy(&storage->msg[storage->len], &request);
         printf("ThreadReceiveClient IMPORTANT check: text = %s len = %d status = %d\n", storage->msg[storage->len].text, storage->len, storage->msg[storage->len].status);
         storage->len++;
-
         if (storage->len == storage->size) StorageMemRealloc(storage);
+        if(list->name[list->len] == NULL) list->name[list->len] = malloc(sizeof(char) * MAX_NAME_LEN);
+        strcpy(list->name[list->len], msg_buf.name);
+        list->len++;
+        if(list->len == list->size) ListMemRealloc(list);
       }
     }
     usleep(10000);
