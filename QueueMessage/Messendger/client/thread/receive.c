@@ -1,5 +1,7 @@
 #include "thread.h"
 
+extern pthread_mutex_t mutex;
+
 void *ThreadReceiveServer(void *arg){
   mode_t mode_mqueue = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   ControllerClient *cont = (ControllerClient*)arg;
@@ -22,7 +24,9 @@ void *ThreadReceiveServer(void *arg){
 
   while (cont->stop_client) {
     if(storage->len != len_storage){
+      pthread_mutex_lock(&mutex);
       MessageWindow(wnd, storage, (y / 4) * 3);
+      pthread_mutex_unlock(&mutex);
     }
     mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL);
     if(msg.status == IS_SHOTDOWN) break;

@@ -1,6 +1,6 @@
 #include "thread/thread.h"
 
-char name[MAX_NAME_LEN] = {0};
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static inline void _InitControllerClient(ControllerClient *cont, NameList *list, MessageStorage *storage);
 
@@ -29,6 +29,7 @@ int main(){
   }
   free(list.name);
   free(storage.msg);
+  pthread_mutex_destroy(&mutex);
   exit(EXIT_SUCCESS);
 }
 

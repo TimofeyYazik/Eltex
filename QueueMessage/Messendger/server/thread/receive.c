@@ -15,13 +15,13 @@ void *ThreadReceiveClient(void *arg){
     mq_receive(ds_queue_server, (char*)&msg_buf, sizeof(Message), NULL);
     if(msg_buf.status == IS_ONLINE){
       MsgCopy(&storage->msg[storage->len], &msg_buf);
-      fprintf(stderr ,"ThreadReceiveClient check: %s\n", storage->msg[storage->len].text);
-      printf("ThreadReceiveClient check: %s %d\n", storage->msg[storage->len].text, storage->len);
+      fprintf(stderr, "ThreadReceiveClient check: %s %d\n", storage->msg[storage->len].text, storage->len);
       storage->len++;
       if (storage->len == storage->size) StorageMemRealloc(storage);
     }
     if(msg_buf.status == IS_SHOTDOWN) break;
     if(msg_buf.status == IS_OUT){
+      fprintf(stderr, "ThreadReceiveClient check name is out: %s\n", msg_buf.name);
       sprintf(msg_buf.text, "client is out: %s", msg_buf.name);
       for(int i = 0; i < list->len; i++) {
         if(strcmp(list->name[i], msg_buf.name) == 0){

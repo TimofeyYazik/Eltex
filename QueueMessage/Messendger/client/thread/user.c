@@ -1,5 +1,7 @@
 #include "thread.h"
 
+extern pthread_mutex_t mutex;
+
 void *ThreadUserWindow(void *arg){
   int x, y;
   getmaxyx(stdscr, y, x);
