@@ -19,12 +19,11 @@ int main(){
   pthread_create(&thread_send, NULL, ThreadSendServer, (void *)&cont);
   pthread_create(&thread_user, NULL, ThreadUserWindow, (void *)&cont);
   pthread_create(&thread_receive, NULL, ThreadReceiveServer, (void *)&cont);
-  while (cont.stop_client) sleep(1);
-  endwin();
   pthread_join(thread_stop, NULL);
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
   pthread_join(thread_user, NULL);
+  endwin();
   for (int i = 0; i < list.len; i++) {
     free(list.name[i]);
   }
