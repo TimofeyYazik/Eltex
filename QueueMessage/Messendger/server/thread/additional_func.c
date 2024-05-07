@@ -11,17 +11,17 @@ void ShiftList(NameList *list, int index){
   list->len--;
 }
 
-void StorageMemRealloc(MessageStorage *src){
+void StorageMemRealloc(MessageStorage *storage){
   storage->size = storage->size * 2 - (storage->size / 2);
   storage->msg = realloc(storage->msg, sizeof(Message) * storage->size);
 }
 
-void DsListMemRealloc(DsList *src){
+void DsListMemRealloc(DsList *ds_list){
   ds_list->size = ds_list->size * 2 - (ds_list->size / 2);
   ds_list->ds = realloc(ds_list->ds, sizeof(mqd_t) * ds_list->size);
 }
 
-void ListMemRealloc(NameList *src){
+void ListMemRealloc(NameList *list){
   list->size = list->size * 2 - (list->size / 2);
   list->name = realloc(list->name, sizeof(char*) * list->size);
 }
