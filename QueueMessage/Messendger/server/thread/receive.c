@@ -22,7 +22,10 @@ void *ThreadReceiveClient(void *arg){
     if(msg_buf.status == IS_SHOTDOWN) break;
     if(msg_buf.status == IS_OUT){
       fprintf(stderr, "ThreadReceiveClient check name is out: %s\n", msg_buf.name);
-      sprintf(msg_buf.text, "client is out: %s", msg_buf.name);
+      request.status = IS_SERVER_MESSAGE;
+      sprintf(request.text, "client is out: %s", msg_buf.name);
+      strcpy(request.name, msg_buf.name);
+      mq_send(ds_queue_server, (char*)&request, sizeof(Message), 0);
       for(int i = 0; i < list->len; i++) {
         if(strcmp(list->name[i], msg_buf.name) == 0){
           ShiftDsList(cont->ds_list, i);
@@ -34,22 +37,28 @@ void *ThreadReceiveClient(void *arg){
       sprintf(msg_buf.name, "/server");
     }
     if(msg_buf.status == IS_REG){
-      Message requst = {0};
+      Message request = {0};
       int i = 0;
       for(i = 0; i < list->len; i++) {
         if (strcmp(list->name[i], msg_buf.name) == 0) {
-          requst.status = BAD_STATUS;
-          mq_send(ds_queue_register, (char*)&requst, sizeof(Message), 0);
+          request.status = BAD_STATUS;
+          mq_send(ds_queue_register, (char*)&request, sizeof(Message), 0);
           break;
         }
       }
       if(i == list->len) {
-        requst.status = GOOD_STATUS;
-        mq_send(ds_queue_register, (char*)&requst, sizeof(Message), 0);
+        request.status = GOOD_STATUS;
+        mq_send(ds_queue_register, (char*)&request, sizeof(Message), 0);
         if(list->name[list->len] == NULL) list->name[list->len] = malloc(sizeof(char) * MAX_NAME_LEN);
         strcpy(list->name[list->len], msg_buf.name);
         list->len++;
         if(list->len == list->size) ListMemRealloc(list);
+        request.status = IS_SERVER_MESSAGE;
+        strcpy(request.name, msg_buf.name);
+        sprintf(request.text, "new client: %s", msg_buf.name);
+        MsgCopy(&storage->msg[storage->len], &request);
+        storage->len++;
+        if (storage->len == storage->size) StorageMemRealloc(storage);
       }
     }
     usleep(10000);
