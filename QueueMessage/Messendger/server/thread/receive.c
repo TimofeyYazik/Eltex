@@ -37,13 +37,13 @@ void *ThreadReceiveClient(void *arg){
       for(i = 0; i < list->len; i++) {
         if (strcmp(list->name[i], msg_buf.name) == 0) {
           requst.status = BAD_STATUS;
-          mq_send(ds_queue_server, (char*)&requst, sizeof(Message), 0);
+          mq_send(ds_queue_register, (char*)&requst, sizeof(Message), 0);
           break;
         }
       }
       if(i == list->len) {
         requst.status = GOOD_STATUS;
-        mq_send(ds_queue_server, (char*)&requst, sizeof(Message), 0);
+        mq_send(ds_queue_register, (char*)&requst, sizeof(Message), 0);
         if(list->name[list->len] == NULL) list->name[list->len] = malloc(sizeof(char) * MAX_NAME_LEN);
         strcpy(list->name[list->len], msg_buf.name);
         list->len++;
