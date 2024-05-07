@@ -2,6 +2,8 @@
 
 void *ThreadStop(void *arg){
   Message stop_receive = {0};
+  strcpy(stop_receive.name, "stop");
+  strcpy(stop_receive.text, "/exit");
   ControllerClient *cont = (ControllerClient*)arg;
   struct mq_attr attr;
   InitAttr(&attr, sizeof(Message));
@@ -12,5 +14,7 @@ void *ThreadStop(void *arg){
       break;
     }
   }
+  mq_close(cont->ds_queue_connect);
+  fprintf(stderr, "ThreadStop end\n");
   return NULL;
 }
