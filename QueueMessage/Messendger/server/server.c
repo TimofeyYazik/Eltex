@@ -18,7 +18,7 @@ static inline void _InitController(Controller *cont, NameList *list, MessageStor
   cont->stop_server = 1;
 
   cont->list = list;
-  cont->storage = storage;
+  cont->storage = storage; 
   cont->ds_list = ds_list;
 }
 
