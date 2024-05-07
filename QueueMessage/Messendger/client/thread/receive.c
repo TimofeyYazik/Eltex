@@ -22,10 +22,12 @@ void *ThreadReceiveServer(void *arg){
   int len_storage = 0;  
   WINDOW *wnd = newwin((y / 4) * 3, (x / 4) * 3, 0, 0);
   box(wnd, 0, 0);
+  WINDOW *wnd2 = newwin((y / 4) * 3, (x / 4), 0, (x / 4) * 3);
+  box(wnd2, 0, 0);
 
   while (cont->stop_client) {
     MessageWindow(wnd, storage, (y / 4) * 3);
-    UserWindow(wnd, list);
+    UserWindow(wnd2, list);
     mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL);
     if(msg.status == IS_SERVER_MESSAGE) {
       if(strstr(msg.text, "new client:")){
