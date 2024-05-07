@@ -28,7 +28,6 @@ void *ThreadReceiveClient(void *arg){
       MsgCopy(&storage->msg[storage->len], &request);
       storage->len++;
       if (storage->len == storage->size) StorageMemRealloc(storage);
-      )
       for(int i = 0; i < list->len; i++) {
         if(strcmp(list->name[i], msg_buf.name) == 0){
           ShiftDsList(cont->ds_list, i);
