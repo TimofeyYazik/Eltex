@@ -10,6 +10,7 @@ void *ThreadSendServer(void *arg){
   WINDOW *wnd = newwin(y / 4, x, (y / 4) * 3, 0);
   struct mq_attr attr;
   Message msg = {0};
+  msg.status = IS_ONLINE;
   strcpy(msg.name, cont->name);
   InitAttr(&attr, sizeof(Message));
   mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY, mode_mqueue, &attr);
