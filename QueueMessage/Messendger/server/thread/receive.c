@@ -25,7 +25,10 @@ void *ThreadReceiveClient(void *arg){
       request.status = IS_SERVER_MESSAGE;
       sprintf(request.text, "client is out: %s", msg_buf.name);
       strcpy(request.name, msg_buf.name);
-      mq_send(ds_queue_server, (char*)&request, sizeof(Message), 0);
+      MsgCopy(&storage->msg[storage->len], &request);
+      storage->len++;
+      if (storage->len == storage->size) StorageMemRealloc(storage);
+      )
       for(int i = 0; i < list->len; i++) {
         if(strcmp(list->name[i], msg_buf.name) == 0){
           ShiftDsList(cont->ds_list, i);
@@ -34,7 +37,6 @@ void *ThreadReceiveClient(void *arg){
           break;
         }
       }
-      sprintf(msg_buf.name, "/server");
     }
     if(msg_buf.status == IS_REG){
       Message request = {0};
