@@ -41,4 +41,6 @@ void *ThreadReceiveServer(void *arg){
   delwin(wnd);
   mq_close(ds_queue_connect);
   mq_unlink(name);
+  printf("ThreadReceiveServer finished\n");
+  return NULL;
 }

@@ -37,5 +37,6 @@ void *ThreadUserWindow(void *arg){
   }
     sleep(1);
   }
+  printf("ThreadUserWindow exit\n");
   delwin(wnd);
 }

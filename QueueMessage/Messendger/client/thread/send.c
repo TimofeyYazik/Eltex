@@ -40,4 +40,6 @@ void *ThreadSendServer(void *arg){
   mq_close(ds_queue_server);
   mq_close(ds_queue_receive);
   delwin(wnd);
+  printf("ThreadSendServer end\n");
+  return NULL;
 }
