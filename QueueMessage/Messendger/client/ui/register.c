@@ -9,17 +9,16 @@ void SigWinch(int signo)
 }
 
 void Register(ControllerClient *cont) {
+  cont->name[0] = '/';
   mode_t mode_mqueue = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   char name_is_register = 0;
-  char request[MAX_NAME_LEN] = {0};
+  Message request = {0};
+  Message response = {0};
+  request.status = IS_REG;
   struct mq_attr attr;
-  InitAttr(&attr, MAX_NAME_LEN);
-  mqd_t ds_queue = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_RDWR, mode_mqueue, &attr);
-  if (ds_queue == -1) {
-    fprintf(stderr, "Register mq_open failed with error: %d\n", errno);
-    perror("mq_open");
-    return;
-  }
+  InitAttr(&attr, sizeof(Message));
+  mqd_t ds_queue_register = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_RDONLY, mode_mqueue, &attr);
+  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY, mode_mqueue, &attr);
   WINDOW * wnd;
   initscr();
   signal(SIGWINCH, SigWinch); 
@@ -34,23 +33,22 @@ void Register(ControllerClient *cont) {
     if   (name_is_register == 0) wprintw(wnd,"Enter your name: "); 
     else wprintw(wnd,"Enter your name again, previous name taken: ");
     wrefresh(wnd);
-    cont->name[0] = '/';
     wgetnstr(wnd, cont->name + 1, MAX_NAME_LEN - 2); 
-    if (mq_send(ds_queue, cont->name, MAX_NAME_LEN, 0) == -1) {
+    strcpy(request.name, cont->name);
+    if (mq_send(ds_queue_server, (char *)&request, MAX_NAME_LEN, 0) == -1) {
       perror("mq_send");
       exit(EXIT_FAILURE);
     }
-    usleep(100000);
-    if (mq_receive(ds_queue, request, MAX_NAME_LEN, NULL) == -1) {
+    if (mq_receive(ds_queue_register, (char *)&response, MAX_NAME_LEN, NULL) == -1) {
       perror("mq_receive");
       exit(EXIT_FAILURE);
     }
-    if (strcmp(request, "OK") == 0) break;
-    if (strcmp(request, "NO") == 0) name_is_register = 1;
+    if (response.status == GOOD_STATUS) break;
+    if (response.status == BAD_STATUS) name_is_register = 1;
   }
-  mq_close(ds_queue);
+  mq_close(ds_queue_register);
+  mq_close(ds_queue_server);
   wrefresh(wnd);
-  refresh();
   delwin(wnd);
   endwin();
   }

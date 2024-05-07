@@ -9,8 +9,14 @@
 #define  NAME_QUEUE_REGISTER "/register"
 #define  NAME_QUEUE_SERVER "/server"
 #define  NAME_QUEUE_NAME "/name"
-#define  GOOD_STATUS "OK"
-#define  BAD_STATUS "NO"
+
+#define  BAD_STATUS 6
+#define GOOD_STATUS 7
+
+#define IS_SHOTDOWN -1
+#define IS_REG 2
+#define IS_OUT 0
+#define IS_ONLINE 1
 
 typedef struct{
   int status;

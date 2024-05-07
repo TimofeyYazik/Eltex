@@ -18,6 +18,5 @@
 void *ThreadStop(void *arg);
 void *ThreadSendClient(void *arg);
 void *ThreadReceiveClient(void *arg);
-void *ThreadRegisterClient(void *arg);
 
 #endif //THREAD_H_

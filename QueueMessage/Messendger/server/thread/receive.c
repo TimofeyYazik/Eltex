@@ -9,6 +9,7 @@ void *ThreadReceiveClient(void *arg){
   Message msg_buf = {0};
   struct mq_attr attr;
   InitAttr(&attr, sizeof(Message));
+  mqd_t ds_queue_register = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_WRONLY, mode_mqueue, &attr);
   mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_RDONLY, mode_mqueue, &attr);
   if (ds_queue_server == -1) {
     fprintf(stderr, "ThreadReceiveClient mq_open failed with error: %d\n", errno);
@@ -17,22 +18,45 @@ void *ThreadReceiveClient(void *arg){
   }
   while(cont->stop_server) {
     mq_receive(ds_queue_server, (char*)&msg_buf, sizeof(Message), NULL);
-    if(msg_buf.name[0] == 4) break;
-    if(!strcmp(msg_buf.text, "/exit")){
+    if(msg_buf.status == IS_SHOTDOWN) break;
+    if(msg_buf.status == IS_OUT){
       sprintf(msg_buf.text, "client is out: %s", msg_buf.name);
       for(int i = 0; i < list->len; i++) {
         if(strcmp(list->name[i], msg_buf.name) == 0){
-          ShiftList(list, i);
           ShiftDsList(cont->ds_list, i);
+          mq_unlink(list->name[i]);
+          ShiftList(list, i);
           break;
         }
       }
       sprintf(msg_buf.name, "/server");
     }
-    MsgCopy(&storage->msg[storage->len], &msg_buf);
-    fprintf(stderr ,"ThreadReceiveClient check: %s\n", storage->msg[storage->len].text);
-    storage->len++;
-    if (storage->len == storage->size) StorageMemRealloc(storage);
+    if(msg_buf.status == IS_REG){
+      Message requst = {0};
+      int i = 0;
+      for(i = 0; i < list->len; i++) {
+        if (strcmp(list->name[i], msg_buf.name) == 0) {
+          requst.status = BAD_STATUS;
+          mq_send(ds_queue_server, (char*)&requst, sizeof(Message), 0);
+          break;
+        }
+      }
+      if(i == list->len) {
+        requst.status = GOOD_STATUS;
+        mq_send(ds_queue_server, (char*)&requst, sizeof(Message), 0);
+        if(list->name[list->len] == NULL) list->name[list->len] = malloc(char * MAX_NAME_LEN);
+        strcpy(list->name[list->len], msg_buf.name);
+        list->len++;
+        if(list->len == list->size) ListMemRealloc(list);
+      }
+    }
+
+    if(msg_buf.status == IS_ONLINE){
+      MsgCopy(&storage->msg[storage->len], &msg_buf);
+      fprintf(stderr ,"ThreadReceiveClient check: %s\n", storage->msg[storage->len].text);
+      storage->len++;
+      if (storage->len == storage->size) StorageMemRealloc(storage);
+    }
     usleep(10000);
   }
   mq_close(ds_queue_server);

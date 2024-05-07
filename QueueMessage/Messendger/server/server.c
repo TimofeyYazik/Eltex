@@ -15,6 +15,10 @@ static inline void _InitController(Controller *cont, NameList *list, MessageStor
   storage->size = 50;
   storage->msg = malloc(sizeof(Message) * storage->size);
 
+  for(int i = 0; i < list->size; i++){
+    list->name[i] = NULL;
+  }
+
   cont->stop_server = 1;
 
   cont->list = list;
@@ -24,7 +28,6 @@ static inline void _InitController(Controller *cont, NameList *list, MessageStor
 
 int main(){
   pthread_t thread_receive;
-  pthread_t thread_register;
   pthread_t thread_send;
   pthread_t thread_stop;
   DsList ds_list;
@@ -33,13 +36,11 @@ int main(){
   Controller cont;
   _InitController(&cont, &list, &storage, &ds_list);
   pthread_create(&thread_stop, NULL, ThreadStop, (void *)&cont);
-  pthread_create(&thread_register, NULL, ThreadRegisterClient, (void *)&cont);
   pthread_create(&thread_send, NULL, ThreadSendClient, (void *)&cont);
   pthread_create(&thread_receive, NULL, ThreadReceiveClient, (void *)&cont);
   while(cont.stop_server);
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
-  pthread_join(thread_register, NULL);
   pthread_join(thread_stop, NULL);
   free(storage.msg);
   for(int i = 0; i < list.len; i++){

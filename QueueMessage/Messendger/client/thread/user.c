@@ -11,6 +11,7 @@ void *ThreadUserWindow(void *arg){
   while(cont->stop_client){
   if(storage->len != storage_len){
     for(int i = storage_len; i < storage->len; i++){
+      if(strcmp(storage->msg[i].name, "/server")) continue;
       if(strstr(storage->msg[i].text, "new client:")){
         list->name[list->len] = malloc(sizeof(char) * MAX_NAME_LEN);
         strcpy(list->name[list->len], storage->msg[i].text + 12);

@@ -6,4 +6,5 @@ void ShiftList(NameList *list, int index){
   }
   list->len--;
   free(list->name[list->len]);
+  list->name[list->len] = NULL;
 }
