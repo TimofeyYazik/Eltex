@@ -59,7 +59,9 @@ void *ThreadReceiveClient(void *arg){
         strcpy(request.name, msg_buf.name);
         sprintf(request.text, "new client: %s", msg_buf.name);
         MsgCopy(&storage->msg[storage->len], &request);
+        printf("ThreadReceiveClient IMPORTANT check: text = %s len = %d status = %d\n", storage->msg[storage->len].text, storage->len, storage->msg[storage->len].status);
         storage->len++;
+
         if (storage->len == storage->size) StorageMemRealloc(storage);
       }
     }
