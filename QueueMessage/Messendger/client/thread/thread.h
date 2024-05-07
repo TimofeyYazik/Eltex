@@ -17,6 +17,7 @@
 #include "../ui/ui.h"
 #include "../../custom_type.h"
 
+void ShiftList(NameList *list, int index);
 void InitAttr(struct mq_attr *attr, size_t size);
 void MsgCopy(Message *dst, Message *src);
 void *ThreadSendServer(void *arg);
