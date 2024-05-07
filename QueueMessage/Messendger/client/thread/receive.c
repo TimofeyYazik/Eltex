@@ -31,7 +31,12 @@ void *ThreadReceiveServer(void *arg){
     if(storage->len != len_storage){
       MessageWindow(wnd, storage, (y / 4) * 3);
     }
-    mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL); 
+    mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL);
+    if(strstr(msg.text, "new client:) && !strcmp(msg.text, storage->msg[storage->len - 1].text)) {
+      memset(&msg.name, 0, MAX_NAME_LEN);
+      memset(&msg.text, 0, MAX_TEXT_LEN);
+      continue;
+    } 
     if(msg.text[0] == 0) {
       usleep(500000);
       continue;
