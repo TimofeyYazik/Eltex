@@ -56,7 +56,8 @@ void *ThreadRegisterClient(void *arg){
       storage->len++;
       list->len++;
     }
-    usleep(100000);
+    memset(request_name, 0, MAX_NAME_LEN);
+    sleep(1);
   }
   mq_close(ds_queue_register);
   mq_unlink(NAME_QUEUE_REGISTER);
