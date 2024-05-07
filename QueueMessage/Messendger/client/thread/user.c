@@ -1,16 +1,14 @@
 #include "thread.h"
 
-extern char name[MAX_NAME_LEN];
-
 void *ThreadUserWindow(void *arg){
   int x, y;
   getmaxyx(stdscr, y, x);
   WINDOW *wnd = newwin((y / 4) * 3, x / 4, 0, (x / 4) * 3);
-  Controller *cont = (Controller*)arg;
+  ControllerClient *cont = (ControllerClient*)arg;
   NameList *list = cont->list;
   MessageStorage *storage = cont->storage;
   int storage_len = 0;
-  while(cont->stop_server){
+  while(cont->stop_client){
   if(storage->len != storage_len){
     for(int i = storage_len; i < storage->len; i++){
       if(strcmp(storage->msg[i].name, "/server")) continue;
@@ -35,7 +33,7 @@ void *ThreadUserWindow(void *arg){
     UserWindow(wnd, list);
     storage_len = storage->len;
   }
-    sleep(1);
+  usleep(100000);
   }
   printf("ThreadUserWindow exit\n");
   delwin(wnd);

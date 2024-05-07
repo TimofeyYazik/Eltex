@@ -14,8 +14,6 @@
 #include "ui.h"
 #include "../thread/thread.h"
 
-extern char name[MAX_NAME_LEN];
-
 void SigWinch(int signo)
 {
   struct winsize size;
@@ -23,7 +21,7 @@ void SigWinch(int signo)
   resizeterm(size.ws_row, size.ws_col);
 }
 
-void Register(){
+void Register(ControllerClient *cont) {
   char name_is_register = 0;
   char request[MAX_NAME_LEN] = {0};
   struct mq_attr attr;
@@ -50,9 +48,9 @@ void Register(){
     else
       wprintw(wnd,"Enter your name again, previous name taken: ");
     wrefresh(wnd);
-    name[0] = '/';
-    wgetnstr(wnd, name + 1, MAX_NAME_LEN - 2); 
-    if (mq_send(ds_queue, name, MAX_NAME_LEN, 0) == -1)
+    cont->name[0] = '/';
+    wgetnstr(wnd, cont->name + 1, MAX_NAME_LEN - 2); 
+    if (mq_send(ds_queue, cont->name, MAX_NAME_LEN, 0) == -1)
     {
       perror("mq_send");
       exit(EXIT_FAILURE);
@@ -67,7 +65,7 @@ void Register(){
       break;
     if (strcmp(request, "NO") == 0){
        name_is_register = 1;
-       memset(name, 0, MAX_NAME_LEN);
+       memset(cont->name, 0, MAX_NAME_LEN);
     }
   }
   mq_close(ds_queue);

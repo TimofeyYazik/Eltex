@@ -13,10 +13,7 @@
 #include <pthread.h>
 
 #include "ui.h"
-
-extern char name[MAX_NAME_LEN];
   
-#define MAX_PATH_LENGTH 256
 
 void MessageWindow(WINDOW *wnd, MessageStorage *msg , int y){
   signal(SIGWINCH, SigWinch); 

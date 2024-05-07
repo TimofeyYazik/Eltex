@@ -2,23 +2,26 @@
 
 char name[MAX_NAME_LEN] = {0};
 
-static inline void _InitController(Controller *cont, NameList *list, MessageStorage *storage);
+static inline void _InitControllerClient(ControllerClient *cont, NameList *list, MessageStorage *storage);
 
 int main(){
   NameList list;
   MessageStorage storage;
-  Controller cont;
-  _InitController(&cont, &list, &storage);
+  ControllerClient cont;
+  _InitControllerClient(&cont, &list, &storage);
   pthread_t thread_send;
+  pthread_t thread_stop;
   pthread_t thread_receive;
   pthread_t thread_user;
-  Register();
+  Register(&cont);
   initscr();
+  pthread_create(&thread_stop, NULL, ThreadStop, (void *)&cont);
   pthread_create(&thread_send, NULL, ThreadSendServer, (void *)&cont);
   pthread_create(&thread_user, NULL, ThreadUserWindow, (void *)&cont);
   pthread_create(&thread_receive, NULL, ThreadReceiveServer, (void *)&cont);
   while (cont.stop_server);
   endwin();
+  pthread_join(thread_stop, NULL);
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
   pthread_join(thread_user, NULL);
@@ -30,7 +33,7 @@ int main(){
   exit(EXIT_SUCCESS);
 }
 
-static inline void _InitController(Controller *cont, NameList *list, MessageStorage *storage){
+static inline void _InitControllerClient(ControllerClient *cont, NameList *list, MessageStorage *storage){
   list->len = 0;
   list->size = 10;
   list->name = malloc(sizeof(char*) * list->size);
@@ -43,5 +46,4 @@ static inline void _InitController(Controller *cont, NameList *list, MessageStor
 
   cont->list = list;
   cont->storage = storage;
-  cont->ds_list = NULL;
 }

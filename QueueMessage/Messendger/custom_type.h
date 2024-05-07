@@ -42,4 +42,11 @@ typedef struct{
   DsList *ds_list;
 } Controller;
 
+typedef struct{
+  int stop_client;
+  char name[MAX_NAME_LEN];
+  NameList *list;
+  MessageStorage *storage;
+} ControllerClient;
+
 #endif // CUSTOM_TYPE_H_
