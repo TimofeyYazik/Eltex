@@ -20,13 +20,13 @@ void *ThreadSendServer(void *arg){
   }
   while (cont->stop_client) {
     InputMessageWindow(wnd, &msg);
-    msg.status = IS_ONLINE;
     if (!strcmp(msg.text, "/exit")) {
       cont->stop_client = 0;  
       msg.status = IS_OUT;
       mq_send(ds_queue_server, (char *)&msg, sizeof(Message), 0);
       break;
     }
+    msg.status = IS_ONLINE;
     if(mq_send(ds_queue_server, (char *)&msg, sizeof(Message), 0) == -1){
       perror("mq_send");
     }
