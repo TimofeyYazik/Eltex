@@ -44,7 +44,7 @@ void *ThreadReceiveClient(void *arg){
       if(i == list->len) {
         requst.status = GOOD_STATUS;
         mq_send(ds_queue_server, (char*)&requst, sizeof(Message), 0);
-        if(list->name[list->len] == NULL) list->name[list->len] = malloc(char * MAX_NAME_LEN);
+        if(list->name[list->len] == NULL) list->name[list->len] = malloc(sizeof(char) * MAX_NAME_LEN);
         strcpy(list->name[list->len], msg_buf.name);
         list->len++;
         if(list->len == list->size) ListMemRealloc(list);
