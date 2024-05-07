@@ -2,7 +2,25 @@
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
-void inline _InitController(Controller *cont, NameList *list, MessageStorage *storage, DsList *ds_list);
+static inline void _InitController(Controller *cont, NameList *list, MessageStorage *storage, DsList *ds_list){
+  ds_list->len = 0;
+  ds_list->size = 10;
+  ds_list->ds = malloc(sizeof(mqd_t) * ds_list->size);
+
+  list->len = 0;
+  list->size = 10;
+  list->name = malloc(sizeof(char*) * list->size);
+
+  storage->len = 0;
+  storage->size = 50;
+  storage->msg = malloc(sizeof(Message) * storage->size);
+
+  cont->stop_server = 1;
+
+  cont->list = list;
+  cont->storage = storage;
+  cont->ds_list = ds_list;
+}
 
 int main(){
   pthread_t thread_receive;
@@ -32,22 +50,3 @@ int main(){
 }
 
 
-static inline void _InitController(Controller *cont, NameList *list, MessageStorage *storage, DsList *ds_list){
-  ds_list->len = 0;
-  ds_list->size = 10;
-  ds_list->ds = malloc(sizeof(mqd_t) * ds_list->size);
-
-  list->len = 0;
-  list->size = 10;
-  list->name = malloc(sizeof(char*) * list.size);
-
-  storage->len = 0;
-  storage->size = 50;
-  storage->msg = malloc(sizeof(Message) * storage.size);
-
-  cont->stop_server = 1;
-
-  cont->list = list;
-  cont->storage = storage;
-  cont->ds_list = ds_list;
-}
