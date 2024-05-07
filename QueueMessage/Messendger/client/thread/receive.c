@@ -30,12 +30,11 @@ void *ThreadReceiveServer(void *arg){
     }
     mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL);
     if(msg.status == IS_SHOTDOWN) break;
-    if(strstr(msg.text, "new client:") && !strcmp(msg.text, storage->msg[storage->len - 1].text)) {
-      continue;
+    if(msg.status == IS_ONLINE){  
+      MsgCopy(&storage->msg[storage->len], &msg);
+      storage->len++;
+      if (storage->len == storage->size) StorageMemRealloc(storage);
     }
-    MsgCopy(&storage->msg[storage->len], &msg);
-    storage->len++;
-    if (storage->len == storage->size) StorageMemRealloc(storage);
   }
   delwin(wnd);
   mq_close(ds_queue_connect);
