@@ -24,20 +24,19 @@ void *ThreadReceiveServer(void *arg){
   box(wnd, 0, 0);
 
   while (cont->stop_client) {
-    if(storage->len != len_storage){
-      // pthread_mutex_lock(&mutex);
-      MessageWindow(wnd, storage, (y / 4) * 3);
-      // pthread_mutex_unlock(&mutex);
-    }
+    MessageWindow(wnd, storage, (y / 4) * 3);
+    UserWindow(wnd, list);
     mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL);
     if(msg.status == IS_SERVER_MESSAGE) {
-      fprintf(stderr, "ThreadReceiveServer check: text = %s len = %d status = %d\n", msg.text, storage->len, msg.status);
       if(strstr(msg.text, "new client:")){
         if(list->name[list->len] == NULL) 
           list->name[list->len] = malloc(sizeof(char) * MAX_NAME_LEN);
         strcpy(list->name[list->len], msg.name);
         list->len++;
         if(list->len == list->size) ListMemRealloc(list);
+        MsgCopy(&storage->msg[storage->len], &msg);
+        storage->len++;
+        if (storage->len == storage->size) StorageMemRealloc(storage);
       }
       if(strstr(msg.text, "client is out:")){
         for (int i = 0; i < list->len; i++) {
@@ -46,10 +45,10 @@ void *ThreadReceiveServer(void *arg){
             break;
           }
         }
+        MsgCopy(&storage->msg[storage->len], &msg);
+        storage->len++;
+        if (storage->len == storage->size) StorageMemRealloc(storage);
       }
-      // pthread_mutex_lock(&mutex);
-      UserWindow(wnd, list);
-      // pthread_mutex_unlock(&mutex);
     }
     if(msg.status == IS_SHOTDOWN) break;
     if(msg.status == IS_ONLINE){  
