@@ -17,7 +17,7 @@ int main(){
   pthread_create(&thread_send, NULL, ThreadSendServer, (void *)&cont);
   pthread_create(&thread_user, NULL, ThreadUserWindow, (void *)&cont);
   pthread_create(&thread_receive, NULL, ThreadReceiveServer, (void *)&cont);
-  while (cont.stop_client);
+  while (cont.stop_server);
   endwin();
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
