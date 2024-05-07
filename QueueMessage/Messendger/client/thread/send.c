@@ -1,6 +1,7 @@
 #include "thread.h"
 
 void *ThreadSendServer(void *arg){
+  mode_t mode_mqueue = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   ControllerClient *cont = (ControllerClient*)arg;
   NameList *list = cont->list;
   MessageStorage *storage = cont->storage;
@@ -11,7 +12,7 @@ void *ThreadSendServer(void *arg){
   Message msg = {0};
   strcpy(msg.name, cont->name);
   InitAttr(&attr, sizeof(Message));
-  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
+  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY, mode_mqueue, &attr);
   if(ds_queue_server == -1) {
     fprintf(stderr, "ThreadSendServer mq_open failed with error: %d\n", errno);
     perror("mq_open");
@@ -30,6 +31,5 @@ void *ThreadSendServer(void *arg){
   }
   mq_close(ds_queue_server);
   delwin(wnd);
-  printf("ThreadSendServer end\n");
   return NULL;
 }

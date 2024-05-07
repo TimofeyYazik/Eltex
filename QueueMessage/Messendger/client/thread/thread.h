@@ -8,12 +8,14 @@
 #include <mqueue.h>
 #include <unistd.h>
 #include <time.h>
-#include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <pthread.h>
+#include <signal.h>
+#include <termios.h>
 
+#include "../../lib_mess/lib_mess.h"
 #include "../ui/ui.h"
 #include "../../custom_type.h"
 

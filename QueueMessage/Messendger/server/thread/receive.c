@@ -2,13 +2,14 @@
 
 void *ThreadReceiveClient(void *arg){
   fprintf(stderr, "ThreadReceiveClient start\n");
+  mode_t mode_mqueue = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   Controller *cont = (Controller*)arg;
   MessageStorage *storage = cont->storage;
   NameList *list = cont->list;
   Message msg_buf = {0};
   struct mq_attr attr;
   InitAttr(&attr, sizeof(Message));
-  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_RDONLY, S_IWUSR | S_IRUSR, &attr);
+  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_RDONLY, mode_mqueue, &attr);
   if (ds_queue_server == -1) {
     fprintf(stderr, "ThreadReceiveClient mq_open failed with error: %d\n", errno);
     perror("mq_open");

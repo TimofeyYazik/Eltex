@@ -1,6 +1,7 @@
 #include "thread.h"
 
 void *ThreadReceiveServer(void *arg){
+  mode_t mode_mqueue = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   ControllerClient *cont = (ControllerClient*)arg;
   NameList *list = cont->list;
   MessageStorage *storage = cont->storage;
@@ -9,7 +10,7 @@ void *ThreadReceiveServer(void *arg){
   InitAttr(&attr, sizeof(Message));
   getmaxyx(stdscr, y, x);
   Message msg = {0};
-  mqd_t ds_queue_connect = mq_open(cont->name, O_CREAT | O_RDONLY, S_IWUSR | S_IRUSR, &attr);
+  mqd_t ds_queue_connect = mq_open(cont->name, O_CREAT | O_RDONLY, mode_mqueue, &attr);
   if (ds_queue_connect == -1) {
     fprintf(stderr, "ThreadReceiveServer mq_open failed with error: %d\n", errno);
     perror("mq_open");
@@ -30,14 +31,10 @@ void *ThreadReceiveServer(void *arg){
     }
     MsgCopy(&storage->msg[storage->len], &msg);
     storage->len++;
-    if (storage->len == storage->size) {
-      storage->size = storage->size * 2 - (storage->size / 2);
-      storage->msg = realloc(storage->msg, sizeof(Message) * storage->size);
-    }
+    if (storage->len == storage->size) StorageMemRealloc(storage);
   }
   delwin(wnd);
   mq_close(ds_queue_connect);
   mq_unlink(cont->name);
-  printf("ThreadReceiveServer finished\n");
   return NULL;
 }

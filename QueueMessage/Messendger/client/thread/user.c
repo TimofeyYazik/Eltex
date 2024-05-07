@@ -25,16 +25,12 @@ void *ThreadUserWindow(void *arg){
         }
       }
       list->len++;
-      if(list->len == list->size){
-        list->size = 2 * list->size - (list->size / 2);
-        list->name = realloc(list->name, sizeof(char*) * list->size);
-      }
+      if(list->len == list->size) ListMemRealloc(list);
     }
     UserWindow(wnd, list);
     storage_len = storage->len;
   }
   usleep(100000);
   }
-  printf("ThreadUserWindow exit\n");
   delwin(wnd);
 }

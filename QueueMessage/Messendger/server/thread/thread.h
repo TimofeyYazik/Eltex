@@ -13,6 +13,7 @@
 #include <pthread.h>
 
 #include "../../custom_type.h"
+#include "../../lib_mess/lib_mess.h"
 
 void ShiftList(NameList *list, int index);
 void InitAttr(struct mq_attr *attr, size_t size);

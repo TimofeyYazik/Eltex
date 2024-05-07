@@ -1,16 +1,3 @@
-#include <curses.h>
-#include <mqueue.h>
-#include <stdlib.h>
-#include <signal.h>
-#include <sys/ioctl.h>
-#include <termios.h>
-#include <unistd.h>
-#include <errno.h>
-#include <string.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <pthread.h>
-
 #include "ui.h"
 #include "../thread/thread.h"
 
@@ -22,11 +9,12 @@ void SigWinch(int signo)
 }
 
 void Register(ControllerClient *cont) {
+  mode_t mode_mqueue = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   char name_is_register = 0;
   char request[MAX_NAME_LEN] = {0};
   struct mq_attr attr;
   InitAttr(&attr, MAX_NAME_LEN);
-  mqd_t ds_queue = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_RDWR, S_IWUSR | S_IRUSR, &attr);
+  mqd_t ds_queue = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_RDWR, mode_mqueue, &attr);
   if (ds_queue == -1) {
     fprintf(stderr, "Register mq_open failed with error: %d\n", errno);
     perror("mq_open");
@@ -43,30 +31,22 @@ void Register(ControllerClient *cont) {
     wnd = newwin(y / 5, x / 2, (y / 5) * 2, (x / 4));
     box(wnd, 0, 0);
     wmove(wnd, 2, 4);
-    if (name_is_register == 0)
-      wprintw(wnd,"Enter your name: "); 
-    else
-      wprintw(wnd,"Enter your name again, previous name taken: ");
+    if   (name_is_register == 0) wprintw(wnd,"Enter your name: "); 
+    else wprintw(wnd,"Enter your name again, previous name taken: ");
     wrefresh(wnd);
     cont->name[0] = '/';
     wgetnstr(wnd, cont->name + 1, MAX_NAME_LEN - 2); 
-    if (mq_send(ds_queue, cont->name, MAX_NAME_LEN, 0) == -1)
-    {
+    if (mq_send(ds_queue, cont->name, MAX_NAME_LEN, 0) == -1) {
       perror("mq_send");
       exit(EXIT_FAILURE);
     }
     usleep(100000);
-    if (mq_receive(ds_queue, request, MAX_NAME_LEN, NULL) == -1)
-    {
+    if (mq_receive(ds_queue, request, MAX_NAME_LEN, NULL) == -1) {
       perror("mq_receive");
       exit(EXIT_FAILURE);
     }
-    if (strcmp(request, "OK") == 0)
-      break;
-    if (strcmp(request, "NO") == 0){
-       name_is_register = 1;
-       memset(cont->name, 0, MAX_NAME_LEN);
-    }
+    if (strcmp(request, "OK") == 0) break;
+    if (strcmp(request, "NO") == 0) name_is_register = 1;
   }
   mq_close(ds_queue);
   wrefresh(wnd);

@@ -1,11 +1,8 @@
 #include "thread.h"
 
-
-  // int flags = O_RDWR | O_CREAT | O_NONBLOCK;
-  // mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
-
 void *ThreadSendClient(void *arg){
   fprintf(stderr, "ThreadSendClient start\n");
+  mode_t mode_mqueue = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   Controller *cont = (Controller*)arg;
   NameList *list = cont->list;
   MessageStorage *storage = cont->storage;
@@ -20,7 +17,7 @@ void *ThreadSendClient(void *arg){
     }
     if(list_len < list->len) {
       fprintf(stderr, "ThreadSendClient check name: list_len = %d list->len =%d %s\n", list_len, list->len, list->name[list_len]);
-      ds_list->ds[list_len] = mq_open(list->name[list_len], O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
+      ds_list->ds[list_len] = mq_open(list->name[list_len], O_CREAT | O_WRONLY, mode_mqueue, &attr);
       if (ds_list->ds[list_len] == -1) {
         fprintf(stderr, "ThreadSendClient mq_open failed with error: %d\n", errno);
         perror("mq_open");
@@ -30,7 +27,7 @@ void *ThreadSendClient(void *arg){
       for (int i = list_len; i < ds_list->len; i++) {
         for(int j = 0; j < storage->len; j++) {
           if(mq_send(ds_list->ds[i], (char*)&storage->msg[j], sizeof(Message), 0) == -1) 
-          perror("ThreadReceiveClient mq_send");
+            perror("ThreadReceiveClient mq_send");
         }
       }
       list_len = list->len;
@@ -38,8 +35,8 @@ void *ThreadSendClient(void *arg){
     if(storage->len != storage_len) {
       for (int i = 0; i < ds_list->len; i++) {
         for(int j = storage_len; j < storage->len; j++) {
-          printf("%s %s %d\n", storage->msg[j].name, storage->msg[j].text, j);
-          if(mq_send(ds_list->ds[i], (char*)&storage->msg[j], sizeof(Message), 0) == -1) perror("ThreadReceiveClient mq_send");
+          if(mq_send(ds_list->ds[i], (char*)&storage->msg[j], sizeof(Message), 0) == -1) 
+            perror("ThreadReceiveClient mq_send");
         }
       }
       storage_len = storage->len; 

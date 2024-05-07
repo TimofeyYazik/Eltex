@@ -3,6 +3,7 @@
 
 void *ThreadStop(void *arg){
   Controller *cont = (Controller*)arg;
+  mode_t mode_mqueue = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   struct mq_attr attr;
   struct mq_attr attr1;
   InitAttr(&attr, MAX_NAME_LEN);
@@ -13,13 +14,13 @@ void *ThreadStop(void *arg){
   while (cont->stop_server) {
     scanf("%d", &cont->stop_server);
   } 
-  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr1);
+  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY, mode_mqueue, &attr1);
   if(ds_queue_server == -1) {
     fprintf(stderr, "ThreadStop mq_open failed with error: %d\n", errno);
     perror("mq_open");
     return NULL;
   }
-  mqd_t ds_queue_register = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_WRONLY, S_IWUSR | S_IRUSR, &attr);
+  mqd_t ds_queue_register = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_WRONLY, mode_mqueue, &attr);
   if(ds_queue_register == -1) {
     fprintf(stderr, "ThreadStop mq_open failed with error: %d\n", errno);
     perror("mq_open");

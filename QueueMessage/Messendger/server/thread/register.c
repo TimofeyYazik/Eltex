@@ -3,6 +3,7 @@
 void *ThreadRegisterClient(void *arg){
   char status_ok[MAX_NAME_LEN] = GOOD_STATUS;
   char status_error[MAX_NAME_LEN] = BAD_STATUS;
+  mode_t mode_mqueue = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   Message server_message = {0};
   sprintf(server_message.name, "/server");
   fprintf(stderr, "ThreadRegisterClient start\n");
@@ -13,7 +14,7 @@ void *ThreadRegisterClient(void *arg){
   MessageStorage *storage = cont->storage;
   cont->list->name[0] = malloc(sizeof(char) * MAX_NAME_LEN);
   char request_name[MAX_NAME_LEN] = {0};
-  mqd_t ds_queue_register = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_RDWR, S_IWUSR | S_IRUSR, &attr);
+  mqd_t ds_queue_register = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_RDWR, mode_mqueue, &attr);
   if (ds_queue_register == -1) {
     fprintf(stderr, "ThreadRegisterClient mq_open failed with error: %d\n", errno);
     perror("mq_open");
