@@ -4,7 +4,6 @@ extern pthread_mutex_t mutex;
 
 void *ThreadReceiveServer(void *arg){
   mode_t mode_mqueue = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
-  FILE *f = fopen("test", "w");
   ControllerClient *cont = (ControllerClient*)arg;
   NameList *list = cont->list;
   MessageStorage *storage = cont->storage;
@@ -31,7 +30,6 @@ void *ThreadReceiveServer(void *arg){
       // pthread_mutex_unlock(&mutex);
     }
     mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL);
-    fprintf(f, "%s\n", msg.text);
     if(msg.status == IS_SERVER_MESSAGE) {
       if(strstr(msg.text, "new client:")){
         list->name[list->len] = malloc(sizeof(char) * MAX_NAME_LEN);
@@ -39,7 +37,7 @@ void *ThreadReceiveServer(void *arg){
         list->len++;
         if(list->len == list->size) ListMemRealloc(list);
       }
-      if(strstr(msg.text, "client is out: ")){
+      if(strstr(msg.text, "client is out:")){
         for (int i = 0; i < list->len; i++) {
           if(strcmp(list->name[i], msg.name) == 0) {
             ShiftList(list, i);
@@ -58,6 +56,7 @@ void *ThreadReceiveServer(void *arg){
       if (storage->len == storage->size) StorageMemRealloc(storage);
     }
   }
+  unlink(cont->name);
   delwin(wnd);
   fclose(f);
   mq_close(ds_queue_connect);
