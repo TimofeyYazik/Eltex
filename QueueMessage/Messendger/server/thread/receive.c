@@ -21,6 +21,7 @@ void *ThreadReceiveClient(void *arg){
     }
     if(msg_buf.status == IS_SHOTDOWN) break;
     if(msg_buf.status == IS_OUT){
+      Message request = {0};
       fprintf(stderr, "ThreadReceiveClient check name is out: %s\n", msg_buf.name);
       request.status = IS_SERVER_MESSAGE;
       sprintf(request.text, "client is out: %s", msg_buf.name);
