@@ -3,6 +3,8 @@
 void *ThreadStop(void *arg){
   Message stop_receive = {0};
   ControllerClient *cont = (ControllerClient*)arg;
+  struct mq_attr attr;
+  InitAttr(&attr, sizeof(Message));
   while (1) {
     if(cont->stop_client == 0) {
       mqd_t ds_queue_connect = mq_open(cont->name, O_CREAT | O_RDONLY, S_IWUSR | S_IRUSR, &attr);
