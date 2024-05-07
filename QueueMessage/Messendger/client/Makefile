@@ -1,6 +1,6 @@
 CC := gcc
 CFLAGS := -g 
-LIB := -lcurses -pthread -lrt -lmess
+LIB := -lcurses -pthread -lrt -L../lib_mess -lmess
 
 FILES := $(shell find . -name "*.c")
 OBJECTS := $(patsubst %.c, %.o, $(FILES))
