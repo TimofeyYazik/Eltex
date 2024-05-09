@@ -2,6 +2,6 @@
 
 void AddStorageMessege(MessageStorage *dst, Message *src){
   MsgCopy(&dst->msg[dst->len], src);
-  src->len++;
-  if(src->len == src->size) StorageMemRealloc(dst);
+  dst->len++;
+  if(dst->len == dst->size) StorageMemRealloc(dst);
 }
