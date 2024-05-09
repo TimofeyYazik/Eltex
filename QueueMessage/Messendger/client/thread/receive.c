@@ -29,7 +29,7 @@ void *ThreadReceiveServer(void *arg){
     mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL);
     if(msg.status == IS_SERVER_MESSAGE) {
       if(storage->len > 0) {
-        if(!strcmp(msg.name, list->name[list->len - 1])) {
+        if(!strcmp(msg.text, storage->msg[storage->len - 1].text) && strstr(msg.text, "new client:")) {
           continue;
         }  
       }
