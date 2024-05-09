@@ -10,14 +10,14 @@ int main(){
   ControllerClient cont;
   _InitControllerClient(&cont, &list, &storage);
   pthread_t thread_send;
-  pthread_t thread_stop;
+  // pthread_t thread_stop;
   pthread_t thread_receive;
   Register(&cont);
   initscr();
-  pthread_create(&thread_stop, NULL, ThreadStop, (void *)&cont);
+  // pthread_create(&thread_stop, NULL, ThreadStop, (void *)&cont);
   pthread_create(&thread_send, NULL, ThreadSendServer, (void *)&cont);
   pthread_create(&thread_receive, NULL, ThreadReceiveServer, (void *)&cont);
-  pthread_join(thread_stop, NULL);
+  // pthread_join(thread_stop, NULL);
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
   endwin();

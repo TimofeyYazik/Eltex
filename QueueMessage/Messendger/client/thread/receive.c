@@ -45,6 +45,7 @@ void *ThreadReceiveServer(void *arg){
         if (storage->len == storage->size) StorageMemRealloc(storage);
       }
       if(strstr(msg.text, "client is out:")){
+        if(strcmp(msg.name, cont->name)) break;
         for (int i = 0; i < list->len; i++) {
           if(strcmp(list->name[i], msg.name) == 0) {
             ShiftList(list, i);
@@ -57,7 +58,6 @@ void *ThreadReceiveServer(void *arg){
         if (storage->len == storage->size) StorageMemRealloc(storage);
       }
     }
-    if(msg.status == IS_SHOTDOWN) break;
     if(msg.status == IS_ONLINE){  
       MsgCopy(&storage->msg[storage->len], &msg);
       storage->len++;
