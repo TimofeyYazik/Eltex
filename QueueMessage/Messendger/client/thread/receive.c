@@ -1,7 +1,5 @@
 #include "thread.h"
 
-extern pthread_mutex_t mutex;
-
 void *ThreadReceiveServer(void *arg){
   mode_t mode_mqueue = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   ControllerClient *cont = (ControllerClient*)arg;
@@ -30,6 +28,11 @@ void *ThreadReceiveServer(void *arg){
     UserWindow(wnd2, list);
     mq_receive(ds_queue_connect, (char*)&msg, sizeof(Message), NULL);
     if(msg.status == IS_SERVER_MESSAGE) {
+      if(storage->len > 0) {
+        if(!strcmp(msg->name, list->name[list->len - 1])) {
+          continue;
+        }  
+      }
       if(strstr(msg.text, "new client:")){
         if(list->name[list->len] == NULL) 
           list->name[list->len] = malloc(sizeof(char) * MAX_NAME_LEN);
@@ -37,6 +40,7 @@ void *ThreadReceiveServer(void *arg){
         list->len++;
         if(list->len == list->size) ListMemRealloc(list);
         MsgCopy(&storage->msg[storage->len], &msg);
+        strcpy(storage->msg[storage->len].name, "server");
         storage->len++;
         if (storage->len == storage->size) StorageMemRealloc(storage);
       }
@@ -48,6 +52,7 @@ void *ThreadReceiveServer(void *arg){
           }
         }
         MsgCopy(&storage->msg[storage->len], &msg);
+        strcpy(storage->msg[storage->len].name, "server");
         storage->len++;
         if (storage->len == storage->size) StorageMemRealloc(storage);
       }
@@ -59,7 +64,6 @@ void *ThreadReceiveServer(void *arg){
       if (storage->len == storage->size) StorageMemRealloc(storage);
     }
   }
-  unlink(cont->name);
   delwin(wnd);
   mq_close(ds_queue_connect);
   return NULL;
