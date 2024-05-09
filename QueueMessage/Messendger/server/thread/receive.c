@@ -28,12 +28,12 @@ void *ThreadReceiveClient(void *arg){
       strcpy(request.name, msg_buf.name);
       MsgCopy(&storage->msg[storage->len], &request);
       storage->len++;
+      sleep(1);
       if (storage->len == storage->size) StorageMemRealloc(storage);
       for(int i = 0; i < list->len; i++) {
         if(strcmp(list->name[i], msg_buf.name) == 0){
           fprintf(stderr, "SHIFT\n");
           ShiftDsList(cont->ds_list, i);
-          // mq_unlink(list->name[i]);
           break;
         }
       }
