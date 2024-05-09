@@ -28,7 +28,7 @@ int main(){
   free(list.name);
   free(storage.msg);
   pthread_mutex_destroy(&mutex);
-  unlink(cont->name);
+  unlink(cont.name);
   exit(EXIT_SUCCESS);
 }
 
