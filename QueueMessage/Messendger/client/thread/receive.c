@@ -34,11 +34,7 @@ void *ThreadReceiveServer(void *arg){
         }  
       }
       if(strstr(msg.text, "new client:")){
-        if(list->name[list->len] == NULL) 
-          list->name[list->len] = malloc(sizeof(char) * MAX_NAME_LEN);
-        strcpy(list->name[list->len], msg.name);
-        list->len++;
-        if(list->len == list->size) ListMemRealloc(list);
+        AddNameList(list, msg.name);
         MsgCopy(&storage->msg[storage->len], &msg);
         strcpy(storage->msg[storage->len].name, "server");
         storage->len++;
@@ -59,9 +55,8 @@ void *ThreadReceiveServer(void *arg){
     }
     if(msg.status == IS_SHOTDOWN) break;
     if(msg.status == IS_ONLINE){  
-      MsgCopy(&storage->msg[storage->len], &msg);
-      storage->len++;
-      if (storage->len == storage->size) StorageMemRealloc(storage);
+      AddStorageMessege(storage, &msg);
+      fprintf(stderr, "ThreadReceiveServer check: text = %s len = %d status = %d\n", storage->msg[storage->len].text, storage->len, storage->msg[storage->len].status);
     }
   }
   delwin(wnd);

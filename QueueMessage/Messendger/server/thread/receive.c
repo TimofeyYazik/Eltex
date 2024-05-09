@@ -3,6 +3,13 @@
 void *ThreadReceiveClient(void *arg){
   fprintf(stderr, "ThreadReceiveClient start\n");
   mode_t mode_mqueue = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
+  NameList list_copy = {0};
+  list_copy.len = 0;
+  list_copy.size = 50;
+  list_copy.name = malloc(sizeof(char *) * list_copy.size);
+  for(int i = 0; i < list_copy.size; i++){
+    list_copy.name[i] = NULL;
+  }
   Controller *cont = (Controller*)arg;
   MessageStorage *storage = cont->storage;
   NameList *list = cont->list;
@@ -14,10 +21,8 @@ void *ThreadReceiveClient(void *arg){
   while(cont->stop_server) {
     mq_receive(ds_queue_server, (char*)&msg_buf, sizeof(Message), NULL);
     if(msg_buf.status == IS_ONLINE){
-      MsgCopy(&storage->msg[storage->len], &msg_buf);
+      AddStorageMessege(storage, &msg_buf);
       fprintf(stderr, "ThreadReceiveClient check: text = %s len = %d status = %d\n", storage->msg[storage->len].text, storage->len, storage->msg[storage->len].status);
-      storage->len++;
-      if (storage->len == storage->size) StorageMemRealloc(storage);
     }
     if(msg_buf.status == IS_SHOTDOWN) break;
     if(msg_buf.status == IS_OUT){
@@ -26,9 +31,7 @@ void *ThreadReceiveClient(void *arg){
       request.status = IS_SERVER_MESSAGE;
       sprintf(request.text, "client is out: %s", msg_buf.name);
       strcpy(request.name, msg_buf.name);
-      MsgCopy(&storage->msg[storage->len], &request);
-      storage->len++;
-      if (storage->len == storage->size) StorageMemRealloc(storage);
+      AddStorageMessege(storage, &request);
       for(int i = 0; i < list->len; i++) {
         if(strcmp(list->name[i], msg_buf.name) == 0){
           ShiftDsList(cont->ds_list, i);
@@ -54,21 +57,17 @@ void *ThreadReceiveClient(void *arg){
         request.status = IS_SERVER_MESSAGE;
         strcpy(request.name, msg_buf.name);
         sprintf(request.text, "new client: %s", msg_buf.name);
-        MsgCopy(&storage->msg[storage->len], &request);
         printf("ThreadReceiveClient IMPORTANT check: text = %s len = %d status = %d\n", storage->msg[storage->len].text, storage->len, storage->msg[storage->len].status);
-        storage->len++;
-        if (storage->len == storage->size) StorageMemRealloc(storage);
-        if(list->name[list->len] == NULL) list->name[list->len] = malloc(sizeof(char) * MAX_NAME_LEN);
-        strcpy(list->name[list->len], msg_buf.name);
-        list->len++;
-        if(list->len == list->size) ListMemRealloc(list);
+        AddStorageMessege(storage, &request);
+        AddNameList(list, msg_buf.name);
+        AddNameList(&list_copy, msg_buf.name);
       }
     }
     usleep(10000);
   }
   mq_close(ds_queue_server);
   mq_close(ds_queue_register);
-  // for(int i = 0; i < list->size; i++) mq_unlink(list->name[i]);
+  for(int i = 0; i < list_copy.size; i++) mq_unlink(list_copy.name[i]);
   mq_unlink(NAME_QUEUE_REGISTER);
   mq_unlink(NAME_QUEUE_SERVER);
   printf("ThreadReceiveClient end\n");

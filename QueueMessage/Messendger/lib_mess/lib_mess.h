@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+void AddStorageMessege(MessageStorage *src, Message *msg);
+void AddNameList(NameList *src, char *name);
 void ShiftList(NameList *list, int index);
 void InitAttr(struct mq_attr *attr, size_t size);
 void MsgCopy(Message *dst, Message *src);
