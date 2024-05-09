@@ -42,7 +42,7 @@ void *ThreadSendClient(void *arg){
       }
       storage_len = storage->len; 
     }
-    usleep(10000);
+    usleep(1000);
   }
   for (int i = 0; i < ds_list->len; i++) {
     mq_close(ds_list->ds[i]);
