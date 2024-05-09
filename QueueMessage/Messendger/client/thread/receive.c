@@ -46,16 +46,16 @@ void *ThreadReceiveServer(void *arg){
       }
       if(strstr(msg.text, "client is out:")){
         if(strcmp(msg.name, cont->name)) break;
+        MsgCopy(&storage->msg[storage->len], &msg);
+        strcpy(storage->msg[storage->len].name, "server");
+        storage->len++;
+        if (storage->len == storage->size) StorageMemRealloc(storage);
         for (int i = 0; i < list->len; i++) {
           if(strcmp(list->name[i], msg.name) == 0) {
             ShiftList(list, i);
             break;
           }
         }
-        MsgCopy(&storage->msg[storage->len], &msg);
-        strcpy(storage->msg[storage->len].name, "server");
-        storage->len++;
-        if (storage->len == storage->size) StorageMemRealloc(storage);
       }
     }
     if(msg.status == IS_ONLINE){  
