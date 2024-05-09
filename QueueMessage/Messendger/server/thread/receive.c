@@ -1,31 +1,9 @@
 #include "thread.h"
 
-void NameListAdd(NameList *list, char *name){
-  if(list->name[list->len] == NULL) list->name[list->len] = malloc(sizeof(char) * MAX_NAME_LEN);
-  strcpy(list->name[list->len], name);
-  list->len++;
-  if(list->len == list->size) ListMemRealloc(list);
-}
-
-// void NameListRemove(NameList *list, char *name){
-//   for(int i = 0; i < list->len; i++){
-//     if(strcmp(list->name[i], name) == 0){
-//       ShiftList(list, i);
-//       break;
-//     }
-//   }
-
 void *ThreadReceiveClient(void *arg){
   fprintf(stderr, "ThreadReceiveClient start\n");
   mode_t mode_mqueue = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   Controller *cont = (Controller*)arg;
-  NameList copy = {0};
-  copy.len = 0;
-  copy.size = 50;
-  copy.name = malloc(sizeof(char*) * copy.size);
-  for(int i = 0; i < copy.size; i++){
-    copy.name[i] = NULL;
-  }
   MessageStorage *storage = cont->storage;
   NameList *list = cont->list;
   Message msg_buf = {0};
@@ -50,13 +28,12 @@ void *ThreadReceiveClient(void *arg){
       strcpy(request.name, msg_buf.name);
       MsgCopy(&storage->msg[storage->len], &request);
       storage->len++;
-      sleep(1);
       if (storage->len == storage->size) StorageMemRealloc(storage);
       for(int i = 0; i < list->len; i++) {
         if(strcmp(list->name[i], msg_buf.name) == 0){
-          fprintf(stderr, "SHIFT\n");
-          ShiftList(list, i);
           ShiftDsList(cont->ds_list, i);
+          // mq_unlink(list->name[i]);
+          ShiftList(list, i);
           break;
         }
       }
@@ -81,17 +58,17 @@ void *ThreadReceiveClient(void *arg){
         printf("ThreadReceiveClient IMPORTANT check: text = %s len = %d status = %d\n", storage->msg[storage->len].text, storage->len, storage->msg[storage->len].status);
         storage->len++;
         if (storage->len == storage->size) StorageMemRealloc(storage);
-        NameListAdd(list, msg_buf.name);
-        NameListAdd(&copy, msg_buf.name);
+        if(list->name[list->len] == NULL) list->name[list->len] = malloc(sizeof(char) * MAX_NAME_LEN);
+        strcpy(list->name[list->len], msg_buf.name);
+        list->len++;
+        if(list->len == list->size) ListMemRealloc(list);
       }
     }
     usleep(10000);
   }
   mq_close(ds_queue_server);
   mq_close(ds_queue_register);
-  for(int i = 0; i < copy.len; i++) mq_unlink(copy.name[i]);
-  for(int i =0; i < copy.len; i++) free(copy.name[i]);
-  free(copy.name);
+  // for(int i = 0; i < list->size; i++) mq_unlink(list->name[i]);
   mq_unlink(NAME_QUEUE_REGISTER);
   mq_unlink(NAME_QUEUE_SERVER);
   printf("ThreadReceiveClient end\n");
