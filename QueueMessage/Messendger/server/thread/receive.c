@@ -29,13 +29,11 @@ void *ThreadReceiveClient(void *arg){
       MsgCopy(&storage->msg[storage->len], &request);
       storage->len++;
       if (storage->len == storage->size) StorageMemRealloc(storage);
-      usleep(10000);
       for(int i = 0; i < list->len; i++) {
         if(strcmp(list->name[i], msg_buf.name) == 0){
           fprintf(stderr, "SHIFT\n");
           ShiftDsList(cont->ds_list, i);
-          mq_unlink(list->name[i]);
-          ShiftList(list, i);
+          // mq_unlink(list->name[i]);
           break;
         }
       }
@@ -70,7 +68,7 @@ void *ThreadReceiveClient(void *arg){
   }
   mq_close(ds_queue_server);
   mq_close(ds_queue_register);
-  // for(int i = 0; i < list->size; i++) mq_unlink(list->name[i]);
+  for(int i = 0; i < list->size; i++) mq_unlink(list->name[i]);
   mq_unlink(NAME_QUEUE_REGISTER);
   mq_unlink(NAME_QUEUE_SERVER);
   printf("ThreadReceiveClient end\n");
