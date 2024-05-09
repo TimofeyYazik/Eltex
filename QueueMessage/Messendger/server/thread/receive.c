@@ -31,6 +31,7 @@ void *ThreadReceiveClient(void *arg){
       if (storage->len == storage->size) StorageMemRealloc(storage);
       for(int i = 0; i < list->len; i++) {
         if(strcmp(list->name[i], msg_buf.name) == 0){
+          fprintf(stderr, "SHIFT\n");
           ShiftDsList(cont->ds_list, i);
           // mq_unlink(list->name[i]);
           ShiftList(list, i);
