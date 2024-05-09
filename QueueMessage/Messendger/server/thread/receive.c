@@ -4,6 +4,7 @@ void NameListAdd(NameList *list, char *name){
   if(list->name[list->len] == NULL) list->name[list->len] = malloc(sizeof(char) * MAX_NAME_LEN);
   strcpy(list->name[list->len], name);
   list->len++;
+  if(list->len == list->size) ListMemRealloc(list);
 }
 
 // void NameListRemove(NameList *list, char *name){
@@ -19,6 +20,12 @@ void *ThreadReceiveClient(void *arg){
   mode_t mode_mqueue = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   Controller *cont = (Controller*)arg;
   NameList copy = {0};
+  copy.len = 0;
+  copy.size = 50;
+  copy.name = malloc(sizeof(char*) * copy.size);
+  for(int i = 0; i < copy.size; i++){
+    copy.name[i] = NULL;
+  }
   MessageStorage *storage = cont->storage;
   NameList *list = cont->list;
   Message msg_buf = {0};
