@@ -33,7 +33,7 @@ void *ThreadReceiveClient(void *arg){
         if(strcmp(list->name[i], msg_buf.name) == 0){
           fprintf(stderr, "SHIFT\n");
           ShiftDsList(cont->ds_list, i);
-          // mq_unlink(list->name[i]);
+          mq_unlink(list->name[i]);
           ShiftList(list, i);
           break;
         }
