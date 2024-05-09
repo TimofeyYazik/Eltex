@@ -29,6 +29,7 @@ void *ThreadReceiveClient(void *arg){
       MsgCopy(&storage->msg[storage->len], &request);
       storage->len++;
       if (storage->len == storage->size) StorageMemRealloc(storage);
+      sleep(1);
       for(int i = 0; i < list->len; i++) {
         if(strcmp(list->name[i], msg_buf.name) == 0){
           fprintf(stderr, "SHIFT\n");
