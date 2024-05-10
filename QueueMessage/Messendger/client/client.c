@@ -21,15 +21,12 @@ int main(){
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
   endwin();
-  usleep(1000);
-  unlink(cont.name);
   for (int i = 0; i < list.len; i++) {
     free(list.name[i]);
   }
   free(list.name);
   free(storage.msg);
   pthread_mutex_destroy(&mutex);
-  unlink(cont.name);
   exit(EXIT_SUCCESS);
 }
 

@@ -59,6 +59,7 @@ void *ThreadReceiveServer(void *arg){
       fprintf(stderr, "ThreadReceiveServer check: text = %s len = %d status = %d\n", storage->msg[storage->len].text, storage->len, storage->msg[storage->len].status);
     }
   }
+  unlink(cont->name);
   delwin(wnd);
   mq_close(ds_queue_connect);
   return NULL;
