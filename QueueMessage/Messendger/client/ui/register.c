@@ -17,8 +17,8 @@ void Register(ControllerClient *cont) {
   request.status = IS_REG;
   struct mq_attr attr;
   InitAttr(&attr, sizeof(Message));
-  mqd_t ds_queue_register = mq_open(NAME_QUEUE_REGISTER, O_CREAT | O_RDONLY, mode_mqueue, &attr);
-  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY, mode_mqueue, &attr);
+  mqd_t ds_queue_register = mq_open(NAME_QUEUE_REGISTER, O_RDONLY, mode_mqueue, &attr);
+  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_WRONLY, mode_mqueue, &attr);
   WINDOW * wnd;
   initscr();
   signal(SIGWINCH, SigWinch); 

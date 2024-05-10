@@ -17,7 +17,7 @@ void *ThreadSendClient(void *arg){
     }
     if(list_len < list->len) {
       fprintf(stderr, "ThreadSendClient check name: list_len = %d list->len =%d %s\n", list_len, list->len, list->name[list_len]);
-      ds_list->ds[list_len] = mq_open(list->name[list_len], O_CREAT | O_WRONLY, mode_mqueue, &attr);
+      ds_list->ds[list_len] = mq_open(list->name[list_len], O_WRONLY, mode_mqueue, &attr);
       if (ds_list->ds[list_len] == -1) {
         fprintf(stderr, "ThreadSendClient mq_open failed with error: %d\n", errno);
         perror("mq_open");

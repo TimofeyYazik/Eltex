@@ -14,7 +14,7 @@ void *ThreadSendServer(void *arg){
   Message msg = {0};
   strcpy(msg.name, cont->name);
   InitAttr(&attr, sizeof(Message));
-  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_CREAT | O_WRONLY, mode_mqueue, &attr);
+  mqd_t ds_queue_server = mq_open(NAME_QUEUE_SERVER, O_WRONLY, mode_mqueue, &attr);
   if(ds_queue_server == -1) {
     fprintf(stderr, "ThreadSendServer mq_open failed with error: %d\n", errno);
     perror("mq_open");

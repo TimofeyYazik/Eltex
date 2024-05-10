@@ -22,6 +22,7 @@ int main(){
   pthread_join(thread_receive, NULL);
   endwin();
   usleep(1000);
+  unlink(cont.name);
   for (int i = 0; i < list.len; i++) {
     free(list.name[i]);
   }
