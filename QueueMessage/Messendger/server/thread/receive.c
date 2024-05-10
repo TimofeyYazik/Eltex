@@ -35,7 +35,6 @@ void *ThreadReceiveClient(void *arg){
       for(int i = 0; i < list->len; i++) {
         if(strcmp(list->name[i], msg_buf.name) == 0){
           ShiftDsList(cont->ds_list, i);
-          // mq_unlink(list->name[i]);
           ShiftList(list, i);
           break;
         }
@@ -44,14 +43,14 @@ void *ThreadReceiveClient(void *arg){
     if(msg_buf.status == IS_REG){
       Message request = {0};
       int i = 0;
-      for(i = 0; i < list->len; i++) {
-        if (strcmp(list->name[i], msg_buf.name) == 0) {
+      for(i = 0; i < list_copy.len; i++) {
+        if (strcmp(list_copy.name[i], msg_buf.name) == 0) {
           request.status = BAD_STATUS;
           mq_send(ds_queue_register, (char*)&request, sizeof(Message), 0);
           break;
         }
       }
-      if(i == list->len) {
+      if(i == list_copy.len) {
         request.status = GOOD_STATUS;
         mq_send(ds_queue_register, (char*)&request, sizeof(Message), 0);
         request.status = IS_SERVER_MESSAGE;
@@ -67,7 +66,7 @@ void *ThreadReceiveClient(void *arg){
   }
   mq_close(ds_queue_server);
   mq_close(ds_queue_register);
-  for(int i = 0; i < list_copy.size; i++) mq_unlink(list_copy.name[i]);
+  for(int i = 0; i < list_copy.len; i++) mq_unlink(list_copy.name[i]);
   mq_unlink(NAME_QUEUE_REGISTER);
   mq_unlink(NAME_QUEUE_SERVER);
   printf("ThreadReceiveClient end\n");
