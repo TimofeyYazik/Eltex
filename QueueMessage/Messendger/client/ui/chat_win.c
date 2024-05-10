@@ -54,6 +54,6 @@ void InputMessageWindow(WINDOW *wnd, Message *msg){
   wmove(wnd, 2, 4);
   wprintw(wnd,"Enter your message: ");
   wrefresh(wnd);
-  wgetnstr(wnd, msg->text, MAX_TEXT_LEN);
+  wgetnstr(wnd, msg->text, MAX_TEXT_LEN - 1);
 }
 
