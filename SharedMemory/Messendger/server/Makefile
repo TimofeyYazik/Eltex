@@ -1,6 +1,6 @@
 CC := gcc
 CFLAGS := -g 
-LIB := -lcurses -pthread # -lrt
+LIB := -lcurses -pthread -L../lib -lmess 
 
 FILES := $(shell find . -name "*.c")
 OBJECTS := $(patsubst %.c, %.o, $(FILES))
@@ -13,4 +13,3 @@ server: $(OBJECTS)
 
 clean:
 	rm -f *.o server $(OBJECTS)
-

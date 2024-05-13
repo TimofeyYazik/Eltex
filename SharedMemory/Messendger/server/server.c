@@ -1,33 +1,37 @@
 #include <stdlib.h>
 #include <sys/ipc.h>
 #include <fcntl.h>
-#include <string.h>
 #include <unistd.h>
-#include <stdio.h>
 #include <sys/types.h>
 #include <sys/mman.h>
+#include <semaphore.h>
+#include <stdio.h>
 
-#include "../custom_type.h"
-
-MessageStorage storage = {0};
-// volatile int stop_server = 1;
+#include "../lib/lib_mess.h"
+#include "../config.h"
 
 int main(){
-  MessageStorage storage = {0};
-  int fd = shm_open(NAME_SHARE_MEMORY, O_CREAT | O_RDWR, S_IWUSR | S_IRUSR);
-  int stop = 1;
-  ftruncate(fd, SIZE_MEMORY);
-  MessageStorage *handler_ptr = (MessageStorage*)mmap(NULL, SIZE_MEMORY, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-  handler_ptr->len = 0;
-  handler_ptr->size = 10;
-  handler_ptr->msg = (Message*)malloc(sizeof(Message) * handler_ptr->size);
-  strcpy(handler_ptr->msg[0].name, "name");
-  strcpy(handler_ptr->msg[0].text, "text");
-  while (stop)
-  {
-    scanf("%d", &stop);
+  mode_t mode_mqueue = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
+  sem_t *sem = sem_open(NAME_SEMAPHORE, O_CREAT | O_RDWR, mode_mqueue, 1);
+  sem_post(sem);
+  int fd = shm_open(NAME_SHARE_MEMORY, O_CREAT | O_RDWR, mode_mqueue);
+  ftruncate(fd, sizeof(Controller));
+  if(fd == -1) {
+    perror("shm_open");
+    exit(1);
   }
-  
+  Controller *cont_ptr = (Controller*)mmap(NULL, sizeof(Controller), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+  cont_ptr->list.len = 0;
+  cont_ptr->storage.len = 0;
+  int stop_server = 1;
+  while (1)
+  {
+    scanf("%d", &stop_server);
+    if(stop_server == 0) break;
+  }
+  munmap(cont_ptr, sizeof(Controller));
   shm_unlink(NAME_SHARE_MEMORY);
+  sem_close(sem);
+  sem_unlink(NAME_SEMAPHORE);
   exit(EXIT_SUCCESS);
 }
