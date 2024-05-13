@@ -6,6 +6,7 @@
 
 void Register(Controller *cont) {
   WINDOW * wnd;
+  NameList *list = &cont->list;
   initscr();
   curs_set(TRUE);
   int x, y;
@@ -17,11 +18,11 @@ void Register(Controller *cont) {
     wprintw(wnd,"Enter your name: "); 
     wrefresh(wnd);
     sem_wait(cont->sem);
-    wgetnstr(wnd, cont->name_user, MAX_NAME_LEN - 1); 
-    AddNameList(&cont->list, (char*)cont->name_user);
+    wgetnstr(wnd, list->name[list->len], MAX_NAME_LEN - 1); 
+    list->len++;
     Message msg = {0};
     strcpy(msg.name, "server");
-    sprintf(msg.text, "new client: %s", cont->name_user);
+    sprintf(msg.text, "new client: %s", list->name[list->len - 1]);
     AddStorageMessege(&cont->storage, &msg);
     sem_post(cont->sem);
   wrefresh(wnd);

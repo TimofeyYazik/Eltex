@@ -28,7 +28,6 @@ typedef struct{
 
 typedef struct{
   int stop_client;
-  char name_user[MAX_NAME_LEN];
   sem_t *sem;
   NameList list;
   MessageStorage storage;

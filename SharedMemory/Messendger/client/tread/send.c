@@ -13,6 +13,8 @@
 
 void *ThreadSendServer(void *arg){
   Controller *cont = (Controller*)arg;
+  NameList *list = &cont->list;
+  MessageStorage *storage = storage;
   int x, y;
   getmaxyx(stdscr, y, x);
   WINDOW *wnd = newwin(y / 4, x, (y / 4) * 3, 0);
@@ -21,17 +23,17 @@ void *ThreadSendServer(void *arg){
   {
     InputMessageWindow(wnd, &msg);
     if (!strcmp(msg.text, "/exit")) {
-      strcpy(msg.name , "server");
-      sprintf(msg.text, "client is out: %s", cont->name_user);
-      AddStorageMessege(&cont->storage, &msg);
-      sem_wait(cont->sem);
-      DelNameList(&cont->list, cont->name_user);
-      sem_post(cont->sem);
+      // strcpy(msg.name , "server");
+      // sprintf(msg.text, "client is out: %s", cont->);
+      // AddStorageMessege(&cont->storage, &msg);
+      // sem_wait(cont->sem);
+      // DelNameList(&cont->list, cont->name_user);
+      // sem_post(cont->sem);
       cont->stop_client = 0;  
       break;
     }
     sem_wait(cont->sem);
-    AddStorageMessege(&cont->storage, &msg);
+    AddStorageMessege(storage, &msg);
     sem_post(cont->sem);
   } 
   return NULL;   

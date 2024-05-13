@@ -27,6 +27,7 @@ int main(){
   while (1)
   {
     scanf("%d", &stop_server);
+    printf("%s\n", cont_ptr->list.name[0]);
     if(stop_server == 0) break;
   }
   munmap(cont_ptr, sizeof(Controller));
