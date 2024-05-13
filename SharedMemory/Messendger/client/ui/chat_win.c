@@ -1,9 +1,7 @@
 #include <curses.h>
 #include <stdlib.h>
-#include <signal.h>
-#include <sys/ioctl.h>
-#include <termios.h>
 #include <unistd.h>
+#include <string.h>
 #include <time.h>
 #include <unistd.h>
 #include <errno.h>
@@ -12,14 +10,10 @@
 #include <pthread.h>
 
 #include "ui.h"
-
-extern char name[MAX_NAME_LEN];
   
-#define MAX_PATH_LENGTH 256
 
 void MessageWindow(WINDOW *wnd, MessageStorage *msg){
-  signal(SIGWINCH, SigWinch); 
-  curs_set(TRUE);
+  curs_set(FALSE);
   wclear(wnd);
   box(wnd, 0, 0);
   wrefresh(wnd);
@@ -30,18 +24,17 @@ void MessageWindow(WINDOW *wnd, MessageStorage *msg){
 }
 
 void UserWindow(WINDOW *wnd, NameList *list){
-  signal(SIGWINCH, SigWinch); 
-  curs_set(TRUE);
+  curs_set(FALSE);
   wclear(wnd);
   box(wnd, 0, 0);
   for(int i = 0; i < list->len; i++){
+    if(strcmp(list->name[i], "/server") == 0) continue;
     mvwprintw(wnd, i + 2, 4, "%s\n", list->name[i]);
   }
   wrefresh(wnd);
 }
 
 void InputMessageWindow(WINDOW *wnd, Message *msg){
-  signal(SIGWINCH, SigWinch); 
   curs_set(TRUE);
   wclear(wnd);
   wrefresh(wnd);
@@ -49,6 +42,6 @@ void InputMessageWindow(WINDOW *wnd, Message *msg){
   wmove(wnd, 2, 4);
   wprintw(wnd,"Enter your message: ");
   wrefresh(wnd);
-  wgetnstr(wnd, msg->text, MAX_TEXT_LEN);
+  wgetnstr(wnd, msg->text, MAX_TEXT_LEN - 1);
 }
 
