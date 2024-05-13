@@ -13,7 +13,7 @@
 void *ThreadRecvServer(void *arg){
   Controller *cont = (Controller*)arg;
   NameList *list = &cont->list;
-  MessageStorage *storage = storage;
+  MessageStorage *storage = &cont->storage;
   int len_namelist = 0;
   int len_storage = 0;
   int x, y;
