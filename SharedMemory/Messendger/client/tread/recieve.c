@@ -20,6 +20,7 @@ void *ThreadRecvServer(void *arg){
   getmaxyx(stdscr, y, x);
   WINDOW *wnd = newwin(y / 4, x, (y / 4) * 3, 0);
   while (cont->stop_client) {
+    sem_wait(cont->sem);
     if(len_namelist > list->len) {
       len_namelist = list->len;
     }   
@@ -31,6 +32,7 @@ void *ThreadRecvServer(void *arg){
       MessageWindow(wnd, storage, (y / 4) * 3);
       len_storage = storage->len;
     }
+    sem_post(cont->sem);
     wrefresh(wnd);
     usleep(10000);
   }
