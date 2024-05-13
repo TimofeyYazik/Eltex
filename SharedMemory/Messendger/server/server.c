@@ -21,15 +21,17 @@ int main(){
     exit(1);
   }
   Controller *cont_ptr = (Controller*)mmap(NULL, sizeof(Controller), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-  cont_ptr->list.len = 0;
-  cont_ptr->storage.len = 0;
+  MessageStorage *storage = &cont_ptr->storage;
+  NameList *list = &cont_ptr->list;
+  list->len = 0;
+  storage->len = 0;
   printf("Enter 0 to stop server\n");
   printf("%d %d\n", cont_ptr->list.len, cont_ptr->storage.len);
   int stop_server = 1;
   while (1)
   {
     scanf("%d", &stop_server);
-    printf("%s\n", cont_ptr->list.name[0]);
+    printf("%s\n", cont_ptr->list.name[cont_ptr->list.len]);
     if(stop_server == 0) break;
   }
   munmap(cont_ptr, sizeof(Controller));
