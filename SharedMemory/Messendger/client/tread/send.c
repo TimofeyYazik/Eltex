@@ -14,7 +14,7 @@
 void *ThreadSendServer(void *arg){
   Controller *cont = (Controller*)arg;
   NameList *list = &cont->list;
-  MessageStorage *storage = storage;
+  MessageStorage *storage = &cont->storage;
   int x, y;
   getmaxyx(stdscr, y, x);
   WINDOW *wnd = newwin(y / 4, x, (y / 4) * 3, 0);

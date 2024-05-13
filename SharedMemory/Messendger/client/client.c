@@ -25,15 +25,15 @@ int main(){
   Controller *cont = (Controller*)mmap(NULL, sizeof(Controller), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
   cont->sem = sem_open(NAME_SEMAPHORE, O_RDWR, mode_open, 1);
   Register(cont);
+  munmap(cont, sizeof(Controller));
   pthread_t thread_send;
   pthread_t thread_receive;  
   initscr();
-  pthread_create(&thread_send, NULL, ThreadSendServer, (void *)&cont);
-  pthread_create(&thread_receive, NULL, ThreadRecvServer, (void *)&cont);
+  pthread_create(&thread_send, NULL, ThreadSendServer, NULL);
+  pthread_create(&thread_receive, NULL, ThreadRecvServer, NULL);
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
   endwin();
-  munmap(cont, sizeof(Controller));
   sem_close(cont->sem);
   exit(EXIT_SUCCESS);
 }
