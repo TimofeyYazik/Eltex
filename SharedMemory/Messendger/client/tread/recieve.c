@@ -26,6 +26,7 @@ void *ThreadRecvServer(void *arg){
   int x, y;
   getmaxyx(stdscr, y, x);
   WINDOW *wnd = newwin(y / 4, x, (y / 4) * 3, 0);
+  WINDOW *wnd2 = newwin(y / 4, x, (y / 4) * 3, 0);
   while (cont->stop_client) {
     if(len_namelist > list->len) {
       len_namelist = list->len;
@@ -41,5 +42,6 @@ void *ThreadRecvServer(void *arg){
     wrefresh(wnd);
     usleep(10000);
   }
+  munmap(cont, sizeof(Controller));
   return NULL;
 }

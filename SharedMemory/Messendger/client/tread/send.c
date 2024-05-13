@@ -30,15 +30,17 @@ void *ThreadSendServer(void *arg){
   while (1)
   {
     InputMessageWindow(wnd, &msg);
-    // if (!strcmp(msg.text, "/exit")) {
+    if (!strcmp(msg.text, "/exit")) {
 
-    //   cont->stop_client = 0;  
-    //   break;
-    // }
+      ctl->stop_client = 0;  
+      break;
+    }
     sem_wait(ctl->sem);
     AddStorageMessege(&ctl->storage, &msg);
     sem_post(ctl->sem);
   } 
+  delwin(wnd);
+  munmap(ctl, sizeof(Controller));
   return NULL;   
 }
   
