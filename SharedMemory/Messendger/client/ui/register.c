@@ -18,11 +18,11 @@ void Register(Controller *cont) {
     wrefresh(wnd);
     sem_wait(cont->sem);
     wgetnstr(wnd, cont->name_user, MAX_NAME_LEN - 1); 
-    AddNameList(cont->list, (char*)cont->name_user);
+    AddNameList(&cont->list, (char*)cont->name_user);
     Message msg = {0};
     strcpy(msg.name, "server");
     sprintf(msg.text, "new client: %s", cont->name_user);
-    AddStorageMessege(cont->storage, &msg);
+    AddStorageMessege(&cont->storage, &msg);
     sem_post(cont->sem);
   wrefresh(wnd);
   refresh();
