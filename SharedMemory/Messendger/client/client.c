@@ -16,10 +16,14 @@
 
 int main(){
   mode_t mode_open = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
-  int fd = shm_open(NAME_SHARE_MEMORY, O_CREAT | O_RDWR, mode_open);
+  int fd = shm_open(NAME_SHARE_MEMORY, O_RDWR, mode_open);
+  if(fd == -1) {
+    perror("shm_open");
+    exit(1);
+  }
   ftruncate(fd, sizeof(Controller));
   Controller *cont = (Controller*)mmap(NULL, sizeof(Controller), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-  cont->sem = sem_open(NAME_SEMAPHORE, O_CREAT | O_RDWR, mode_open, 1);
+  cont->sem = sem_open(NAME_SEMAPHORE, O_RDWR, mode_open, 1);
   Register(cont);
   pthread_t thread_send;
   pthread_t thread_receive;  
