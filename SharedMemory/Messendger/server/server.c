@@ -23,6 +23,8 @@ int main(){
   Controller *cont_ptr = (Controller*)mmap(NULL, sizeof(Controller), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
   cont_ptr->list.len = 0;
   cont_ptr->storage.len = 0;
+  printf("Enter 0 to stop server\n");
+  printf("%d %d\n", cont_ptr->list.len, cont_ptr->storage.len);
   int stop_server = 1;
   while (1)
   {
