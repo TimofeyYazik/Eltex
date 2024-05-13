@@ -12,9 +12,9 @@
 
 
 void *ThreadSendServer(void *arg){
-  Controller *cont = (Controller*)arg;
-  NameList *list = &cont->list;
-  MessageStorage *storage = &cont->storage;
+  Controller *ctl = (Controller*)arg;
+  NameList *list = &ctl->list;
+  MessageStorage *storage = &ctl->storage;
   int x, y;
   getmaxyx(stdscr, y, x);
   WINDOW *wnd = newwin(y / 4, x, (y / 4) * 3, 0);
@@ -27,9 +27,9 @@ void *ThreadSendServer(void *arg){
     //   cont->stop_client = 0;  
     //   break;
     // }
-    sem_wait(cont->sem);
-    AddStorageMessege(storage, &msg);
-    sem_post(cont->sem);
+    sem_wait(ctl->sem);
+    AddStorageMessege(&ctl->storage, &msg);
+    sem_post(ctl->sem);
   } 
   return NULL;   
 }
