@@ -27,9 +27,9 @@ void *ThreadRecvServer(void *arg){
       UserWindow(wnd, list);
       len_namelist = list->len;
     }
-    if(len_storage < cont->storage.len) {
+    if(len_storage < storage->len) {
       MessageWindow(wnd, storage, (y / 4) * 3);
-      len_storage = cont->storage.len;
+      len_storage = storage->len;
     }
     wrefresh(wnd);
     usleep(10000);
