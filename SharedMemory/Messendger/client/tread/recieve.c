@@ -18,16 +18,16 @@ void *ThreadRecvServer(void *arg){
   getmaxyx(stdscr, y, x);
   WINDOW *wnd = newwin(y / 4, x, (y / 4) * 3, 0);
   while (cont->stop_client) {
-    if(len_namelist > cont->list->len) {
-      len_namelist = cont->list->len;
+    if(len_namelist > cont->list.len) {
+      len_namelist = cont->list.len;
     }   
-    if(len_namelist < cont->list->len) {
-      UserWindow(wnd, cont->list);
-      len_namelist = cont->list->len;
+    if(len_namelist < cont->list.len) {
+      UserWindow(wnd, &cont->list, (y / 4) * 3);
+      len_namelist = cont->list.len;
     }
-    if(len_storage < cont->storage->len) {
-      MessageWindow(wnd, cont->storage);
-      len_storage = cont->storage->len;
+    if(len_storage < cont->storage.len) {
+      MessageWindow(wnd, &cont->storage);
+      len_storage = cont->storage.len;
     }
     wrefresh(wnd);
     usleep(10000);

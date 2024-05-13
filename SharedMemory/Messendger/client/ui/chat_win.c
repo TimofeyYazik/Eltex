@@ -12,13 +12,19 @@
 #include "ui.h"
   
 
-void MessageWindow(WINDOW *wnd, MessageStorage *msg){
+void MessageWindow(WINDOW *wnd, MessageStorage *msg , int y){
   curs_set(FALSE);
+  int y1 = y - 3;
   wclear(wnd);
   box(wnd, 0, 0);
   wrefresh(wnd);
-  for (int i = 0; i < msg->len; i++) {
-    mvwprintw(wnd, i + 2, 4, "%s: %s\n", msg->msg[i].name, msg->msg[i].text);
+  int y_shift = 0;
+  if(msg->len > y1){
+    y_shift = msg->len - y1;
+    y1 = (msg->len - 3);
+  }
+  for (int i = y_shift, j = 0; i < msg->len; i++, j++) {
+    mvwprintw(wnd, j + 2, 4, "%s: %s\n", msg->msg[i].name, msg->msg[i].text);
   }
   wrefresh(wnd);
 }
