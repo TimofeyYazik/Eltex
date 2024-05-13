@@ -22,16 +22,11 @@ void *ThreadSendServer(void *arg){
   while (1)
   {
     InputMessageWindow(wnd, &msg);
-    if (!strcmp(msg.text, "/exit")) {
-      // strcpy(msg.name , "server");
-      // sprintf(msg.text, "client is out: %s", cont->);
-      // AddStorageMessege(&cont->storage, &msg);
-      // sem_wait(cont->sem);
-      // DelNameList(&cont->list, cont->name_user);
-      // sem_post(cont->sem);
-      cont->stop_client = 0;  
-      break;
-    }
+    // if (!strcmp(msg.text, "/exit")) {
+
+    //   cont->stop_client = 0;  
+    //   break;
+    // }
     sem_wait(cont->sem);
     AddStorageMessege(storage, &msg);
     sem_post(cont->sem);

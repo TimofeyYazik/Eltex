@@ -28,8 +28,8 @@ int main(){
   pthread_t thread_send;
   pthread_t thread_receive;  
   initscr();
-  pthread_create(&thread_send, NULL, ThreadSendServer, NULL);
-  pthread_create(&thread_receive, NULL, ThreadRecvServer, NULL);
+  pthread_create(&thread_send, NULL, ThreadSendServer, (void*)&cont);
+  pthread_create(&thread_receive, NULL, ThreadRecvServer, (void*)&cont);
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
   endwin();
