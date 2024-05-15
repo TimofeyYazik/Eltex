@@ -11,7 +11,6 @@
 
 #include "thread.h"
 
-extern pthread_mutex_t mutex;
 
 void *ThreadRecvServer(void *arg){
   mode_t mode_open = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
@@ -34,22 +33,8 @@ void *ThreadRecvServer(void *arg){
   WINDOW *wnd_list = newwin((y / 4) * 3, (x / 4), 0, (x / 4) * 3);
   box(wnd_list, 0, 0);
   while (ctl->stop_client) {
-    pthread_mutex_lock(&mutex);
     MessageWindow(wnd_msg, storage, (y / 4) * 3);
     UserWindow(wnd_list, list);
-    pthread_mutex_unlock(&mutex);
-    // if(len_namelist > list->len) {
-    //   len_namelist = list->len;
-    // }   
-    // if(len_namelist < list->len) {
-    //   UserWindow(wnd, list);
-    //   len_namelist = list->len;
-    // }
-    // if(len_storage < storage->len) {
-    //   MessageWindow(wnd, storage, (y / 4) * 3);
-    //   len_storage = storage->len;
-    // }
-    // usleep(10000);
   }
   sem_close(ctl->sem);
   munmap(ctl, sizeof(Controller));
