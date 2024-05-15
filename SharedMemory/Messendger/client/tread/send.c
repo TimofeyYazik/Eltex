@@ -42,6 +42,7 @@ void *ThreadSendServer(void *arg){
     sem_wait(ctl->sem);
     AddStorageMessege(&ctl->storage, &msg);
     sem_post(ctl->sem);
+    usleep(1000);
   } 
   delwin(wnd);
   sem_close(ctl->sem);
