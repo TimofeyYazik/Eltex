@@ -10,6 +10,7 @@
 
 #include "thread.h"
 
+extern pthread_mutex_t mutex;
 
 void *ThreadSendServer(void *arg){
   mode_t mode_open = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
@@ -29,7 +30,9 @@ void *ThreadSendServer(void *arg){
   Message msg = {0};
   while (1)
   {
+    pthread_mutex_lock(&mutex);
     InputMessageWindow(wnd, &msg);
+    pthread_mutex_unlock(&mutex);
     if (!strcmp(msg.text, "/exit")) {
       // strcpy(msg.name, "server");
       // sprinf(msg.text, "client is out: %s")

@@ -10,6 +10,8 @@
 
 #include "thread.h"
 
+extern pthread_mutex_t mutex;
+
 void *ThreadRecvServer(void *arg){
   mode_t mode_open = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   int fd = shm_open(NAME_SHARE_MEMORY, O_RDWR, mode_open);
@@ -31,10 +33,10 @@ void *ThreadRecvServer(void *arg){
   WINDOW *wnd_list = newwin((y / 4) * 3, (x / 4), 0, (x / 4) * 3);
   box(wnd_list, 0, 0);
   while (ctl->stop_client) {
-    // sem_wait(ctl->sem);
+    pthread_mutex_lock(&mutex);
     MessageWindow(wnd_msg, storage, (y / 4) * 3);
     UserWindow(wnd_list, list);
-    // sem_post(ctl->sem);
+    pthread_mutex_unlock(&mutex);
     // if(len_namelist > list->len) {
     //   len_namelist = list->len;
     // }   

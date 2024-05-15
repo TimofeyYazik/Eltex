@@ -13,6 +13,7 @@
 #include "ui/ui.h"
 #include "tread/thread.h"
 
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int main(){
   mode_t mode_open = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
