@@ -13,7 +13,6 @@
 
 
 void *ThreadRecvServer(void *arg){
-  perror("HUUUUUUUUUY\n");
   mode_t mode_open = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   int fd = shm_open(NAME_SHARE_MEMORY, O_RDWR, mode_open);
   if(fd == -1) {
@@ -34,6 +33,7 @@ void *ThreadRecvServer(void *arg){
   WINDOW *wnd_list = newwin((y / 4) * 3, (x / 4), 0, (x / 4) * 3);
   box(wnd_list, 0, 0);
   refresh();
+  perror("HUUUUUUUUUY\n");
   while (ctl->stop_client) {
     MessageWindow(wnd_msg, storage, (y / 4) * 3);
     UserWindow(wnd_list, list);
