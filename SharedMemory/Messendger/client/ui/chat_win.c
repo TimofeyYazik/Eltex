@@ -23,6 +23,7 @@ void MessageWindow(WINDOW *wnd, MessageStorage *msg , int y){
     y_shift = msg->len - y1;
     y1 = (msg->len - 3);
   }
+  wprintw(wnd, "I AM LIVE\n");
   for (int i = y_shift, j = 0; i < msg->len; i++, j++) {
     mvwprintw(wnd, j + 2, 4, "%s: %s\n", msg->msg[i].name, msg->msg[i].text);
   }

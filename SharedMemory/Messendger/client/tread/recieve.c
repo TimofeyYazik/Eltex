@@ -22,25 +22,30 @@ void *ThreadRecvServer(void *arg){
   ctl->sem = sem_open(NAME_SEMAPHORE, O_RDWR, mode_open, 1);
   NameList *list = &ctl->list;
   MessageStorage *storage = &ctl->storage;
-  int len_namelist = 0;
-  int len_storage = 0;
+  // int len_namelist = 0;
+  // int len_storage = 0;
   int x, y;
   getmaxyx(stdscr, y, x);
-  WINDOW *wnd = newwin(y / 4, x, (y / 4) * 3, 0);
-  WINDOW *wnd2 = newwin(y / 4, x, (y / 4) * 3, 0);
+  WINDOW *wnd_msg = newwin((y / 4) * 3, (x / 4) * 3, 0, 0);
+  box(wnd_msg, 0, 0);
+  WINDOW *wnd_list = newwin((y / 4) * 3, (x / 4), 0, (x / 4) * 3);
+  box(wnd_list, 0, 0);
   while (ctl->stop_client) {
-    if(len_namelist > list->len) {
-      len_namelist = list->len;
-    }   
-    if(len_namelist < list->len) {
-      UserWindow(wnd, list);
-      len_namelist = list->len;
-    }
-    if(len_storage < storage->len) {
-      MessageWindow(wnd, storage, (y / 4) * 3);
-      len_storage = storage->len;
-    }
-    wrefresh(wnd);
+    // sem_wait(ctl->sem);
+    MessageWindow(wnd_msg, storage, (y / 4) * 3);
+    UserWindow(wnd_list, list);
+    // sem_post(ctl->sem);
+    // if(len_namelist > list->len) {
+    //   len_namelist = list->len;
+    // }   
+    // if(len_namelist < list->len) {
+    //   UserWindow(wnd, list);
+    //   len_namelist = list->len;
+    // }
+    // if(len_storage < storage->len) {
+    //   MessageWindow(wnd, storage, (y / 4) * 3);
+    //   len_storage = storage->len;
+    // }
     usleep(10000);
   }
   sem_close(ctl->sem);

@@ -31,7 +31,8 @@ void *ThreadSendServer(void *arg){
   {
     InputMessageWindow(wnd, &msg);
     if (!strcmp(msg.text, "/exit")) {
-
+      // strcpy(msg.name, "server");
+      // sprinf(msg.text, "client is out: %s")
       ctl->stop_client = 0;  
       break;
     }
