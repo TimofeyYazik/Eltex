@@ -10,6 +10,8 @@
 
 #include "thread.h"
 
+extern pthread_mutex_t mutex;
+
 void *ThreadRecvServer(void *arg){
   mode_t mode_open = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   int fd = shm_open(NAME_SHARE_MEMORY, O_RDWR, mode_open);
@@ -35,14 +37,17 @@ void *ThreadRecvServer(void *arg){
       len_namelist = list->len;
     }   
     if(len_namelist < list->len) {
+      pthread_mutex_lock(&mutex);
       UserWindow(wnd2, list);
+      pthread_mutex_unlock(&mutex);
       len_namelist = list->len;
     }
     if(len_storage < storage->len) {
+      pthread_mutex_lock(&mutex);
       MessageWindow(wnd, storage, (y / 4) * 3);
+      pthread_mutex_unlock(&mutex);
       len_storage = storage->len;
     }
-    usleep(100000);
   }
   return NULL;
 }

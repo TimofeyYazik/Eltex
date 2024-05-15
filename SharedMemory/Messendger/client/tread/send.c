@@ -30,7 +30,9 @@ void *ThreadSendServer(void *arg){
   Message msg = {0};
   while (1)
   {
+    pthread_mutex_lock(&mutex);
     InputMessageWindow(wnd, &msg);
+    pthread_mutex_unlock(&mutex);
     if (!strcmp(msg.text, "/exit")) { //FIX MEEEEE
       ctl->stop_client = 0;  
       break;
