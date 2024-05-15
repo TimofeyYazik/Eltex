@@ -13,7 +13,6 @@
   
 
 void MessageWindow(WINDOW *wnd, MessageStorage *msg , int y){
-  perror("HUUUUUUUUUY\n");
   curs_set(FALSE);
   int y1 = y - 3;
   wclear(wnd);

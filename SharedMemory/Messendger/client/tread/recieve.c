@@ -34,6 +34,7 @@ void *ThreadRecvServer(void *arg){
   box(wnd_list, 0, 0);
   refresh();
   while (ctl->stop_client) {
+    perror("HUUUUUUUUUY\n");
     MessageWindow(wnd_msg, storage, (y / 4) * 3);
     UserWindow(wnd_list, list);
   }
