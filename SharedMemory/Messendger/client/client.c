@@ -23,11 +23,12 @@ int main(){
     exit(1);
   }
   ftruncate(fd, sizeof(Controller));
-  Controller *cont = (Controller*)mmap(NULL, sizeof(Controller), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-  cont->sem = sem_open(NAME_SEMAPHORE, O_RDWR, mode_open, 1);
-  Register(cont);
-  sem_close(cont->sem);
-  munmap(cont, sizeof(Controller));
+  Controller *ctl = (Controller*)mmap(NULL, sizeof(Controller), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+  ctl->sem = sem_open(NAME_SEMAPHORE, O_RDWR, mode_open, 1);
+  ctl->stop_client = 1;
+  Register(ctl);
+  sem_close(ctl->sem);
+  munmap(ctl, sizeof(Controller));
   pthread_t thread_send;
   pthread_t thread_receive;  
   initscr();
