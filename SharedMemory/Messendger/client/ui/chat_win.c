@@ -13,6 +13,7 @@
   
 
 void MessageWindow(WINDOW *wnd, MessageStorage *msg , int y){
+  perror("HUUUUUUUUUY\n");
   curs_set(FALSE);
   int y1 = y - 3;
   wclear(wnd);
@@ -27,7 +28,6 @@ void MessageWindow(WINDOW *wnd, MessageStorage *msg , int y){
     mvwprintw(wnd, j + 2, 4, "%s: %s\n", msg->msg[i].name, msg->msg[i].text);
   }
   wrefresh(wnd);
-  perror("HUUUUUUUUUY\n");
 }
 
 void UserWindow(WINDOW *wnd, NameList *list){
