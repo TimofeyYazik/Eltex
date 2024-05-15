@@ -12,9 +12,9 @@
 #include "thread.h"
 
 extern pthread_mutex_t mutex;
-extern char name_user[MAX_NAME_LEN];
 
 void *ThreadSendServer(void *arg){
+  char *name_user = (char*)arg;
   mode_t mode_open = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   int fd = shm_open(NAME_SHARE_MEMORY, O_RDWR, mode_open);
   if(fd == -1) {
@@ -23,6 +23,7 @@ void *ThreadSendServer(void *arg){
   }
   ftruncate(fd, sizeof(Controller));
   Controller *ctl = (Controller*)mmap(NULL, sizeof(Controller), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+  // ctl->sem = sem_open(NAME_SEMAPHORE, O_RDWR, mode_open, 1);
   NameList *list = &ctl->list;
   MessageStorage *storage = &ctl->storage;
   int x, y;
@@ -35,23 +36,22 @@ void *ThreadSendServer(void *arg){
     pthread_mutex_lock(&mutex);
     InputMessageWindow(wnd, &msg);
     pthread_mutex_unlock(&mutex);
-    ctl->sem = sem_open(NAME_SEMAPHORE, O_RDWR, mode_open, 1);
-    if (!strcmp(msg.text, "/exit")) { //FIX MEEEEE
+    if (!strcmp(msg.text, "/exit")) { 
       ctl->stop_client = 0;  
       strcpy(msg.name, "server");
       sprintf(msg.text, "user is out: %s", name_user);
-      sem_wait(ctl->sem);
+      // sem_wait(ctl->sem);
       AddStorageMessege(&ctl->storage, &msg);
-      sem_post(ctl->sem);
+      // sem_post(ctl->sem);
       break;
     }
-    sem_wait(ctl->sem);
+    // sem_wait(ctl->sem);
     AddStorageMessege(&ctl->storage, &msg);
-    sem_post(ctl->sem);
-    sem_close(ctl->sem);
+    // sem_post(ctl->sem);
     usleep(1000);
   } 
   delwin(wnd);
+  // sem_close(ctl->sem);
   munmap(ctl, sizeof(Controller));
   return NULL;   
 }

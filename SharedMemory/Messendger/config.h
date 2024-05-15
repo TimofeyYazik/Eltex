@@ -28,7 +28,6 @@ typedef struct{
 
 typedef struct{
   int stop_client;
-  sem_t *sem;
   NameList list;
   MessageStorage storage;
 } Controller;

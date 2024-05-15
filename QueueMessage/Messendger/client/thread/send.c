@@ -1,7 +1,5 @@
 #include "thread.h"
 
-extern pthread_mutex_t mutex;
-
 void *ThreadSendServer(void *arg){
   mode_t mode_mqueue = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   ControllerClient *cont = (ControllerClient*)arg;
@@ -21,9 +19,7 @@ void *ThreadSendServer(void *arg){
     return NULL;
   }
   while (cont->stop_client) {
-    // pthread_mutex_lock(&mutex);
     InputMessageWindow(wnd, &msg);
-    // pthread_mutex_unlock(&mutex);
     if (!strcmp(msg.text, "/exit")) {
       cont->stop_client = 0;  
       msg.status = IS_OUT;

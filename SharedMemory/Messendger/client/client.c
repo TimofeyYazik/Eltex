@@ -13,10 +13,10 @@
 #include "ui/ui.h"
 #include "tread/thread.h"
 
-char name_user[MAX_NAME_LEN];
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int main(){
+  char name_user[MAX_NAME_LEN];
   mode_t mode_open = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   int fd = shm_open(NAME_SHARE_MEMORY, O_RDWR, mode_open);
   if(fd == -1) {
@@ -25,10 +25,8 @@ int main(){
   }
   ftruncate(fd, sizeof(Controller));
   Controller *ctl = (Controller*)mmap(NULL, sizeof(Controller), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-  ctl->sem = sem_open(NAME_SEMAPHORE, O_RDWR, mode_open, 1);
   ctl->stop_client = 1;
-  Register(ctl);
-  sem_close(ctl->sem);
+  Register(ctl, (char*)name_user);
   munmap(ctl, sizeof(Controller));
   pthread_t thread_send;
   pthread_t thread_receive;  
@@ -38,7 +36,7 @@ int main(){
     perror("pthread_create");
     exit(1);
   }
-  error = pthread_create(&thread_send, NULL, ThreadSendServer, NULL);
+  error = pthread_create(&thread_send, NULL, ThreadSendServer, (void*)name_user);
   if(error != 0) {
     perror("pthread_create");
     exit(1);

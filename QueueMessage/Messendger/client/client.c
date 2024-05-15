@@ -1,7 +1,5 @@
 #include "thread/thread.h"
 
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-
 static inline void _InitControllerClient(ControllerClient *cont, NameList *list, MessageStorage *storage);
 
 int main(){

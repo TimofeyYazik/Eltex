@@ -3,13 +3,13 @@
 void *ThreadReceiveClient(void *arg){
   fprintf(stderr, "ThreadReceiveClient start\n");
   mode_t mode_mqueue = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
-  // NameList list_copy = {0};
-  // list_copy.len = 0;
-  // list_copy.size = 50;
-  // list_copy.name = malloc(sizeof(char *) * list_copy.size);
-  // for(int i = 0; i < list_copy.size; i++){
-  //   list_copy.name[i] = NULL;
-  // }
+  NameList list_copy = {0};
+  list_copy.len = 0;
+  list_copy.size = 50;
+  list_copy.name = malloc(sizeof(char *) * list_copy.size);
+  for(int i = 0; i < list_copy.size; i++){
+    list_copy.name[i] = NULL;
+  }
   Controller *cont = (Controller*)arg;
   MessageStorage *storage = cont->storage;
   NameList *list = cont->list;
@@ -43,14 +43,14 @@ void *ThreadReceiveClient(void *arg){
     if(msg_buf.status == IS_REG){
       Message request = {0};
       int i = 0;
-      for(i = 0; i < list->len; i++) {
-        if (strcmp(list->name[i], msg_buf.name) == 0) {
+      for(i = 0; i < list_copy.len; i++) {
+        if (strcmp(list_copy.name[i], msg_buf.name) == 0) {
           request.status = BAD_STATUS;
           mq_send(ds_queue_register, (char*)&request, sizeof(Message), 0);
           break;
         }
       }
-      if(i == list->len) {
+      if(i == list_copy.len) {
         request.status = GOOD_STATUS;
         mq_send(ds_queue_register, (char*)&request, sizeof(Message), 0);
         request.status = IS_SERVER_MESSAGE;
@@ -59,16 +59,16 @@ void *ThreadReceiveClient(void *arg){
         printf("ThreadReceiveClient IMPORTANT check: text = %s len = %d status = %d\n", storage->msg[storage->len].text, storage->len, storage->msg[storage->len].status);
         AddStorageMessege(storage, &request);
         AddNameList(list, msg_buf.name);
-        // AddNameList(&list_copy, msg_buf.name);
+        AddNameList(&list_copy, msg_buf.name);
       }
     }
     usleep(10000);
   }
   mq_close(ds_queue_server);
   mq_close(ds_queue_register);
-  // for(int i = 0; i < list_copy.len; i++) mq_unlink(list_copy.name[i]);
-  // for(int i = 0; i < list_copy.len; i++) free(list_copy.name[i]);
-  // free(list_copy.name);
+  for(int i = 0; i < list_copy.len; i++) mq_unlink(list_copy.name[i]);
+  for(int i = 0; i < list_copy.len; i++) free(list_copy.name[i]);
+  free(list_copy.name);
   mq_unlink(NAME_QUEUE_REGISTER);
   mq_unlink(NAME_QUEUE_SERVER);
   printf("ThreadReceiveClient end\n");

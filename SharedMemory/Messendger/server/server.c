@@ -21,8 +21,8 @@ int main(){
   Controller *ctl = (Controller*)mmap(NULL, sizeof(Controller), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
   MessageStorage *storage = &ctl->storage;
   NameList *list = &ctl->list;
-  ctl->sem = sem_open(NAME_SEMAPHORE, O_CREAT | O_RDWR, mode_mqueue, 1);
-  sem_post(ctl->sem);
+  sem_t *sem = sem_open(NAME_SEMAPHORE, O_CREAT | O_RDWR, mode_mqueue, 1);
+  sem_post(sem);
   list->len = 0;
   storage->len = 0;
   printf("Enter 0 to stop server\n");
@@ -39,6 +39,7 @@ int main(){
   }
   munmap(ctl, sizeof(Controller));
   shm_unlink(NAME_SHARE_MEMORY);
+  sem_close(sem);
   sem_unlink(NAME_SEMAPHORE);
   exit(EXIT_SUCCESS);
 }

@@ -5,9 +5,8 @@
 #include "../../lib/lib_mess.h"
 
 extern pthread_mutex_t mutex;
-extern char name_user[MAX_NAME_LEN];
 
-void Register(Controller *cont) {
+void Register(Controller *cont, char *name_user) {
   WINDOW * wnd;
   NameList *list = &cont->list;
   initscr();
@@ -20,7 +19,7 @@ void Register(Controller *cont) {
   wmove(wnd, 2, 4);
   wprintw(wnd,"Enter your name: "); 
   wrefresh(wnd);
-  sem_wait(cont->sem);
+  // sem_wait(cont->sem);
   wgetnstr(wnd, list->name[list->len], MAX_NAME_LEN - 1); 
   strcpy(name_user, list->name[list->len]);
   list->len++;
@@ -28,7 +27,7 @@ void Register(Controller *cont) {
   strcpy(msg.name, "server");
   sprintf(msg.text, "new client: %s", list->name[list->len - 1]);
   AddStorageMessege(&cont->storage, &msg);
-  sem_post(cont->sem);
+  // sem_post(cont->sem);
   wrefresh(wnd);
   refresh();
   delwin(wnd);

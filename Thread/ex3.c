@@ -72,8 +72,6 @@ void *Provider(void *argc){
       pthread_mutex_unlock(&shops[i].mutex);
       break;
     }
-    // prev_provided++;
-    // if(prev_provided == NUM_SHOPS) prev_provided = 0;
     if(i == NUM_SHOPS) {printf("Provider is out of shops\n"); sleep(1);}
     else printf("Provider restocked shop %d\n", i);
   }

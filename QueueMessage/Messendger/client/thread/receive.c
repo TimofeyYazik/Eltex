@@ -61,6 +61,5 @@ void *ThreadReceiveServer(void *arg){
   }
   delwin(wnd);
   mq_close(ds_queue_connect);
-  unlink(cont->name);
   return NULL;
 }

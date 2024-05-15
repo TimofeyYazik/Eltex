@@ -6,7 +6,7 @@
 
 void MessageWindow(WINDOW *wnd, MessageStorage *msg , int y);
 void InputMessageWindow(WINDOW *wnd, Message *msg);
-void Register(Controller *cont);
+void Register(Controller *cont, char *name_user);
 void UserWindow(WINDOW *wnd, NameList *list);
 
 #endif //UI_H
