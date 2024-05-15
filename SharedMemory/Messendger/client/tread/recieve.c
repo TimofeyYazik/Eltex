@@ -42,7 +42,7 @@ void *ThreadRecvServer(void *arg){
       MessageWindow(wnd, storage, (y / 4) * 3);
       len_storage = storage->len;
     }
-    usleep(10000);
+    usleep(100000);
   }
   return NULL;
 }

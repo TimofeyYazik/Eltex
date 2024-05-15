@@ -30,7 +30,6 @@ void *ThreadSendServer(void *arg){
   Message msg = {0};
   while (1)
   {
-
     InputMessageWindow(wnd, &msg);
     if (!strcmp(msg.text, "/exit")) { //FIX MEEEEE
       ctl->stop_client = 0;  
