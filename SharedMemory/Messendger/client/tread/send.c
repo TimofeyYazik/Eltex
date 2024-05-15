@@ -40,6 +40,7 @@ void *ThreadSendServer(void *arg){
     sem_post(ctl->sem);
   } 
   delwin(wnd);
+  sem_close(ctl->sem);
   munmap(ctl, sizeof(Controller));
   return NULL;   
 }
