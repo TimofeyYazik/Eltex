@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/mman.h>
@@ -48,7 +49,7 @@ void *ThreadRecvServer(void *arg){
     //   MessageWindow(wnd, storage, (y / 4) * 3);
     //   len_storage = storage->len;
     // }
-    usleep(10000);
+    // usleep(10000);
   }
   sem_close(ctl->sem);
   munmap(ctl, sizeof(Controller));
