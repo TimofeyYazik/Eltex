@@ -23,7 +23,6 @@ void *ThreadSendServer(void *arg){
   }
   ftruncate(fd, sizeof(Controller));
   Controller *ctl = (Controller*)mmap(NULL, sizeof(Controller), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-  ctl->sem = sem_open(NAME_SEMAPHORE, O_RDWR, mode_open, 1);
   NameList *list = &ctl->list;
   MessageStorage *storage = &ctl->storage;
   int x, y;
@@ -36,6 +35,7 @@ void *ThreadSendServer(void *arg){
     pthread_mutex_lock(&mutex);
     InputMessageWindow(wnd, &msg);
     pthread_mutex_unlock(&mutex);
+    ctl->sem = sem_open(NAME_SEMAPHORE, O_RDWR, mode_open, 1);
     if (!strcmp(msg.text, "/exit")) { //FIX MEEEEE
       ctl->stop_client = 0;  
       strcpy(msg.name, "server");
@@ -48,10 +48,10 @@ void *ThreadSendServer(void *arg){
     sem_wait(ctl->sem);
     AddStorageMessege(&ctl->storage, &msg);
     sem_post(ctl->sem);
+    sem_close(ctl->sem);
     usleep(1000);
   } 
   delwin(wnd);
-  sem_close(ctl->sem);
   munmap(ctl, sizeof(Controller));
   return NULL;   
 }
