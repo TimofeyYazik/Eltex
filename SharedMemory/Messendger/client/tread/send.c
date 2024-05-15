@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <pthread.h>
 #include <sys/types.h>
 #include <sys/mman.h>
 #include <semaphore.h>

@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/types.h>
+#include <pthread.h>
 #include <sys/mman.h>
 #include <semaphore.h>
 
