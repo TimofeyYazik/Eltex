@@ -13,6 +13,7 @@
 #include "ui/ui.h"
 #include "tread/thread.h"
 
+char name_user[MAX_NAME_LEN];
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int main(){
