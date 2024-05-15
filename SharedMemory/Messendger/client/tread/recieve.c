@@ -13,6 +13,7 @@
 
 
 void *ThreadRecvServer(void *arg){
+  perror("HUUUUUUUUUY\n");
   mode_t mode_open = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   int fd = shm_open(NAME_SHARE_MEMORY, O_RDWR, mode_open);
   if(fd == -1) {
