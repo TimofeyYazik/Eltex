@@ -31,8 +31,12 @@ int main(){
   pthread_t thread_send;
   pthread_t thread_receive;  
   initscr();
+  int error = pthread_create(&thread_receive, NULL, ThreadRecvServer, NULL);
+  if(error != 0) {
+    perror("pthread_create");
+    exit(1);
+  }
   pthread_create(&thread_send, NULL, ThreadSendServer, NULL);
-  pthread_create(&thread_receive, NULL, ThreadRecvServer, NULL);
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
   endwin();
