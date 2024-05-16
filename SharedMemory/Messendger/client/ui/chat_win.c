@@ -20,11 +20,16 @@ void MessageWindow(WINDOW *wnd, MessageStorage *msg , int y){
   box(wnd, 0, 0);
   wrefresh(wnd);
   int y_shift = 0;
-  if(msg->len > y1){
-    y_shift = msg->len - y1;
-    y1 = (msg->len - 3);
+  int len = msg->len;
+  if(len > 50){
+    len = 50;
   }
-  for (int i = y_shift, j = 0; i < msg->len; i++, j++) {
+  if(len > y1){
+    y_shift = len - y1;
+    y1 = (len - 3);
+  }
+
+  for (int i = y_shift, j = 0; i < len; i++, j++) {
     mvwprintw(wnd, j + 2, 4, "%s: %s\n", msg->msg[i].name, msg->msg[i].text);
   }
   wrefresh(wnd);
