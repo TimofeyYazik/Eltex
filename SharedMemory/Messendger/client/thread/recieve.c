@@ -1,14 +1,3 @@
-#include <stdlib.h>
-#include <sys/ipc.h>
-#include <fcntl.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <sys/types.h>
-#include <pthread.h>
-#include <sys/mman.h>
-#include <semaphore.h>
-
 #include "thread.h"
 
 extern pthread_mutex_t mutex;
