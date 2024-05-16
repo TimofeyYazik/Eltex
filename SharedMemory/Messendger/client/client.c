@@ -11,7 +11,7 @@
 
 #include "../config.h"
 #include "ui/ui.h"
-#include "tread/thread.h"
+#include "thread/thread.h"
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
