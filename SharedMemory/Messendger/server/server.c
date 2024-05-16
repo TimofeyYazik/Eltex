@@ -11,8 +11,8 @@
 #include "../config.h"
 
 int main(){
-  mode_t mode_mqueue = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
-  int fd = shm_open(NAME_SHARE_MEMORY, O_CREAT | O_RDWR, mode_mqueue);
+  mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
+  int fd = shm_open(NAME_SHARE_MEMORY, O_CREAT | O_RDWR, mode);
   ftruncate(fd, sizeof(Controller));
   if(fd == -1) {
     perror("shm_open");
@@ -21,7 +21,7 @@ int main(){
   Controller *ctl = (Controller*)mmap(NULL, sizeof(Controller), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
   MessageStorage *storage = &ctl->storage;
   NameList *list = &ctl->list;
-  sem_t *sem = sem_open(NAME_SEMAPHORE, O_CREAT | O_RDWR, mode_mqueue, 1);
+  sem_t *sem = sem_open(NAME_SEMAPHORE, O_CREAT | O_RDWR, mode, 1);
   sem_post(sem);
   list->len = 0;
   storage->len = 0;

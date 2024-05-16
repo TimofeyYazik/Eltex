@@ -23,7 +23,7 @@ void *ThreadSendServer(void *arg){
   }
   ftruncate(fd, sizeof(Controller));
   Controller *ctl = (Controller*)mmap(NULL, sizeof(Controller), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-  // ctl->sem = sem_open(NAME_SEMAPHORE, O_RDWR, mode_open, 1);
+  sem_t *sem = sem_open(NAME_SEMAPHORE, O_RDWR, mode_open, 1);
   NameList *list = &ctl->list;
   MessageStorage *storage = &ctl->storage;
   int x, y;
@@ -33,25 +33,24 @@ void *ThreadSendServer(void *arg){
   strcpy(msg.name, name_user);
   while (1)
   {
-    pthread_mutex_lock(&mutex);
     InputMessageWindow(wnd, &msg);
-    pthread_mutex_unlock(&mutex);
     if (!strcmp(msg.text, "/exit")) { 
       ctl->stop_client = 0;  
       strcpy(msg.name, "server");
       sprintf(msg.text, "user is out: %s", name_user);
-      // sem_wait(ctl->sem);
+      sem_wait(sem);
       AddStorageMessege(&ctl->storage, &msg);
-      // sem_post(ctl->sem);
+      DelNameList(list, name_user);
+      sem_post(sem);
       break;
     }
-    // sem_wait(ctl->sem);
+    sem_wait(sem);
     AddStorageMessege(&ctl->storage, &msg);
-    // sem_post(ctl->sem);
+    sem_post(sem);
     usleep(1000);
   } 
   delwin(wnd);
-  // sem_close(ctl->sem);
+  sem_close(sem);
   munmap(ctl, sizeof(Controller));
   return NULL;   
 }

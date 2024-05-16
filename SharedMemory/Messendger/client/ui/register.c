@@ -8,6 +8,8 @@ extern pthread_mutex_t mutex;
 
 void Register(Controller *cont, char *name_user) {
   WINDOW * wnd;
+  mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
+  sem_t *sem = sem_open(NAME_SEMAPHORE, O_RDWR, mode);
   NameList *list = &cont->list;
   initscr();
   curs_set(TRUE);
@@ -19,7 +21,7 @@ void Register(Controller *cont, char *name_user) {
   wmove(wnd, 2, 4);
   wprintw(wnd,"Enter your name: "); 
   wrefresh(wnd);
-  // sem_wait(cont->sem);
+  sem_wait(sem);
   wgetnstr(wnd, list->name[list->len], MAX_NAME_LEN - 1); 
   strcpy(name_user, list->name[list->len]);
   list->len++;
@@ -27,9 +29,10 @@ void Register(Controller *cont, char *name_user) {
   strcpy(msg.name, "server");
   sprintf(msg.text, "new client: %s", list->name[list->len - 1]);
   AddStorageMessege(&cont->storage, &msg);
-  // sem_post(cont->sem);
+  sem_post(sem);
   wrefresh(wnd);
   refresh();
   delwin(wnd);
+  sem_close(sem);
   endwin();
   }

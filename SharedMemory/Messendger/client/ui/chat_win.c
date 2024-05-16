@@ -11,6 +11,7 @@
 
 #include "ui.h"
   
+extern pthread_mutex_t mutex;
 
 void MessageWindow(WINDOW *wnd, MessageStorage *msg , int y){
   curs_set(FALSE);
@@ -41,6 +42,7 @@ void UserWindow(WINDOW *wnd, NameList *list){
 }
 
 void InputMessageWindow(WINDOW *wnd, Message *msg){
+  pthread_mutex_lock(&mutex);
   curs_set(TRUE);
   wclear(wnd);
   wrefresh(wnd);
@@ -48,6 +50,7 @@ void InputMessageWindow(WINDOW *wnd, Message *msg){
   wmove(wnd, 2, 4);
   wprintw(wnd,"Enter your message: ");
   wrefresh(wnd);
+  pthread_mutex_unlock(&mutex);
   wgetnstr(wnd, msg->text, MAX_TEXT_LEN - 1);
 }
 
