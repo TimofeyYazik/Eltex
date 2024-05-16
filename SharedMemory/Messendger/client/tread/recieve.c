@@ -28,7 +28,7 @@ void *ThreadRecvServer(void *arg){
       pthread_mutex_unlock(&mutex);
       len_namelist = list->len;
     }
-    if(len_storage < storage->len) {
+    if(len_storage != storage->len) {
       pthread_mutex_lock(&mutex);
       MessageWindow(wnd, storage, (y / 4) * 3);
       pthread_mutex_unlock(&mutex);
