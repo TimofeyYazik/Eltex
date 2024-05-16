@@ -7,7 +7,7 @@
 #define MAX_TEXT_LEN 128
 #define NAME_SEMAPHORE "/semaphore"
 #define NAME_SHARE_MEMORY "/share_memory"
-#define MAX_MESSAGE_SIZE 64
+#define MAX_MESSAGE_SIZE 42
 #define MAX_NAMELIST_SIZE 32
 
 typedef struct{
