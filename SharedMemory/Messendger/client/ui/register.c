@@ -1,5 +1,5 @@
+#include "../thread/thread.h"
 #include <semaphore.h>
-#include <sys/stat.h>
 
 #include "ui.h"
 #include "../../lib/lib_mess.h"
