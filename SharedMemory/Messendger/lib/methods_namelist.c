@@ -15,7 +15,7 @@ void AddNameList(NameList *src, char *name){
 void DelNameList(NameList *src, char *name){
   for(int i = 0; i < src->len; i++){
     if(strcmp(src->name[i], name) == 0){
-      for(int j = i; j < src->len - 1; j++){
+      for(int j = i; j <= src->len - 1; j++){
         strcpy(src->name[j], src->name[j + 1]);
       }
       src->len--;

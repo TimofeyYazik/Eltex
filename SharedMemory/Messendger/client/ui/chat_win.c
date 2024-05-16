@@ -35,7 +35,6 @@ void UserWindow(WINDOW *wnd, NameList *list){
   wclear(wnd);
   box(wnd, 0, 0);
   for(int i = 0; i < list->len; i++){
-    if(strcmp(list->name[i], "/server") == 0) continue;
     mvwprintw(wnd, i + 2, 4, "%s\n", list->name[i]);
   }
   wrefresh(wnd);
