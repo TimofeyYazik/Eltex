@@ -10,10 +10,10 @@ void AddStorageMessege(MessageStorage *src, Message *msg){
     MsgCopy(&src->msg[src->len], msg);
     src->len++;
   } else {
-    for(int i = 0; i < src->len - 1; i++){
+    for(int i = 0; i < 49; i++){
       MsgCopy(&src->msg[i], &src->msg[i + 1]);
     }
-    MsgCopy(&src->msg[src->len - 1], msg);
+    MsgCopy(&src->msg[49], msg);
     src->len++;
   }
 }
