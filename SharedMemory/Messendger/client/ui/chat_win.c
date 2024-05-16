@@ -21,7 +21,7 @@ void MessageWindow(WINDOW *wnd, MessageStorage *msg , int y){
   wrefresh(wnd);
   int y_shift = 0;
   int len = msg->len;
-  if(len > 50){
+  if(len >= 50){
     len = 50;
   }
   if(len > y1){
