@@ -40,8 +40,8 @@ void *ThreadSendServer(void *arg){
       sprintf(msg.text, "user is out: %s", name_user);
       sem_wait(sem);
       AddStorageMessege(&ctl->storage, &msg);
-      DelNameList(list, name_user);
       sem_post(sem);
+      DelNameList(list, name_user);
       break;
     }
     sem_wait(sem);

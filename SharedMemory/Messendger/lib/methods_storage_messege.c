@@ -14,6 +14,7 @@ void AddStorageMessege(MessageStorage *src, Message *msg){
       MsgCopy(&src->msg[i], &src->msg[i + 1]);
     }
     MsgCopy(&src->msg[src->len - 1], msg);
+    src->len++;
   }
 }
 
