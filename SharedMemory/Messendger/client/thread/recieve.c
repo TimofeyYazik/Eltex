@@ -21,11 +21,8 @@ void *ThreadRecvServer(void *arg){
   box(wnd, 0, 0);
   WINDOW *wnd2 = newwin((y / 4) * 3, (x / 4), 0, (x / 4) * 3);
   box(wnd2, 0, 0);
-  while (ctl->stop_client) {
-    if(len_namelist > list->len) {
-      len_namelist = list->len;
-    }   
-    if(len_namelist < list->len) {
+  while (ctl->stop_client) { 
+    if(len_namelist != list->len) {
       pthread_mutex_lock(&mutex);
       UserWindow(wnd2, list);
       pthread_mutex_unlock(&mutex);

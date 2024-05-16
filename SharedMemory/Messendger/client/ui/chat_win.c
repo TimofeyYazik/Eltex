@@ -21,14 +21,12 @@ void MessageWindow(WINDOW *wnd, MessageStorage *msg , int y){
   wrefresh(wnd);
   int y_shift = 0;
   int len = msg->len;
-  if(len >= 50){
-    len = 50;
+  if(len > MAX_MESSAGE_SIZE){
+    len = MAX_MESSAGE_SIZE;
   }
   if(len > y1){
     y_shift = len - y1;
-    y1 = (len - 3);
   }
-
   for (int i = y_shift, j = 0; i < len; i++, j++) {
     mvwprintw(wnd, j + 2, 4, "%s: %s\n", msg->msg[i].name, msg->msg[i].text);
   }
