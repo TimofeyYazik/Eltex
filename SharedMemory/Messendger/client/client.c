@@ -13,6 +13,7 @@
 #include "ui/ui.h"
 #include "thread/thread.h"
 
+char name_user[MAX_NAME_LEN];
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int main(){
@@ -27,16 +28,15 @@ int main(){
   Controller *ctl = (Controller*)mmap(NULL, sizeof(Controller), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
   ctl->stop_client = 1;
   Register(ctl, (char*)name_user);
-  munmap(ctl, sizeof(Controller));
   pthread_t thread_send;
   pthread_t thread_receive;  
   initscr();
-  int error = pthread_create(&thread_receive, NULL, ThreadRecvServer, NULL);
+  int error = pthread_create(&thread_receive, NULL, ThreadRecvServer, (void*)ctl);
   if(error != 0) {
     perror("pthread_create");
     exit(1);
   }
-  error = pthread_create(&thread_send, NULL, ThreadSendServer, (void*)name_user);
+  error = pthread_create(&thread_send, NULL, ThreadSendServer, (void*)ctl);
   if(error != 0) {
     perror("pthread_create");
     exit(1);
@@ -44,5 +44,6 @@ int main(){
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
   endwin();
+  munmap(ctl, sizeof(Controller));
   exit(EXIT_SUCCESS);
 }
