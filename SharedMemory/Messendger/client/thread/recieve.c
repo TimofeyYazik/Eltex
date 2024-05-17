@@ -36,5 +36,7 @@ void *ThreadRecvServer(void *arg){
     }
   }
   munmap(ctl, sizeof(Controller));
+  delwin(wnd);
+  delwin(wnd2);
   return NULL;
 }

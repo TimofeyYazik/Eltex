@@ -41,7 +41,7 @@ void *ThreadSendServer(void *arg){
       sem_wait(sem);
       AddStorageMessege(&ctl->storage, &msg);
       sem_post(sem);
-      DelNameList(list, name_user);
+      // DelNameList(list, name_user);
       break;
     }
     sem_wait(sem);
