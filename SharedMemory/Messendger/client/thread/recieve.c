@@ -4,13 +4,13 @@ extern pthread_mutex_t mutex;
 
 void *ThreadRecvServer(void *arg){
   Controller *ctl = (Controller*)arg;
-  mode_t mode_open = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
-  int fd = shm_open(NAME_SHARE_MEMORY, O_RDWR, mode_open);
-  if(fd == -1) {
-    perror("shm_open");
-    exit(1);
-  }
-  ftruncate(fd, sizeof(Controller));
+  // mode_t mode_open = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
+  // int fd = shm_open(NAME_SHARE_MEMORY, O_RDWR, mode_open);
+  // if(fd == -1) {
+  //   perror("shm_open");
+  //   exit(1);
+  // }
+  // ftruncate(fd, sizeof(Controller));
   // Controller *ctl = (Controller*)mmap(NULL, sizeof(Controller), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
   NameList *list = &ctl->list;
   MessageStorage *storage = &ctl->storage;
@@ -36,7 +36,7 @@ void *ThreadRecvServer(void *arg){
       len_storage = storage->len;
     }
   }
-  munmap(ctl, sizeof(Controller)); 
+  // munmap(ctl, sizeof(Controller)); 
   delwin(wnd);
   delwin(wnd2);
   return NULL;

@@ -27,7 +27,7 @@ int main(){
   ftruncate(fd, sizeof(Controller));
   Controller *ctl = (Controller*)mmap(NULL, sizeof(Controller), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
   ctl->stop_client = 1;
-  Register(ctl, (char*)name_user);
+  Register(ctl);
   pthread_t thread_send;
   pthread_t thread_receive;  
   initscr();
@@ -36,7 +36,7 @@ int main(){
     perror("pthread_create");
     exit(1);
   }
-  error = pthread_create(&thread_send, NULL, ThreadSendServer, (void*)ctl);
+  error = pthread_create(&thread_send, NULL, ThreadSendServer, (void*)ctl); 
   if(error != 0) {
     perror("pthread_create");
     exit(1);

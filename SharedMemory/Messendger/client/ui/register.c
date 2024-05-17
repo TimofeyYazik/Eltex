@@ -5,12 +5,13 @@
 #include "../../lib/lib_mess.h"
 
 extern pthread_mutex_t mutex;
+extern char name_user[MAX_NAME_LEN];
 
-void Register(Controller *cont, char *name_user) {
+void Register(Controller *ctl) {
   WINDOW * wnd;
   mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   sem_t *sem = sem_open(NAME_SEMAPHORE, O_RDWR, mode);
-  NameList *list = &cont->list;
+  NameList *list = &ctl->list;
   initscr();
   curs_set(TRUE);
   int x, y;
@@ -28,11 +29,11 @@ void Register(Controller *cont, char *name_user) {
   Message msg = {0};
   strcpy(msg.name, "server");
   sprintf(msg.text, "new client: %s", list->name[list->len - 1]);
-  AddStorageMessege(&cont->storage, &msg);
+  AddStorageMessege(&ctl->storage, &msg);
   sem_post(sem);
   wrefresh(wnd);
   refresh();
   delwin(wnd);
   sem_close(sem);
   endwin();
-  }
+}
