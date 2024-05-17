@@ -18,7 +18,6 @@ void Register(Controller *ctl) {
   clear();
   getmaxyx(stdscr, y, x);
   wnd = newwin(y / 5, x / 2, (y / 5) * 2, (x / 4));
-  box(wnd, 0, 0);
   char is_name_exist = 1;
   while (1) {
     wclear(wnd);
