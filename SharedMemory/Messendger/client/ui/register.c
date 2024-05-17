@@ -22,7 +22,7 @@ void Register(Controller *ctl) {
   char is_name_exist = 1;
   while (1) {
     if(is_name_exist) mvwprintw(wnd, 2, 4, "Enter your name: "); 
-    else wmprintw(wnd, 2, 4, "Enter your name, previously used: "); 
+    else mwprintw(wnd, 2, 4, "Enter your name, previously used: "); 
     wrefresh(wnd);
     sem_wait(sem);
     wgetnstr(wnd, name_user, MAX_NAME_LEN - 1); 
