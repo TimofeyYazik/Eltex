@@ -1,7 +1,7 @@
 #include "thread.h"
 
 extern pthread_mutex_t mutex;
-extern char stop_client;
+extern int stop_client;
 
 void *ThreadRecvServer(void *arg){
   Controller *ctl = (Controller*)arg;

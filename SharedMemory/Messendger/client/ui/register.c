@@ -46,7 +46,6 @@ void Register(Controller *ctl) {
     wrefresh(wnd);
     break;
   }
-    
   delwin(wnd);
   sem_close(sem);
   endwin();

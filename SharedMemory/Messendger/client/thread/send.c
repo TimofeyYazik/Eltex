@@ -13,7 +13,7 @@
 
 
 extern pthread_mutex_t mutex;
-extern char stop_client;
+extern int stop_client;
 extern char name_user[MAX_NAME_LEN];
 
 void *ThreadSendServer(void *arg){

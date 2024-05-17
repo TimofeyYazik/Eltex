@@ -15,10 +15,10 @@
 
 char name_user[MAX_NAME_LEN];
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-char stop_client = 1;
+int stop_client;
 
 int main(){
-  char name_user[MAX_NAME_LEN];
+  stop_client = 1;
   mode_t mode_open = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   int fd = shm_open(NAME_SHARE_MEMORY, O_RDWR, mode_open);
   if(fd == -1) {
