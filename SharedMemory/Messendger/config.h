@@ -27,7 +27,6 @@ typedef struct{
 } NameList;
 
 typedef struct{
-  int stop_client;
   NameList list;
   MessageStorage storage;
 } Controller;
