@@ -12,6 +12,7 @@
 #include "thread.h"
 
 extern pthread_mutex_t mutex;
+extern char stop_client;
 extern char name_user[MAX_NAME_LEN];
 
 void *ThreadSendServer(void *arg){
@@ -35,7 +36,7 @@ void *ThreadSendServer(void *arg){
       AddStorageMessege(&ctl->storage, &msg);
       DelNameList(list, name_user);
       sem_post(sem);
-      ctl->stop_client = 0;  
+      stop_client = 0;  
       break;
     }
     sem_wait(sem);

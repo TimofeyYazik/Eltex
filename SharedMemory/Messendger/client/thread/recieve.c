@@ -1,6 +1,7 @@
 #include "thread.h"
 
 extern pthread_mutex_t mutex;
+extern char stop_client;
 
 void *ThreadRecvServer(void *arg){
   Controller *ctl = (Controller*)arg;
@@ -14,7 +15,7 @@ void *ThreadRecvServer(void *arg){
   box(wnd, 0, 0);
   WINDOW *wnd2 = newwin((y / 4) * 3, (x / 4), 0, (x / 4) * 3);
   box(wnd2, 0, 0);
-  while (ctl->stop_client) { 
+  while (stop_client) { 
     if(len_namelist != list->len) {
       pthread_mutex_lock(&mutex);
       UserWindow(wnd2, list);

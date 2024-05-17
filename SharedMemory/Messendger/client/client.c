@@ -15,6 +15,7 @@
 
 char name_user[MAX_NAME_LEN];
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+char stop_client = 1;
 
 int main(){
   char name_user[MAX_NAME_LEN];
@@ -26,7 +27,7 @@ int main(){
   }
   ftruncate(fd, sizeof(Controller));
   Controller *ctl = (Controller*)mmap(NULL, sizeof(Controller), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-  ctl->stop_client = 1;
+  
   Register(ctl);
   pthread_t thread_send;
   pthread_t thread_receive;  
