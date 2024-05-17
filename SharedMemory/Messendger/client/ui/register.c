@@ -21,6 +21,7 @@ void Register(Controller *ctl) {
   box(wnd, 0, 0);
   char is_name_exist = 1;
   while (1) {
+    wclear(wnd);
     if(is_name_exist) mvwprintw(wnd, 2, 4, "Enter your name: "); 
     else mvwprintw(wnd, 2, 4, "Enter your name, previously used: "); 
     wrefresh(wnd);
