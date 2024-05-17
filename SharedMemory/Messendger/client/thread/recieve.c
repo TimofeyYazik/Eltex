@@ -15,7 +15,7 @@ void *ThreadRecvServer(void *arg){
   box(wnd, 0, 0);
   WINDOW *wnd2 = newwin((y / 4) * 3, (x / 4), 0, (x / 4) * 3);
   box(wnd2, 0, 0);
-  while (stop_client) { 
+  while(stop_client) { 
     if(len_namelist != list->len) {
       pthread_mutex_lock(&mutex);
       UserWindow(wnd2, list);
@@ -28,6 +28,7 @@ void *ThreadRecvServer(void *arg){
       pthread_mutex_unlock(&mutex);
       len_storage = storage->len;
     }
+    usleep(10000);
   }
   delwin(wnd);
   delwin(wnd2);

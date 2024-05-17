@@ -30,13 +30,13 @@ void *ThreadSendServer(void *arg){
   {
     InputMessageWindow(wnd, &msg);
     if (!strcmp(msg.text, "/exit")) { 
+      stop_client = 0;  
       strcpy(msg.name, "server");
       sprintf(msg.text, "user is out: %s", name_user);
       sem_wait(sem);
       AddStorageMessege(&ctl->storage, &msg);
       DelNameList(list, name_user);
       sem_post(sem);
-      stop_client = 0;  
       break;
     }
     sem_wait(sem);
