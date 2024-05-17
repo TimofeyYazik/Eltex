@@ -32,7 +32,10 @@ void Register(Controller *ctl) {
         break;
       } else is_name_exist = 1;
     }
-    if(!is_name_exist) continue;
+    if(!is_name_exist) {
+      sem_post(sem);
+      continue;
+    }
     strcpy(list->name[list->len], name_user);
     list->len++;
     Message msg = {0};
