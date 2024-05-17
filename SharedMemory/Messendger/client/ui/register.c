@@ -19,20 +19,31 @@ void Register(Controller *ctl) {
   getmaxyx(stdscr, y, x);
   wnd = newwin(y / 5, x / 2, (y / 5) * 2, (x / 4));
   box(wnd, 0, 0);
-  wmove(wnd, 2, 4);
-  wprintw(wnd,"Enter your name: "); 
-  wrefresh(wnd);
-  sem_wait(sem);
-  wgetnstr(wnd, list->name[list->len], MAX_NAME_LEN - 1); 
-  strcpy(name_user, list->name[list->len]);
-  list->len++;
-  Message msg = {0};
-  strcpy(msg.name, "server");
-  sprintf(msg.text, "new client: %s", list->name[list->len - 1]);
-  AddStorageMessege(&ctl->storage, &msg);
-  sem_post(sem);
-  wrefresh(wnd);
-  refresh();
+  char is_name_exist = 1;
+  while (1) {
+    if(is_name_exist) mvwprintw(wnd, 2, 4, "Enter your name: "); 
+    else wmprintw(wnd, 2, 4, "Enter your name, previously used: "); 
+    wrefresh(wnd);
+    sem_wait(sem);
+    wgetnstr(wnd, name_user, MAX_NAME_LEN - 1); 
+    for (int i = 0; i < list->len; i++) {
+      if (strcmp(name_user, list->name[i]) == 0) {
+        is_name_exist = 0;
+        break;
+      } else is_name_exist = 1;
+    }
+    if(!is_name_exist) continue;
+    strcpy(list->name[list->len], name_user);
+    list->len++;
+    Message msg = {0};
+    strcpy(msg.name, "server");
+    sprintf(msg.text, "new client: %s", list->name[list->len - 1]);
+    AddStorageMessege(&ctl->storage, &msg);
+    sem_post(sem);
+    wrefresh(wnd);
+    break;
+  }
+    
   delwin(wnd);
   sem_close(sem);
   endwin();
