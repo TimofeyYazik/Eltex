@@ -5,10 +5,11 @@ void AddNameList(NameList *src, char *name){
     strcpy(src->name[src->len], name);
     src->len++;
   } else {
-    for(int i = 0; i < src->len - 1; i++){
-      strcpy(src->name[i], src->name[i + 1]);
+    for(int i = 0; i < src->len - 2; i++){
+      strcpy(src->name[i], src->name[i + 2]);
     }
-    strcpy(src->name[src->len - 1], name);
+    strcpy(src->name[src->len - 2], name);
+    src->len--;
   }
 }
 
