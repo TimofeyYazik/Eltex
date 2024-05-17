@@ -44,6 +44,7 @@ int main(){
   pthread_join(thread_send, NULL);
   pthread_join(thread_receive, NULL);
   endwin();
-  munmap(ctl, sizeof(Controller));
+  // munmap(ctl, sizeof(Controller));
+  pthread_mutex_destroy(&mutex);
   exit(EXIT_SUCCESS);
 }
