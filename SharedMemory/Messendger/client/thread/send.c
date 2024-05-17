@@ -29,13 +29,13 @@ void *ThreadSendServer(void *arg){
   {
     InputMessageWindow(wnd, &msg);
     if (!strcmp(msg.text, "/exit")) { 
-      ctl->stop_client = 0;  
       strcpy(msg.name, "server");
       sprintf(msg.text, "user is out: %s", name_user);
       sem_wait(sem);
       AddStorageMessege(&ctl->storage, &msg);
-      sem_post(sem);
       DelNameList(list, name_user);
+      sem_post(sem);
+      ctl->stop_client = 0;  
       break;
     }
     sem_wait(sem);
@@ -45,7 +45,6 @@ void *ThreadSendServer(void *arg){
   } 
   delwin(wnd);
   sem_close(sem);
-  // munmap(ctl, sizeof(Controller));
   return NULL;   
 }
   

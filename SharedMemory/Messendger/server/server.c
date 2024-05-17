@@ -31,8 +31,6 @@ int main(){
   while (1)
   {
     scanf("%d", &stop_server);
-    for(int i = 0; i < ctl->list.len;i++)
-      printf("%s\n", ctl->list.name[i]);
     for(int i = 0; i < ctl->storage.len;i++)
       printf("%s\n", ctl->storage.msg[i].text);
     if(stop_server == 0) break;
