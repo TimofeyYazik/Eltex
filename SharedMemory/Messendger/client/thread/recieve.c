@@ -35,7 +35,7 @@ void *ThreadRecvServer(void *arg){
       len_storage = storage->len;
     }
   }
-  munmap(ctl, sizeof(Controller));
+  // munmap(ctl, sizeof(Controller));
   delwin(wnd);
   delwin(wnd2);
   return NULL;
