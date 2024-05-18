@@ -27,6 +27,10 @@ int main(){
   }
   ftruncate(fd, sizeof(Controller));
   Controller *ctl = (Controller*)mmap(NULL, sizeof(Controller), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+  if(ctl == MAP_FAILED) {
+    perror("mmap");
+    exit(1);
+  }
   
   Register(ctl);
   pthread_t thread_send;
