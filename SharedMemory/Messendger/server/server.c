@@ -41,7 +41,12 @@ int main(){
   storage->len = 0;
   printf("Enter 0 to stop server\n");
   int stop_server = 1;
-  while (stop_server) scanf("%d", &stop_server);
+  while (stop_server){ 
+    if(scanf("%d", &stop_server) != 1) {
+      printf("Enter 0 to stop server\n");
+      continue;
+    }
+  }
   munmap(ctl, sizeof(Controller));
   shm_unlink(NAME_SHARE_MEMORY);
   sem_close(sem);
