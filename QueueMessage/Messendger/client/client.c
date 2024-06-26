@@ -24,7 +24,6 @@ int main(){
   }
   free(list.name);
   free(storage.msg);
-  pthread_mutex_destroy(&mutex);
   exit(EXIT_SUCCESS);
 }
 
