@@ -27,9 +27,7 @@ int main(){
 //  if(bind(sfd, (struct sockaddr*)&serv_sock, sizeof(serv_sock)) < 0){
 //      handle_error("bind");
 //  }
-  if(connect(sfd, (SA*) &serv_sock, sizeof(serv_sock)) < 1){
-    handle_error("connect");
-  }
+  connect(sfd, (SA*) &serv_sock, sizeof(serv_sock));
   char buff[SIZE_BUFF];
   strcpy(buff, "hello");
   socklen_t sk_len = sizeof(serv_sock);
