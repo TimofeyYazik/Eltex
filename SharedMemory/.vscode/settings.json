@@ -4,6 +4,7 @@
     "types.h": "c",
     "typeinfo": "c",
     "chrono": "c",
-    "thread.h": "c"
+    "thread.h": "c",
+    "ui.h": "c"
   }
 }
