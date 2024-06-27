@@ -18,6 +18,12 @@ int main(){
   if(sfd < 0){
     handle_error("sockets");
   }
+  if (access(ADDR_NAME, F_OK) == 0) {
+        if (unlink(ADDR_NAME) == -1) {
+            perror("unlink");
+            exit(EXIT_FAILURE);
+        }
+    }
   struct sockaddr_un serv_sock, client_sock;
   socklen_t len_sock = sizeof(serv_sock);
   memset(&serv_sock, 0 , len_sock);
@@ -37,5 +43,6 @@ int main(){
   recv(cfd, buff, SIZE_BUFF, 0);
   close(cfd);
   close(sfd);
+  unlink(ADDR_NAME);
   exit(EXIT_SUCCESS);
 }
