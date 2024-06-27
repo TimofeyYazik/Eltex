@@ -4,5 +4,5 @@ client: client.o
 server: server.o
 	gcc $^ -o server
 
-clien:
+clean:
 	rm -rf server client *.o
