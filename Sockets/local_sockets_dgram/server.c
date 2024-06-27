@@ -33,7 +33,7 @@ int main(){
   recvfrom(sfd, buff, SIZE_BUFF, 0, (struct sockaddr *) &client_sock, &sk_len);
   printf("%s\n", buff);
   strcpy(buff, "hi");
-  sendto(sfd, buff, SIZE_BUFF, 0,  (struct sockaddr *) &client_sock, sk_len);
+  sendto(sfd, buff, SIZE_BUFF, 0, (struct sockaddr *) &client_sock, sk_len);
   recvfrom(sfd, buff, SIZE_BUFF, 0, (struct sockaddr *) &client_sock, &sk_len);
   close(sfd);
   unlink(ADDR_NAME);

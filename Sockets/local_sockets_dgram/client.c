@@ -17,14 +17,14 @@ int main(){
     handle_error("sockets");
   }
   struct sockaddr_un serv_sock;
-  socklen_t len_sock = sizeof(serv_sock);
-  memset(&serv_sock, 0 , len_sock);
+  memset(&serv_sock, 0 , sizeof(serv_sock));
   serv_sock.sun_family = AF_LOCAL;
   strncpy(serv_sock.sun_path, ADDR_NAME, sizeof(ADDR_NAME) - 1);
   if(connect(cfd, (struct sockaddr *) &serv_sock, sizeof(serv_sock)) < 0){
-    
+    handle_error("connect");    
   }
   char buff[SIZE_BUFF];
+  strcpy(buff, "hello");
   send(cfd, buff, SIZE_BUFF, 0);
   recv(cfd, buff, SIZE_BUFF, 0);
   send(cfd, buff, SIZE_BUFF, 0);
