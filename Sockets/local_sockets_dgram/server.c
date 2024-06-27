@@ -27,7 +27,7 @@ int main(){
   serv_sock.sun_family = AF_LOCAL;
   strncpy(serv_sock.sun_path, ADDR_NAME, sizeof(ADDR_NAME) - 1);
   if(bind(sfd, (struct sockaddr*)&serv_sock, sizeof(serv_sock)) < 0){
-      handle_error("sockets");
+      handle_error("bind");
   }
   char buff[SIZE_BUFF];
   socklen_t sk_len = sizeof(client_sock);
@@ -38,6 +38,5 @@ int main(){
   recvfrom(sfd, buff, SIZE_BUFF, 0, (struct sockaddr *) &client_sock, &sk_len);
   close(sfd);
   unlink(serv_sock.sun_path);
-  unlink(client_sock.sun_path);
   exit(EXIT_SUCCESS);
 }

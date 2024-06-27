@@ -17,6 +17,11 @@ int main(){
   if(cfd < 0){
     handle_error("sockets");
   }
+  if (access(ADDR_NAME_CLIENT, F_OK) == 0) {
+    if (unlink(ADDR_NAME_CLIENT) == -1) {
+      handle_error("unlink");      
+    }
+  }
   struct sockaddr_un serv_sock, client_sock;
   memset(&serv_sock, 0 , sizeof(serv_sock));
   memset(&client_sock, 0 , sizeof(client_sock));
@@ -37,6 +42,6 @@ int main(){
   printf("%s\n", buff);
   send(cfd, buff, SIZE_BUFF, 0);
   close(cfd);
-  unlink(ADDR_NAME_CLIENT);
+  unlink(client_sock.sun_path);
   exit(EXIT_SUCCESS);
 }
