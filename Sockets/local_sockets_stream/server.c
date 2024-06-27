@@ -28,7 +28,8 @@ int main(){
   }
   listen(sfd,LISTEN_BACKLOG);
   char buff[SIZE_BUFF];
-  cfd = accept(sfd, (struct sockaddr*) &client_sock, sizeof(client_sock));
+  socklen_t sk_len = 0;
+  cfd = accept(sfd, (struct sockaddr*) &client_sock, &sk_len);
   recv(cfd, buff, SIZE_BUFF, 0);
   printf("%s\n", buff);
   strcpy(buff, "hi");
