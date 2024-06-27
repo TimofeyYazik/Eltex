@@ -22,7 +22,8 @@ int main(){
     }
   }
   struct sockaddr_un serv_sock, client_sock;
-  memset(&serv_sock, 0 , sizeof(serv_sock));
+  memset(&serv_sock, 0 , sizeof(serv_sock));  
+  memset(&client_sock, 0 , sizeof(client_sock));
   serv_sock.sun_family = AF_LOCAL;
   strncpy(serv_sock.sun_path, ADDR_NAME, sizeof(ADDR_NAME) - 1);
   if(bind(sfd, (struct sockaddr*)&serv_sock, sizeof(serv_sock)) < 0){
@@ -36,6 +37,7 @@ int main(){
   sendto(sfd, buff, SIZE_BUFF, 0, (struct sockaddr *) &client_sock, sk_len);
   recvfrom(sfd, buff, SIZE_BUFF, 0, (struct sockaddr *) &client_sock, &sk_len);
   close(sfd);
-  unlink(ADDR_NAME);
+  unlink(serv_sock.sun_path);
+  unlink(client_sock.sun_path);
   exit(EXIT_SUCCESS);
 }
