@@ -19,11 +19,10 @@ int main(){
     handle_error("sockets");
   }
   if (access(ADDR_NAME, F_OK) == 0) {
-        if (unlink(ADDR_NAME) == -1) {
-            perror("unlink");
-            exit(EXIT_FAILURE);
-        }
+    if (unlink(ADDR_NAME) == -1) {
+      handle_error("unlink");      
     }
+  }
   struct sockaddr_un serv_sock, client_sock;
   socklen_t len_sock = sizeof(serv_sock);
   memset(&serv_sock, 0 , len_sock);
