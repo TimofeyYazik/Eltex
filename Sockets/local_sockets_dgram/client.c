@@ -34,6 +34,7 @@ int main(){
   strcpy(buff, "hello");
   send(cfd, buff, SIZE_BUFF, 0);
   recv(cfd, buff, SIZE_BUFF, 0);
+  printf("%s\n", buff);
   send(cfd, buff, SIZE_BUFF, 0);
   close(cfd);
   unlink(ADDR_NAME_CLIENT);
