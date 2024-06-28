@@ -37,7 +37,7 @@ int main(){
   }
   char time_str[80] = {0};
   printf("type 'time' to display the time\n");
-  printf("type exit to exit\n");
+  printf("type 'exit' to exit\n");
   while(1){
     scanf("%7s", buff);
     if(!strcmp(buff, "exit")){
