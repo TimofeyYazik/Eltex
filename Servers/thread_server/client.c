@@ -51,5 +51,6 @@ int main(){
       printf("%s", time_str);
     }
   }
+  close(cfd);
   exit(EXIT_SUCCESS);
 }
