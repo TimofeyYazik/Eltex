@@ -44,7 +44,7 @@ void *ChildServer(void *fd){
     }  
   }
   printf("END POTOK\n");
-  close(*active_fd);  
+  close(active_fd);  
   return NULL;
   
 }
