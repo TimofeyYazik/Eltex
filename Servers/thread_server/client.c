@@ -43,6 +43,7 @@ int main(){
     if(!strcmp(buff, "exit")){
       printf("SEND\n");
       send(cfd, buff, SIZE_BUFF, 0);
+      send(cfd, buff, SIZE_BUFF, 0);
       break;
     }    
     if(!strcmp(buff, "time")){
