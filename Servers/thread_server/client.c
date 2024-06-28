@@ -41,7 +41,7 @@ int main(){
   time_t time_self;
   struct tm * timeinfo;
   while(1){
-    scanf("%7c", buff);
+    scanf("%7s", buff);
     if(!strcmp(buff, "exit")){
       printf("SEND");
       send(cfd, buff, SIZE_BUFF, 0);
