@@ -23,23 +23,24 @@
 
 void *ChildServer(void *fd){
   printf("CHILD SERVER\n");
-  int *active_fd = (int *)fd;
+  int *afd = (int *)fd;
+  int active_fd = *afd;
   char time_buff[80] = {0};
   time_t time_now;
   char buff[SIZE_BUFF];
   while (1) {
     printf("START RECEIVE\n");
-    recv(*active_fd, buff, SIZE_BUFF, 0);
+    recv(active_fd, buff, SIZE_BUFF, 0);
     printf("END RECEIVE\n");
     if(!strcmp(buff, "exit")){
-      send(*active_fd, buff, SIZE_BUFF, 0);
+      send(active_fd, buff, SIZE_BUFF, 0);
       printf("CONCH\n");
       break;
     } else {
       time(&time_now);
       strcpy(time_buff, ctime(&time_now));
       printf("SEND\n");
-      send(*active_fd, (void *)time_buff, 80, 0);
+      send(active_fd, (void *)time_buff, 80, 0);
     }  
   }
   printf("END POTOK\n");
