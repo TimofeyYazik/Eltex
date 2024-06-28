@@ -43,10 +43,12 @@ int main(){
   while(1){
     scanf("%7c", buff);
     if(!strcmp(buff, "exit")){
+      printf("SEND");
       send(cfd, buff, SIZE_BUFF, 0);
       break;
     }    
     if(!strcmp(buff, "time")){
+      printf("SEND");
       send(cfd, buff, SIZE_BUFF, 0);
       recv(cfd, &time_self, SIZE_BUFF, 0);
       timeinfo = localtime(&time_self);
