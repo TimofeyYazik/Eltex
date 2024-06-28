@@ -40,7 +40,8 @@ void *ChildServer(void *fd){
       send(*active_fd, (void *)time_buff, 80, 0);
     }  
   }
-  printf("END POTOK");  
+  printf("END POTOK");
+  close(*active_fd);  
   return NULL;
   
 }
@@ -89,5 +90,6 @@ int main(){
   for(int i = 0; i < counter; i++){
     pthread_join(arr_treads[i], NULL);
   }
+  close(main_sfd);
   exit(EXIT_SUCCESS);
 }
