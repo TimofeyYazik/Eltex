@@ -43,15 +43,37 @@ void *ChildServer(void *fd){
   
 }
 
-int stop = 1;
+volatile int stop = 1;
 
-void HandlerUserSignal(int a){
-  stop = 0;
+void *StopServer(void *s){
+  int *ip = s;
+  int ip_addres = *ip;
+  while(1){
+    scanf("%d", &stop);
+    if(stop == 0) break;
+  }  
+  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
+  int cfd = socket(AF_INET, SOCK_STREAM, 0);
+  if(cfd == -1){
+    handler_error("socket");
+  }
+  struct sockaddr_in server_connect;
+  server_connect.sin_family = AF_INET;
+  server_connect.sin_addr.s_addr = ip_addres;
+  server_connect.sin_port = htons(PORT);
+  char buff[SIZE_BUFF] = {0};
+  strcpy(buff, "exit");
+  if(connect(cfd, (SA*)&server_connect, sizeof(server_connect)) == -1){
+    handler_error("ne vezet");
+  }
+  send(cfd, buff, SIZE_BUFF, 0);
+  recv(cfd, buff, SIZE_BUFF, 0);  
+  return NULL;
 }
 
 
+
 int main(){
-  signal(SIGUSR1, HandlerUserSignal);
   int len_treads_arr = 100;
   pthread_t *arr_treads = malloc(len_treads_arr * sizeof(pthread_t));
   int ip_addres = 0;
@@ -73,6 +95,8 @@ int main(){
   }
   socklen_t len = sizeof(server_settings);
   int counter = 0;
+  pthread_t stop_tread;
+  pthread_create(&stop_tread, NULL, StopServer, (void *) &ip_addres);
   while(stop){
     int active_fd = accept(main_sfd, (SA *)&server_settings, &len);
     pthread_create(&arr_treads[counter], NULL, ChildServer, (void *)&active_fd); 
@@ -82,6 +106,7 @@ int main(){
       arr_treads = realloc(arr_treads, len_treads_arr);
     }
   }
+  pthread_join(stop_tread, NULL);
   for(int i = 0; i < counter; i++){
     pthread_join(arr_treads[i], NULL);
   }
