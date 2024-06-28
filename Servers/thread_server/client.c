@@ -41,17 +41,14 @@ int main(){
   while(1){
     scanf("%7s", buff);
     if(!strcmp(buff, "exit")){
-      printf("SEND\n");
       send(cfd, buff, SIZE_BUFF, 0);
       recv(cfd, buff, SIZE_BUFF, 0);
-      printf("ConH");
       break;
     }    
     if(!strcmp(buff, "time")){
-      printf("SEND\n");
       send(cfd, buff, SIZE_BUFF, 0);
       recv(cfd, &time_str, 80, 0);
-      printf("%s\n", time_str);
+      printf("%s", time_str);
     }
   }
   exit(EXIT_SUCCESS);

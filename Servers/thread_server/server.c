@@ -22,28 +22,22 @@
 
 
 void *ChildServer(void *fd){
-  printf("CHILD SERVER\n");
   int *afd = (int *)fd;
   int active_fd = *afd;
   char time_buff[80] = {0};
   time_t time_now;
   char buff[SIZE_BUFF];
   while (1) {
-    printf("START RECEIVE\n");
     recv(active_fd, buff, SIZE_BUFF, 0);
-    printf("END RECEIVE\n");
     if(!strcmp(buff, "exit")){
       send(active_fd, buff, SIZE_BUFF, 0);
-      printf("CONCH\n");
       break;
     } else {
       time(&time_now);
       strcpy(time_buff, ctime(&time_now));
-      printf("SEND\n");
       send(active_fd, (void *)time_buff, 80, 0);
     }  
   }
-  printf("END POTOK\n");
   close(active_fd);  
   return NULL;
   
@@ -80,7 +74,6 @@ int main(){
   socklen_t len = sizeof(server_settings);
   int counter = 0;
   while(stop){
-    printf("LOOP\n");
     int active_fd = accept(main_sfd, (SA *)&server_settings, &len);
     pthread_create(&arr_treads[counter], NULL, ChildServer, (void *)&active_fd); 
     counter++;
@@ -89,7 +82,6 @@ int main(){
       arr_treads = realloc(arr_treads, len_treads_arr);
     }
   }
-  printf("END PROGRAM\n");
   for(int i = 0; i < counter; i++){
     pthread_join(arr_treads[i], NULL);
   }
