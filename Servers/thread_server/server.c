@@ -11,8 +11,6 @@
 #include <string.h>
 #include <sys/signal.h>
 
-#include "double_list/list.h"
-
 #define SA struct sockaddr
 #define PORT 6666
 #define SIZE_BUFF 8
@@ -29,6 +27,7 @@ void *ChildServer(void *fd){
   char buff[SIZE_BUFF];
   while (1) {
     recv(active_fd, buff, SIZE_BUFF, 0);
+    printf("RECERV CLIENT: %d\n", active_fd);
     if(!strcmp(buff, "exit")){
       send(active_fd, buff, SIZE_BUFF, 0);
       break;
@@ -36,8 +35,10 @@ void *ChildServer(void *fd){
       time(&time_now);
       strcpy(time_buff, ctime(&time_now));
       send(active_fd, (void *)time_buff, 80, 0);
+      printf("SEND CLIENT: %d\n", active_fd);
     }  
   }
+  printf("CLIENT IS OUT: %d\n", active_fd);
   close(active_fd);  
   return NULL;
   
@@ -97,8 +98,11 @@ int main(){
   int counter = 0;
   pthread_t stop_tread;
   pthread_create(&stop_tread, NULL, StopServer, (void *) &ip_addres);
+  printf("SERVER START WORK\n");
+  printf("PRESS 0 (ZERO) SERVER STOP");
   while(stop){
     int active_fd = accept(main_sfd, (SA *)&server_settings, &len);
+    printf("NEW CLIENT: %d\n", active_fd);
     pthread_create(&arr_treads[counter], NULL, ChildServer, (void *)&active_fd); 
     counter++;
     if(counter == len_treads_arr){
@@ -111,5 +115,6 @@ int main(){
     pthread_join(arr_treads[i], NULL);
   }
   close(main_sfd);
+  printf("SERVER END WORK\n");
   exit(EXIT_SUCCESS);
 }

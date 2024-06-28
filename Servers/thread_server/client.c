@@ -11,8 +11,6 @@
 #include <string.h>
 #include <sys/signal.h>
 
-#include "double_list/list.h"
-
 #define SA struct sockaddr
 #define PORT 6666
 #define SIZE_BUFF 8
@@ -38,6 +36,8 @@ int main(){
     handler_error("ne vezet");
   }
   char time_str[80] = {0};
+  printf("type 'time' to display the time\n");
+  printf("type exit to exit\n");
   while(1){
     scanf("%7s", buff);
     if(!strcmp(buff, "exit")){
