@@ -33,6 +33,7 @@ void *ChildServer(void *fd){
     printf("END RECEIVE\n");
     if(!strcmp(buff, "exit")){
       send(*active_fd, buff, SIZE_BUFF, 0);
+      printf("CONCH\n");
       break;
     } else {
       time(&time_now);

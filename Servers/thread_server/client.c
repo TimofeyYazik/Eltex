@@ -44,6 +44,7 @@ int main(){
       printf("SEND\n");
       send(cfd, buff, SIZE_BUFF, 0);
       recv(cfd, buff, SIZE_BUFF, 0);
+      printf("ConH");
       break;
     }    
     if(!strcmp(buff, "time")){
