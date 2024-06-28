@@ -45,7 +45,7 @@ void HandlerUserSignal(int a){
 
 
 int main(){
-  signal(SIGUSR1, HandlerUserSignal;
+  signal(SIGUSR1, HandlerUserSignal);
   int len_treads_arr = 100;
   pthread_t *arr_treads = malloc(len_treads_arr * sizeof(pthread_t));
   int ip_addres = 0;
