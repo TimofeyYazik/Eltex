@@ -45,11 +45,7 @@ void HandlerUserSignal(int a){
 
 
 int main(){
-  struct sigaction sig;
-  sig.sa_flags = 0;
-  sig.sa_mask |= SIGUSR1;
-  sig.__sigaction_u.__sa_handler = HandlerUserSignal;
-  sigaction(SIGUSR1, &sig, NULL);
+  signal(SIGUSR1, HandlerUserSignal;
   int len_treads_arr = 100;
   pthread_t *arr_treads = malloc(len_treads_arr * sizeof(pthread_t));
   int ip_addres = 0;
