@@ -42,7 +42,7 @@ void *ChildServer(void *fd){
       send(*active_fd, (void *)time_buff, 80, 0);
     }  
   }
-  printf("END POTOK");
+  printf("END POTOK\n");
   close(*active_fd);  
   return NULL;
   
