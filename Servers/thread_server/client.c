@@ -33,7 +33,7 @@ int main(){
   server_connect.sin_family = AF_INET;
   server_connect.sin_addr.s_addr = ip_addres;
   server_connect.sin_port = htons(PORT);
-  char buff[SIZE_BUFF];
+  char buff[SIZE_BUFF] = {0};
   if(connect(cfd, (SA*)&server_connect, sizeof(server_connect)) == -1){
     handler_error("ne vezet");
   }
@@ -41,7 +41,6 @@ int main(){
   time_t time_self;
   while(1){
     scanf("%7s", buff);
-    printf("%s\n", buff);
     if(!strcmp(buff, "exit")){
       printf("SEND");
       send(cfd, buff, SIZE_BUFF, 0);
