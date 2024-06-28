@@ -35,7 +35,7 @@ void *ChildServer(void *fd){
     } else {
       time(&time_now);
       printf("SEND\n");
-      send(*active_fd, (void *)time, SIZE_BUFF, 0);
+      send(*active_fd, (void *)time, sizeof(time_t), 0);
     }  
   }  
   return NULL;

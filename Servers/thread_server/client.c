@@ -49,7 +49,7 @@ int main(){
     if(!strcmp(buff, "time")){
       printf("SEND");
       send(cfd, buff, SIZE_BUFF, 0);
-      recv(cfd, &time_self, SIZE_BUFF, 0);
+      recv(cfd, &time_self, sizeof(time_self), 0);
       printf("%s\n", ctime(&time_self));
     }
   }
