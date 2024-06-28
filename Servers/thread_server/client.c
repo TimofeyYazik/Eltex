@@ -39,7 +39,6 @@ int main(){
   }
   char time_str[80] = {0};
   time_t time_self;
-  struct tm * timeinfo;
   while(1){
     scanf("%7s", buff);
     printf("%s\n", buff);
@@ -52,9 +51,7 @@ int main(){
       printf("SEND");
       send(cfd, buff, SIZE_BUFF, 0);
       recv(cfd, &time_self, SIZE_BUFF, 0);
-      timeinfo = localtime(&time_self);
-      strftime(time_str, 80, "%Y-%m-%d %H:%M:%S", timeinfo);
-      printf("%s\n", time_str);
+      printf("%s\n", ctime(&time_self));
     }
   }
   exit(EXIT_SUCCESS);
