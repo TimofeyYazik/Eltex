@@ -1,8 +1,8 @@
 server: server.o
-	gcc $^ -o server 
+	gcc -pthread $^ -o server 
 
 client: client.o
-	gcc -pthread $^ -o client
+	gcc $^ -o client
 
 clean:
 	rm -rf server client *.o 
