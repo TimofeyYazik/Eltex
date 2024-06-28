@@ -22,6 +22,7 @@
 
 
 void *ChildServer(void *fd){
+  printf("CHILD SERVER\n");
   int *active_fd = (int *)fd;
   time_t time_now;
   char buff[SIZE_BUFF];
@@ -31,6 +32,7 @@ void *ChildServer(void *fd){
       break;
     } else {
       time(&time_now);
+      printf("SEND\n");
       send(*active_fd, (void *)time, SIZE_BUFF, 0);
     }  
   }  
@@ -68,6 +70,7 @@ int main(){
   socklen_t len = sizeof(server_settings);
   int counter = 0;
   while(stop){
+    printf("LOOP\n");
     int active_fd = accept(main_sfd, (SA *)&server_settings, &len);
     pthread_create(&arr_treads[counter], NULL, ChildServer, (void *)&active_fd); 
     counter++;
