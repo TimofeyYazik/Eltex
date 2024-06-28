@@ -32,6 +32,7 @@ void *ChildServer(void *fd){
     recv(*active_fd, buff, SIZE_BUFF, 0);
     printf("END RECEIVE\n");
     if(!strcmp(buff, "exit")){
+      printf("BREAK");
       break;
     } else {
       time(&time_now);
