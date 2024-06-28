@@ -50,7 +50,9 @@ void *StopServer(void *s){
   int *ip = s;
   int ip_addres = *ip;
   while(1){
-    scanf("%d", &stop);
+    if(scanf("%d", &stop) != 1){
+      stop = 0;
+    }
     if(stop == 0) break;
   }  
   inet_pton(AF_INET, IP_ADDRES, &ip_addres);
@@ -99,7 +101,7 @@ int main(){
   pthread_t stop_tread;
   pthread_create(&stop_tread, NULL, StopServer, (void *) &ip_addres);
   printf("SERVER START WORK\n");
-  printf("PRESS 0 (ZERO) SERVER STOP\n`");
+  printf("PRESS 0 (ZERO) SERVER STOP\n");
   while(stop){
     int active_fd = accept(main_sfd, (SA *)&server_settings, &len);
     printf("NEW CLIENT: %d\n", active_fd);
