@@ -24,6 +24,7 @@
 void *ChildServer(void *fd){
   printf("CHILD SERVER\n");
   int *active_fd = (int *)fd;
+  char time_buff[80] = {0};
   time_t time_now;
   char buff[SIZE_BUFF];
   while (1) {
@@ -34,8 +35,9 @@ void *ChildServer(void *fd){
       break;
     } else {
       time(&time_now);
+      strcpy(time_buff, ctime(&time_now));
       printf("SEND\n");
-      send(*active_fd, (void *)time, sizeof(time_t), 0);
+      send(*active_fd, (void *)time_buff, 80, 0);
     }  
   }  
   return NULL;

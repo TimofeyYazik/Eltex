@@ -38,7 +38,6 @@ int main(){
     handler_error("ne vezet");
   }
   char time_str[80] = {0};
-  time_t time_self;
   while(1){
     scanf("%7s", buff);
     if(!strcmp(buff, "exit")){
@@ -49,8 +48,8 @@ int main(){
     if(!strcmp(buff, "time")){
       printf("SEND");
       send(cfd, buff, SIZE_BUFF, 0);
-      recv(cfd, &time_self, sizeof(time_self), 0);
-      printf("%s\n", ctime(&time_self));
+      recv(cfd, &time_str, 80, 0);
+      printf("%s\n", time_str);
     }
   }
   exit(EXIT_SUCCESS);
