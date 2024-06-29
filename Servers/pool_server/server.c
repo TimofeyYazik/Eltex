@@ -36,8 +36,9 @@ void *ChildServer(void *null) {
   while (stop) {
     pthread_mutex_lock(&mutex);
     f = SearchFree(head);
+    f->busy = 1;
     pthread_mutex_unlock(&mutex);
-    if(f == NULL){
+    if (f == NULL) {
       sleep(1);
       continue;
     }
@@ -47,6 +48,7 @@ void *ChildServer(void *null) {
       if (!strcmp(buff, "exit")) {
         send(f->active_fd, buff, SIZE_BUFF, 0);
         close(f->active_fd);
+        Remove(f);
         printf("CLIENT IS OUT: %d\n", f->active_fd);
         break;
       } else {
@@ -65,7 +67,7 @@ void *StopServer(void *s) {
   int *ip = s;
   int ip_addres = *ip;
   while (stop) {
-    if(scanf("%d", &stop) != 1){
+    if (scanf("%d", &stop) != 1) {
       stop = 0;
     }
   }
@@ -117,10 +119,10 @@ int main() {
   for (int i = 0; i < POOL_TREADS; i++) {
     pthread_create(&arr_treads[i], NULL, ChildServer, NULL);
   }
-  
+
   printf("SERVER START WORK\n");
   printf("PRESS 0 (ZERO) SERVER STOP\n");
-  
+
   while (stop) {
     int active_fd = accept(main_sfd, (SA *)&server_settings, &len);
     printf("NEW CLIENT: %d\n", active_fd);
