@@ -39,6 +39,10 @@ int main(){
   }
   struct sockaddr_in client_endpoint;
   int ip_addres = 0;
+  struct ip_mreq mreq;
+  mreq.imr_multiaddr.s_addr = ip_addres;
+  mreq.imr_interface.s_addr = INADDR_ANY;
+  setsockopt(sfd, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq));
   char buff[SIZE_BUFF] = {0};
   inet_pton(AF_INET, IP_ADDRES, &ip_addres);
   client_endpoint.sin_port = htons(PORT);

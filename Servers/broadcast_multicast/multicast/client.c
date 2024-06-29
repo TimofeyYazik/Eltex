@@ -34,7 +34,6 @@ int main(){
   struct ip_mreq mreq;
   mreq.imr_multiaddr.s_addr = ip_addres;
   mreq.imr_interface.s_addr = INADDR_ANY;
-  mreq.imr_ifindex = htons(PORT);
   setsockopt(cfd, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq));
   client_endpoint.sin_port = htons(PORT);
   client_endpoint.sin_family = AF_INET;
