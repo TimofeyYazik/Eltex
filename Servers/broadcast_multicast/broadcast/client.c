@@ -49,7 +49,8 @@ int main(){
     handler_error("bind");
   }
   recv(cfd, buff, SIZE_BUFF, 0);
-    //pthread_create(&stop_thread, NULL, StopServer, &stop);
+  printf("%s", buff);
+        //pthread_create(&stop_thread, NULL, StopServer, &stop);
   //while(stop){
     //time(&tm);
     //strcpy(buff, ctime(&tm));
