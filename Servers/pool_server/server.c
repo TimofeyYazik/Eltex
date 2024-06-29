@@ -36,12 +36,12 @@ void *ChildServer(void *null) {
   while (stop) {
     pthread_mutex_lock(&mutex);
     f = SearchFree(head);
-    f->busy = 1;
-    pthread_mutex_unlock(&mutex);
     if (f == NULL) {
       sleep(1);
       continue;
     }
+    f->busy = 1;
+    pthread_mutex_unlock(&mutex);
     while (1) {
       recv(f->active_fd, buff, SIZE_BUFF, 0);
       printf("RECERV CLIENT: %d\n", f->active_fd);
