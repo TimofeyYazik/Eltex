@@ -38,6 +38,7 @@ void *ChildServer(void *null) {
     f = SearchFree(head);
     if (f == NULL) {
       sleep(1);
+      pthread_mutex_unlock(&mutex);
       continue;
     }
     f->busy = 1;
