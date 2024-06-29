@@ -32,7 +32,7 @@ void *ChildServer(void *null) {
   char time_buff[80] = {0};
   time_t time_now;
   char buff[SIZE_BUFF];
-  ListServer *f;
+  ListServer *f = NULL;
   while (stop) {
     pthread_mutex_lock(&mutex);
     f = SearchFree(head);
