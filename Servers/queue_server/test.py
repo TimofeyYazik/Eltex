@@ -1,22 +1,9 @@
 import subprocess
 import threading
 import sys
-import time
 
 def run_client():
-    process = subprocess.Popen(["./client"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-    
-    commands = ["time", "time", "exit"]
-    for cmd in commands:
-        process.stdin.write(cmd + "\n")
-        process.stdin.flush()
-        time.sleep(1)  
-    
-    process.stdin.close()
-    
-    stdout, stderr = process.communicate()
-    print(f"Client output:\n{stdout}")
-
+    subprocess.run(["./client"])  # Предполагается, что клиентский исполняемый файл называется 'client'
 def create_client_threads(num_clients):
     threads = []
     for _ in range(num_clients):
@@ -34,3 +21,4 @@ if __name__ == "__main__":
 
     num_clients = int(sys.argv[1])
     create_client_threads(num_clients)
+

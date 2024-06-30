@@ -137,6 +137,7 @@ int main() {
     pthread_join(arr_treads[i], NULL);
   }
   close(main_sfd);
+  free(head);
   printf("SERVER END WORK\n");
   exit(EXIT_SUCCESS);
 }
