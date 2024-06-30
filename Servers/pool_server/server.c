@@ -11,8 +11,6 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "double_list/list.h"
-
 #define POOL_TREADS 30
 #define SA struct sockaddr
 #define PORT 6666
