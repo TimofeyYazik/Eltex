@@ -11,7 +11,7 @@
 #include <time.h>
 #include <unistd.h>
 
-#define POOL_TREADS 30
+#define POOL_TREADS 5
 #define SA struct sockaddr
 #define PORT 6666
 #define SIZE_BUFF 80
@@ -30,7 +30,7 @@ typedef struct {
 int pt = 0;
 volatile int stop = 1;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-Servers serv[30] = {0};
+Servers serv[POOL_TREADS] = {0};
 
 void *ChildServer(void *pt) {
   int *pdt = pt; 
@@ -60,9 +60,10 @@ void *ChildServer(void *pt) {
     port_thread = port;
     break;
   }
+  printf("port: %d\n", port_thread);
   pthread_mutex_unlock(&mutex);
   int serv_num = 0;
-    pthread_mutex_lock(&mutex);
+  pthread_mutex_lock(&mutex);
   for(int i = 0; i < 30; i++){
     if(serv[i].port == 0){
       serv[i].port = port_thread;
