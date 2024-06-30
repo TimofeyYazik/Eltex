@@ -60,7 +60,6 @@ void *ChildServer(void *pt) {
     port_thread = port;
     break;
   }
-  printf("port: %d\n", port_thread);
   pthread_mutex_unlock(&mutex);
   int serv_num = 0;
   pthread_mutex_lock(&mutex);
