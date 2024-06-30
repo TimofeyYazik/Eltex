@@ -50,8 +50,8 @@ void *ChildServer(void *null) {
       if (!strcmp(buff, "exit")) {
         send(f->active_fd, buff, SIZE_BUFF, 0);
         close(f->active_fd);
-        Remove(f);
         printf("CLIENT IS OUT: %d\n", f->active_fd);
+        Remove(f);
         break;
       } else {
         time(&time_now);
