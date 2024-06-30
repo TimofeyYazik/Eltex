@@ -9,18 +9,13 @@ def run_client():
     try:
         # Отправляем команды в терминал
         commands = ["time", "time", "exit"]
-        for cmd in commands:
-            process.stdin.write(cmd + "\n")
-            process.stdin.flush()
-            time.sleep(1)  # Ждем немного между командами
-        
-        # Закрываем стандартный ввод, чтобы процесс завершился
-        process.stdin.close()
-        
+        input_data = "\n".join(commands) + "\n"
+        process.communicate(input=input_data)
+
         # Ждем завершения процесса и получаем его вывод
         stdout, stderr = process.communicate()
         print(f"Client output:\n{stdout}")
-    
+
     except Exception as e:
         print(f"An error occurred in client thread: {e}")
     
