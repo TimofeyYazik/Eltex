@@ -64,10 +64,11 @@ void *ChildServer(void *pt) {
   pthread_mutex_unlock(&mutex);
   int serv_num = 0;
   pthread_mutex_lock(&mutex);
-  for(int i = 0; i < 30; i++){
+  for(int i = 0; i < POOL_TREADS; i++){
     if(serv[i].port == 0){
       serv[i].port = port_thread;
       serv_num = i;
+      break;
     }
   }
     pthread_mutex_unlock(&mutex);
@@ -164,7 +165,7 @@ int main() {
     recvfrom(main_sfd, buff, SIZE_BUFF, 0, (SA*)&client_settings, &size_len_client);
     if(!strcmp(buff, "close")) break;
     if(strcmp(buff, "conn")) continue;
-    for(i = 0; i < 30; i++){
+    for(i = 0; i < POOL_TREADS; i++){
      if(serv[i].busy == 0 && serv[i].port != 0){
        serv[i].busy = 1;
        break;
