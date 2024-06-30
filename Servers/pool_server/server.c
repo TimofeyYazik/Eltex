@@ -33,7 +33,8 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 Servers serv[30] = {0};
 
 void *ChildServer(void *pt) {
-  int *port = pt;  
+  int *pdt = pt; 
+  int port = *pdt; 
   time_t time_now;
   char buff[SIZE_BUFF] = {0};
 
@@ -44,19 +45,19 @@ void *ChildServer(void *pt) {
   struct sockaddr_in server_settings, client_settings;
   server_settings.sin_family = AF_INET;
   server_settings.sin_addr.s_addr = ip_addres;
-  server_settings.sin_port = htons(*port);
+  server_settings.sin_port = htons(port);
   int port_thread = 0;
   socklen_t client_size = sizeof(client_settings); 
   pthread_mutex_lock(&mutex);
   while (1) {
     if(bind(thread_sfd, (SA*)&server_settings, sizeof(server_settings)) == -1){
       if(errno == EADDRINUSE) {
-        (*port)++;
-        server_settings.sin_port = htons(*port);
+        port++;
+        server_settings.sin_port = htons(port);
         continue;
       } else { handler_error("bind"); }
     }
-    port_thread = *port;
+    port_thread = port;
     break;
   }
   pthread_mutex_unlock(&mutex);
@@ -74,6 +75,7 @@ void *ChildServer(void *pt) {
       sleep(3);
       continue;
     }
+    printf("START SERVED CLIENT\n");
     while (1) {
       recvfrom(thread_sfd, buff, SIZE_BUFF, 0, (SA*)&client_settings, &client_size);
       printf("RECV CLIENT");
