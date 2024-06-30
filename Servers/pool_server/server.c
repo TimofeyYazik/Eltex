@@ -62,14 +62,14 @@ void *ChildServer(void *pt) {
   }
   pthread_mutex_unlock(&mutex);
   int serv_num = 0;
-  for(int i = 0; i < 30; i++){
     pthread_mutex_lock(&mutex);
+  for(int i = 0; i < 30; i++){
     if(serv[i].port == 0){
       serv[i].port = port_thread;
       serv_num = i;
     }
-    pthread_mutex_unlock(&mutex);
   }
+    pthread_mutex_unlock(&mutex);
     while (stop) {
     if(serv[serv_num].busy == 0){
       sleep(3);
@@ -78,7 +78,7 @@ void *ChildServer(void *pt) {
     printf("START SERVED CLIENT\n");
     while (1) {
       recvfrom(thread_sfd, buff, SIZE_BUFF, 0, (SA*)&client_settings, &client_size);
-      printf("RECV CLIENT");
+      printf("RECV CLIENT\n");
       if(!strcmp(buff, "exit")){
         serv[serv_num].busy = 0;
         break;      
