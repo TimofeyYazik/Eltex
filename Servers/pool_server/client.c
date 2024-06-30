@@ -23,7 +23,7 @@
 int main(){
   int ip_addres = 0;
   inet_pton(AF_INET, IP_ADDRES, &ip_addres);
-  int cfd = socket(AF_INET, SOCK_STREAM, 0);
+  int cfd = socket(AF_INET, SOCK_DGRAM, 0);
   if(cfd == -1){
     handler_error("socket");
   }
