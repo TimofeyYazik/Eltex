@@ -5,16 +5,28 @@ import time
 
 def run_client():
     process = subprocess.Popen(["./client"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-    print("START CLIENT")
-    commands = ["time", "time", "exit"]
-    for cmd in commands:
-        process.stdin.write(cmd + "\n")
-        process.stdin.flush()
-        time.sleep(1)  
     
-    process.stdin.close()
+    try:
+        # Отправляем команды в терминал
+        commands = ["time", "time", "exit"]
+        for cmd in commands:
+            process.stdin.write(cmd + "\n")
+            process.stdin.flush()
+            time.sleep(1)  # Ждем немного между командами
+        
+        # Закрываем стандартный ввод, чтобы процесс завершился
+        process.stdin.close()
+        
+        # Ждем завершения процесса и получаем его вывод
+        stdout, stderr = process.communicate()
+        print(f"Client output:\n{stdout}")
     
-    stdout, stderr = process.communicate()
+    except Exception as e:
+        print(f"An error occurred in client thread: {e}")
+    
+    finally:
+        process.stdout.close()
+        process.stderr.close()
 
 def create_client_threads(num_clients):
     threads = []
