@@ -166,6 +166,7 @@ int main() {
     for(i = 0; i < 30; i++){
      if(serv[i].busy == 0 && serv[i].port != 0){
        serv[i].busy = 1;
+       break;
       }
     }
     sprintf(buff, "%d", serv[i].port);
