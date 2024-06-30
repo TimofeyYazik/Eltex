@@ -5,8 +5,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 
-
+#define IP_ADDRES "127.0.0.1"
 #define SA struct sockaddr
 #define PORT 8084
 #define SIZE_BUFF 128
@@ -18,16 +19,16 @@ int main(){
   if(sfd < 0){
     handle_error("sockets");
   }
-  struct sockaddr_in serv_sock, client_sock;
+  int ip_addres = 0;
+  struct sockaddr_in serv_sock;
   memset(&serv_sock, 0 , sizeof(serv_sock));  
-  memset(&client_sock, 0 , sizeof(client_sock));
+  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
   serv_sock.sin_family = AF_INET;
-  serv_sock.sin_addr.s_addr = INADDR_ANY;
+  serv_sock.sin_addr.s_addr = ip_addres;
   serv_sock.sin_port = htons(PORT);
-//  if(bind(sfd, (struct sockaddr*)&serv_sock, sizeof(serv_sock)) < 0){
-//      handle_error("bind");
-//  }
-  connect(sfd, (SA*) &serv_sock, sizeof(serv_sock));
+  if(connect(sfd, (SA*) &serv_sock, sizeof(serv_sock)) == 1){
+    handle_error("connect");
+  }
   char buff[SIZE_BUFF];
   strcpy(buff, "hello");
   socklen_t sk_len = sizeof(serv_sock);

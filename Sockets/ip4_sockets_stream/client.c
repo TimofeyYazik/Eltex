@@ -5,10 +5,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <netinet/in.h>
-
+#include <arpa/inet.h>
 
 #define SA struct sockaddr
 #define PORT 8084
+#define IP_ADDRES "127.0.0.1"
 #define SIZE_BUFF 128
 #define handle_error(msg) \
            do { perror(msg); exit(EXIT_FAILURE); } while (0)
@@ -19,9 +20,11 @@ int main(){
     handle_error("sockets");
   }
   struct sockaddr_in serv_sock;
+  int ip_addres = 0;
+  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
   memset(&serv_sock, 0 , sizeof(serv_sock));  
   serv_sock.sin_family = AF_INET;
-  serv_sock.sin_addr.s_addr = INADDR_ANY;
+  serv_sock.sin_addr.s_addr = ip_addres;
   serv_sock.sin_port = htons(PORT);
   if(connect(cfd, (SA*) &serv_sock, sizeof(serv_sock)) < 0){
     handle_error("connect");

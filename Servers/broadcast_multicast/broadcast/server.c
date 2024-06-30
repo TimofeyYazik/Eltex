@@ -46,10 +46,15 @@ int main(){
   char buff[SIZE_BUFF] = {0};
   client_endpoint.sin_addr.s_addr = ip_addres;
   pthread_create(&stop_thread, NULL, StopServer, &stop);
+
+  printf("SERVER START WORK\n");
+  printf("PRESS 0 (ZERO) SERVER STOP\n");
+  
   while(stop){
     time(&tm);
     strcpy(buff, ctime(&tm));
     sendto(sfd, buff, SIZE_BUFF, 0, (SA*)&client_endpoint, sizeof(client_endpoint));
+    sleep(5);
   }
   pthread_join(stop_thread, NULL);
   close(sfd);

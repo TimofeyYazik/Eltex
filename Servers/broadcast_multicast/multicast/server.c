@@ -49,6 +49,10 @@ int main(){
   client_endpoint.sin_family = AF_INET;
   client_endpoint.sin_addr.s_addr = ip_addres;
   pthread_create(&stop_thread, NULL, StopServer, &stop);
+
+  printf("SERVER START WORK\n");
+  printf("PRESS 0 (ZERO) SERVER STOP\n");
+  
   while(stop){
     time(&tm);
     strcpy(buff, ctime(&tm));
