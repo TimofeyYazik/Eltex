@@ -83,6 +83,8 @@ void *ChildServer(void *pt) {
       printf("RECV CLIENT\n");
       if(!strcmp(buff, "exit")){
         serv[serv_num].busy = 0;
+        sendto(thread_sfd, buff, SIZE_BUFF, 0, (SA*)&client_settings, client_size);
+        printf("STOP SERVED CLIENT\n");
         break;      
       } else {
         time(&time_now);
@@ -102,27 +104,26 @@ void *StopServer(void *s) {
   int ip_addres = *ip;
   while (stop) {
     if (scanf("%d", &stop) != 1) {
-      stop = 0;
-      
-      int ip_addres = 0;
-      inet_pton(AF_INET, IP_ADDRES, &ip_addres);
-      int main_sfd = socket(AF_INET, SOCK_DGRAM, 0);
-
-      if (main_sfd == -1) {
-        handler_error("socket");
-      }
-
-      struct sockaddr_in server_settings, client_settings;
-      server_settings.sin_family = AF_INET;
-      server_settings.sin_addr.s_addr = ip_addres;
-      server_settings.sin_port = htons(PORT);
-
-      char buff[SIZE_BUFF] = {0};
-      strcpy(buff, "close");
-      sendto(main_sfd, buff, SIZE_BUFF, 0, (SA*)&server_settings, sizeof(server_settings));
+      stop = 0;    
     }
   }
   
+  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
+  int main_sfd = socket(AF_INET, SOCK_DGRAM, 0);
+
+  if (main_sfd == -1) {
+     handler_error("socket");
+  }
+
+  struct sockaddr_in server_settings, client_settings;
+  server_settings.sin_family = AF_INET;
+  server_settings.sin_addr.s_addr = ip_addres;
+  server_settings.sin_port = htons(PORT);
+
+  char buff[SIZE_BUFF] = {0};
+  strcpy(buff, "close");
+  sendto(main_sfd, buff, SIZE_BUFF, 0, (SA*)&server_settings, sizeof(server_settings));
+ 
   return NULL;
 }
 

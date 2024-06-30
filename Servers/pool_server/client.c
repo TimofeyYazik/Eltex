@@ -50,6 +50,7 @@ int main(){
     scanf("%7s", buff);
     if(!strcmp(buff, "exit")){
       send(cfd, buff, SIZE_BUFF, 0);
+      recv(cfd, buff, 80, 0);
       break;
     }    
     if(!strcmp(buff, "time")){
