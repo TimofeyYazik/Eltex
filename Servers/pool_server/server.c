@@ -170,7 +170,7 @@ int main() {
       }
     }
     sprintf(buff, "%d", serv[i].port);
-    sendto(main_sfd, buff, 12, 0, (SA*)&client_settings, size_len_client);
+    sendto(main_sfd, buff, SIZE_BUFF, 0, (SA*)&client_settings, size_len_client);
   }
   pthread_join(stop_tread, NULL);
   for (int i = 0; i < POOL_TREADS; i++) {
