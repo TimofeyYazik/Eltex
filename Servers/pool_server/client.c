@@ -34,6 +34,7 @@ int main(){
   char buff[SIZE_BUFF] = {0};
   strcpy(buff, "conn");
   socklen_t size_struct = sizeof(server_connect);
+  printf("START CLIENT\n");
   sendto(cfd, buff, SIZE_BUFF, 0, (SA*)&server_connect, sizeof(SA));
   recvfrom(cfd, buff, SIZE_BUFF, 0, (SA*)&server_connect, &size_struct);
   int port = 0;

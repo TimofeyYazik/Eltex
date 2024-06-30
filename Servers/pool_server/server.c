@@ -14,7 +14,7 @@
 #define POOL_TREADS 30
 #define SA struct sockaddr
 #define PORT 6666
-#define SIZE_BUFF 8
+#define SIZE_BUFF 80
 #define IP_ADDRES "127.0.0.1"
 #define handler_error(text)                                                    \
   do {                                                                         \
@@ -35,7 +35,7 @@ Servers serv[30] = {0};
 void *ChildServer(void *pt) {
   int *port = pt;  
   time_t time_now;
-  char buff[80] = {0};
+  char buff[SIZE_BUFF] = {0};
 
   int ip_addres = 0;
   inet_pton(AF_INET, IP_ADDRES, &ip_addres);
@@ -75,7 +75,7 @@ void *ChildServer(void *pt) {
       continue;
     }
     while (1) {
-      recvfrom(thread_sfd, buff, 80, 0, (SA*)&client_settings, &client_size);
+      recvfrom(thread_sfd, buff, SIZE_BUFF, 0, (SA*)&client_settings, &client_size);
       printf("RECV CLIENT");
       if(!strcmp(buff, "exit")){
         serv[serv_num].busy = 0;
@@ -83,7 +83,7 @@ void *ChildServer(void *pt) {
       } else {
         time(&time_now);
         strncpy(buff,ctime(&time_now), 79);
-        sendto(thread_sfd, buff, 80, 0, (SA*)&client_settings, client_size);
+        sendto(thread_sfd, buff, SIZE_BUFF, 0, (SA*)&client_settings, client_size);
         printf("SEND CLIENT\n");
       }
     }
@@ -113,9 +113,9 @@ void *StopServer(void *s) {
       server_settings.sin_addr.s_addr = ip_addres;
       server_settings.sin_port = htons(PORT);
 
-      char buff[80] = {0};
+      char buff[SIZE_BUFF] = {0};
       strcpy(buff, "close");
-      sendto(main_sfd, buff, 80, 0, (SA*)&server_settings, sizeof(server_settings));
+      sendto(main_sfd, buff, SIZE_BUFF, 0, (SA*)&server_settings, sizeof(server_settings));
     }
   }
   
@@ -155,10 +155,10 @@ int main() {
   printf("SERVER START WORK\n");
   printf("PRESS 0 (ZERO) SERVER STOP\n");
 
-  char buff[12] = {0};
+  char buff[SIZE_BUFF] = {0};
   int i = 0;
   while (stop) {
-    recvfrom(main_sfd, buff, 12, 0, (SA*)&client_settings, &size_len_client);
+    recvfrom(main_sfd, buff, SIZE_BUFF, 0, (SA*)&client_settings, &size_len_client);
     if(!strcmp(buff, "close")) break;
     if(strcmp(buff, "conn")) continue;
     for(i = 0; i < 30; i++){
