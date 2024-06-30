@@ -5,7 +5,7 @@ import time
 
 def run_client():
     process = subprocess.Popen(["./client"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-    
+    print("START CLIENT")
     commands = ["time", "time", "exit"]
     for cmd in commands:
         process.stdin.write(cmd + "\n")
