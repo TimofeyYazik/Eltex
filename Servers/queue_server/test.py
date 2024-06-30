@@ -15,7 +15,6 @@ def run_client():
     process.stdin.close()
     
     stdout, stderr = process.communicate()
-    print(f"Client output:\n{stdout}")
 
 def create_client_threads(num_clients):
     threads = []
