@@ -1,36 +1,57 @@
-import subprocess
-import threading
-import sys
-import time
+#include <signal.h>
+#include <sys/socket.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <netinet/in.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <time.h>
+#include <errno.h>
+#include <string.h>
+#include <sys/signal.h>
 
-def run_client():
-    process = subprocess.Popen(["./client"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-    
-    commands = ["time", "time", "exit"]
-    for cmd in commands:
-        process.stdin.write(cmd + "\n")
-        process.stdin.flush()
-        time.sleep(1)  
-    
-    process.stdin.close()
-    
-    stdout, stderr = process.communicate()
-    print(f"Client output:\n{stdout}")
+#define SA struct sockaddr
+#define PORT 6666
+#define SIZE_BUFF 8
+#define IP_ADDRES "127.0.0.1"
+#define handler_error(text) \
+          do { perror(text); exit(EXIT_FAILURE); } while(0);
 
-def create_client_threads(num_clients):
-    threads = []
-    for _ in range(num_clients):
-        thread = threading.Thread(target=run_client)
-        threads.append(thread)
-        thread.start()
 
-    for thread in threads:
-        thread.join()
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python load_test.py <num_clients>")
-        sys.exit(1)
+int main(){
+  int ip_addres = 0;
+  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
+  int cfd = socket(AF_INET, SOCK_STREAM, 0);
+  if(cfd == -1){
+    handler_error("socket");
+  }
+  struct sockaddr_in server_connect;
+  server_connect.sin_family = AF_INET;
+  server_connect.sin_addr.s_addr = ip_addres;
+  server_connect.sin_port = htons(PORT);
+  char buff[SIZE_BUFF] = {0};
+  if(connect(cfd, (SA*)&server_connect, sizeof(server_connect)) == -1){
+    handler_error("ne vezet");
+  }
+  char time_str[80] = {0};
+  printf("type 'time' to display the time\n");
+  printf("type 'exit' to exit\n");
+  while(1){
+    scanf("%7s", buff);
+    if(!strcmp(buff, "exit")){
+      send(cfd, buff, SIZE_BUFF, 0);
+      recv(cfd, buff, SIZE_BUFF, 0);
+      break;
+    }    
+    if(!strcmp(buff, "time")){
+      send(cfd, buff, SIZE_BUFF, 0);
+      recv(cfd, &time_str, 80, 0);
+      printf("%s", time_str);
+    }
+  }
+  close(cfd);
+  exit(EXIT_SUCCESS);
+}
 
-    num_clients = int(sys.argv[1])
-    create_client_threads(num_clients)
