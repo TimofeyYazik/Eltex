@@ -4,7 +4,7 @@
 all: client
 
 client: client.o
-	gcc $^ -o client
+	gcc -pthread $^ -o client
 
 clean:
 	rm -rf client *.o 
