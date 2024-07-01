@@ -35,6 +35,7 @@ int main(){
   if(connect(cfd, (SA*)&server_connect, sizeof(server_connect)) == -1){
     handler_error("ne vezet");
   }
+  send(cfd, buff, SIZE_BUFF, 0);
   char time_str[80] = {0};
   printf("type 'time' to display the time\n");
   printf("type 'exit' to exit\n");

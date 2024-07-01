@@ -83,13 +83,11 @@ void *StopServer(void *s) {
   server_connect.sin_addr.s_addr = ip_addres;
   server_connect.sin_port = htons(PORT);
   char buff[SIZE_BUFF] = {0};
-  strcpy(buff, "exit");
+  strcpy(buff, "close");
   if (connect(cfd, (SA *)&server_connect, sizeof(server_connect)) == -1) {
     handler_error("ne vezet");
   }
   send(cfd, buff, SIZE_BUFF, 0);
-  recv(cfd, buff, SIZE_BUFF, 0);
-  printf("NIGGAS");
   close(cfd);
   return NULL;
 }
@@ -127,9 +125,12 @@ int main() {
   printf("SERVER START WORK\n");
   printf("PRESS 0 (ZERO) SERVER STOP\n");
 
+  char buff[8] = {0};
   while (stop) {
     int active_fd = accept(main_sfd, (SA *)&server_settings, &len);
     printf("NEW CLIENT: %d\n", active_fd);
+    recv(active_fd, buff, 8, 0);
+    if(!strcmp(buff, "close")) break;
     ListServer *new_client = malloc(sizeof(ListServer));
     new_client->active_fd = active_fd;
     InsertEnd(head, new_client);
