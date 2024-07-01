@@ -13,4 +13,4 @@ clean:
 	rm -rf server client *.o 
 
 test:
-	python3 test_server.py 10
+	python3 test_server.py 8

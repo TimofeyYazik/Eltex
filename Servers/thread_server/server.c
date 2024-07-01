@@ -13,7 +13,7 @@
 
 #define SA struct sockaddr
 #define PORT 6666
-#define LISTEN_USERS 30
+#define LISTEN_USERS 8
 #define SIZE_BUFF 80
 #define IP_ADDRES "127.0.0.1"
 #define handler_error(text) \
