@@ -111,7 +111,7 @@ int main() {
   if (bind(main_sfd, (SA *)&server_settings, sizeof(server_settings)) == -1) {
     handler_error("bind");
   }
-  if (listen(main_sfd, 100) == -1) {
+  if (listen(main_sfd, 1000) == -1) {
     handler_error("listen");
   }
 
