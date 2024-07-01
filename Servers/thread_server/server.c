@@ -13,18 +13,19 @@
 
 #define SA struct sockaddr
 #define PORT 6666
-#define SIZE_BUFF 8
+#define LISTEN_USERS 30
+#define SIZE_BUFF 80
 #define IP_ADDRES "127.0.0.1"
 #define handler_error(text) \
           do { perror(text); exit(EXIT_FAILURE); } while(0);
 
+volatile int stop = 1;
 
 void *ChildServer(void *fd){
   int *afd = (int *)fd;
   int active_fd = *afd;
-  char time_buff[80] = {0};
-  time_t time_now;
-  char buff[SIZE_BUFF];
+  time_t time_now = 0;
+  char buff[SIZE_BUFF] = {0};
   while (1) {
     recv(active_fd, buff, SIZE_BUFF, 0);
     printf("RECERV CLIENT: %d\n", active_fd);
@@ -33,8 +34,8 @@ void *ChildServer(void *fd){
       break;
     } else {
       time(&time_now);
-      strcpy(time_buff, ctime(&time_now));
-      send(active_fd, (void *)time_buff, 80, 0);
+      strcpy(buff, ctime(&time_now));
+      send(active_fd, (void *)buff, 80, 0);
       printf("SEND CLIENT: %d\n", active_fd);
     }  
   }
@@ -44,7 +45,6 @@ void *ChildServer(void *fd){
   
 }
 
-volatile int stop = 1;
 
 void *StopServer(void *s){
   int *ip = s;
@@ -65,12 +65,11 @@ void *StopServer(void *s){
   server_connect.sin_addr.s_addr = ip_addres;
   server_connect.sin_port = htons(PORT);
   char buff[SIZE_BUFF] = {0};
-  strcpy(buff, "exit");
+  strcpy(buff, "close");
   if(connect(cfd, (SA*)&server_connect, sizeof(server_connect)) == -1){
     handler_error("ne vezet");
   }
   send(cfd, buff, SIZE_BUFF, 0);
-  recv(cfd, buff, SIZE_BUFF, 0);
   close(cfd);  
   return NULL;
 }
@@ -94,7 +93,7 @@ int main(){
   if(bind(main_sfd,(SA *)&server_settings, sizeof(server_settings)) == -1){
     handler_error("bind");
   }
-  if(listen(main_sfd, 10) == -1){
+  if(listen(main_sfd, LISTEN_USERS) == -1){
     handler_error("listen");
   }
   socklen_t len = sizeof(server_settings);
@@ -103,8 +102,11 @@ int main(){
   pthread_create(&stop_tread, NULL, StopServer, (void *) &ip_addres);
   printf("SERVER START WORK\n");
   printf("PRESS 0 (ZERO) SERVER STOP\n");
+  char buff[SIZE_BUFF] = {0};
   while(stop){
     int active_fd = accept(main_sfd, (SA *)&server_settings, &len);
+    if(!strcmp(buff, "close")) break;
+    if(strcmp(buff, "conn")) continue;
     printf("NEW CLIENT: %d\n", active_fd);
     pthread_create(&arr_treads[counter], NULL, ChildServer, (void *)&active_fd); 
     counter++;

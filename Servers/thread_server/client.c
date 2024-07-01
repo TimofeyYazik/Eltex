@@ -13,7 +13,7 @@
 
 #define SA struct sockaddr
 #define PORT 6666
-#define SIZE_BUFF 8
+#define SIZE_BUFF 80
 #define IP_ADDRES "127.0.0.1"
 #define handler_error(text) \
           do { perror(text); exit(EXIT_FAILURE); } while(0);
@@ -33,9 +33,10 @@ int main(){
   server_connect.sin_port = htons(PORT);
   char buff[SIZE_BUFF] = {0};
   if(connect(cfd, (SA*)&server_connect, sizeof(server_connect)) == -1){
-    handler_error("ne vezet");
+    handler_error("connect");
   }
-  char time_str[80] = {0};
+  strcpy(buff, "conn");
+  send(cfd, buff, SIZE_BUFF, 0);
   printf("type 'time' to display the time\n");
   printf("type 'exit' to exit\n");
   while(1){
@@ -44,11 +45,10 @@ int main(){
       send(cfd, buff, SIZE_BUFF, 0);
       recv(cfd, buff, SIZE_BUFF, 0);
       break;
-    }    
-    if(!strcmp(buff, "time")){
+    } else if(!strcmp(buff, "time")){
       send(cfd, buff, SIZE_BUFF, 0);
-      recv(cfd, &time_str, 80, 0);
-      printf("%s", time_str);
+      recv(cfd, buff, 80, 0);
+      printf("%s", buff);
     }
   }
   close(cfd);
