@@ -39,7 +39,6 @@ int main(){
   recvfrom(cfd, buff, SIZE_BUFF, 0, (SA*)&server_connect, &size_struct);
   int port = 0;
   sscanf(buff, "%d", &port);
-  printf("PORT: %d", port);
   server_connect.sin_port = htons(port);
   if(connect(cfd, (SA*)&server_connect, sizeof(server_connect)) == -1){
     handler_error("ne vezet");
