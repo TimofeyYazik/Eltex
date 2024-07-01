@@ -46,23 +46,21 @@ void *ChildServer(void *fd){
 }
 
 
-void *StopServer(void *s){
-  int *ip = s;
-  int ip_addres = *ip;
+void *StopServer(void *ip){
+  int *ip_addres = ip;
   while(1){
     if(scanf("%d", &stop) != 1){
       stop = 0;
     }
     if(stop == 0) break;
   }  
-  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
   int cfd = socket(AF_INET, SOCK_STREAM, 0);
   if(cfd == -1){
     handler_error("socket");
   }
   struct sockaddr_in server_connect;
   server_connect.sin_family = AF_INET;
-  server_connect.sin_addr.s_addr = ip_addres;
+  server_connect.sin_addr.s_addr = *ip_addres;
   server_connect.sin_port = htons(PORT);
   char buff[SIZE_BUFF] = {0};
   strcpy(buff, "close");
@@ -105,6 +103,7 @@ int main(){
   char buff[SIZE_BUFF] = {0};
   while(stop){
     int active_fd = accept(main_sfd, (SA *)&server_settings, &len);
+    recv(active_fd, buff, SIZE_BUFF, 0);
     if(!strcmp(buff, "close")) break;
     if(strcmp(buff, "conn")) continue;
     printf("NEW CLIENT: %d\n", active_fd);
