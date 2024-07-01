@@ -14,6 +14,7 @@
 #define handle_error(msg) \
            do { perror(msg); exit(EXIT_FAILURE); } while (0)
 
+
 int main(){
   int cfd = socket(AF_INET, SOCK_STREAM, 0);
   if(cfd < 0){
