@@ -35,9 +35,9 @@ void *ChildServer(void *null) {
   ListServer *f = NULL;
   while (stop) {
     pthread_mutex_lock(&mutex);
-    sleep(1);
     f = SearchFree(head);
     if (f == NULL) {
+      sleep(1);
       pthread_mutex_unlock(&mutex);
       continue;
     }
@@ -89,6 +89,8 @@ void *StopServer(void *s) {
   }
   send(cfd, buff, SIZE_BUFF, 0);
   recv(cfd, buff, SIZE_BUFF, 0);
+  printf("NIGGAS");
+  close(cfd);
   return NULL;
 }
 
