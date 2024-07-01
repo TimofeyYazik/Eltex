@@ -1,6 +1,7 @@
 import subprocess
 import threading
 import sys
+import time
 
 def run_client():
     process = subprocess.Popen(["./client"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
@@ -28,7 +29,7 @@ def create_client_threads(num_clients):
         thread = threading.Thread(target=run_client)
         threads.append(thread)
         thread.start()
-
+        time.sleep(1)
     for thread in threads:
         thread.join()
 

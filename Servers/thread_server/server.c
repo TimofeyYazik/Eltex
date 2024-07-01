@@ -22,25 +22,24 @@
 volatile int stop = 1;
 
 void *ChildServer(void *fd){
-  int *afd = (int *)fd;
-  int active_fd = *afd;
+  int *active_fd = (int *)fd;
   time_t time_now = 0;
   char buff[SIZE_BUFF] = {0};
   while (1) {
-    recv(active_fd, buff, SIZE_BUFF, 0);
-    printf("RECERV CLIENT: %d\n", active_fd);
+    recv(*active_fd, buff, SIZE_BUFF, 0);
+    printf("RECERV CLIENT: %d\n", *active_fd);
     if(!strcmp(buff, "exit")){
-      send(active_fd, buff, SIZE_BUFF, 0);
+      send(*active_fd, buff, SIZE_BUFF, 0);
       break;
     } else {
       time(&time_now);
       strcpy(buff, ctime(&time_now));
-      send(active_fd, (void *)buff, 80, 0);
-      printf("SEND CLIENT: %d\n", active_fd);
+      send(*active_fd, buff, SIZE_BUFF, 0);
+      printf("SEND CLIENT: %d\n", *active_fd);
     }  
   }
-  printf("CLIENT IS OUT: %d\n", active_fd);
-  close(active_fd);  
+  printf("CLIENT IS OUT: %d\n", *active_fd);
+  close(*active_fd);  
   return NULL;
   
 }
