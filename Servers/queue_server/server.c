@@ -111,7 +111,7 @@ int main() {
   if (bind(main_sfd, (SA *)&server_settings, sizeof(server_settings)) == -1) {
     handler_error("bind");
   }
-  if (listen(main_sfd, POOL_TREADS) == -1) {
+  if (listen(main_sfd, 100) == -1) {
     handler_error("listen");
   }
 
@@ -128,9 +128,9 @@ int main() {
   char buff[8] = {0};
   while (stop) {
     int active_fd = accept(main_sfd, (SA *)&server_settings, &len);
-    printf("NEW CLIENT: %d\n", active_fd);
     recv(active_fd, buff, 8, 0);
     if(!strcmp(buff, "close")) break;
+    printf("NEW CLIENT: %d\n", active_fd);
     ListServer *new_client = malloc(sizeof(ListServer));
     new_client->active_fd = active_fd;
     InsertEnd(head, new_client);
