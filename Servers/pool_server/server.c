@@ -99,7 +99,7 @@ void *ChildServer(void *port_p) {
   return NULL;
 }
 
-void *StopServer(void *is) {
+void *StopServer(void *ip) {
   int *ip_addres = ip;
   while (stop) {
     if (scanf("%d", &stop) != 1) {
