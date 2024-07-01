@@ -11,7 +11,7 @@
 #include <time.h>
 #include <unistd.h>
 
-#define POOL_TREADS 5
+#define POOL_TREADS 20
 #define SA struct sockaddr
 #define PORT 6666
 #define SIZE_BUFF 80
