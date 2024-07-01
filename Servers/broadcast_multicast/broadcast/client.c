@@ -18,19 +18,9 @@
 #define handler_error(text)                                                    \
   do { perror(text); exit(EXIT_FAILURE); } while (0);
 
-//void *StopServer(void *p_stop){
-//  int *stop = p_stop;
-//  while(*stop){
-//    if(scanf("%d", stop) != 1){
-//      *stop = 0;
-//    }
-//  }
-//  return NULL;
-//}
 
 int main(){
-  int stop = 1;
-  time_t tm;
+  time_t tm = 0;
   pthread_t stop_thread;
   int flag_socket = 1;
   int cfd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -50,12 +40,6 @@ int main(){
   }
   recv(cfd, buff, SIZE_BUFF, 0);
   printf("%s", buff);
-        //pthread_create(&stop_thread, NULL, StopServer, &stop);
-  //while(stop){
-    //time(&tm);
-    //strcpy(buff, ctime(&tm));
-  //}
-  //pthread_join(stop_thread, NULL);
   close(cfd);
   exit(EXIT_SUCCESS);   
 }
