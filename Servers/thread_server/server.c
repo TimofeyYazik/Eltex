@@ -100,14 +100,23 @@ int main(){
   pthread_create(&stop_tread, NULL, StopServer, (void *) &ip_addres);
   printf("SERVER START WORK\n");
   printf("PRESS 0 (ZERO) SERVER STOP\n");
+  int len_fd_arr = 100;
+  int *arr_active_fd = malloc(len_fd_arr * sizeof(int));
+  int thread_fd = 0;
   char buff[SIZE_BUFF] = {0};
   while(stop){
     int active_fd = accept(main_sfd, (SA *)&server_settings, &len);
     recv(active_fd, buff, SIZE_BUFF, 0);
     if(!strcmp(buff, "close")) break;
     if(strcmp(buff, "conn")) continue;
+    arr_active_fd[thread_fd] = active_fd;
     printf("NEW CLIENT: %d\n", active_fd);
-    pthread_create(&arr_treads[counter], NULL, ChildServer, (void *)&active_fd); 
+    pthread_create(&arr_treads[counter], NULL, ChildServer, (void *)&arr_active_fd[thread_fd]);
+    thread_fd++;
+    if(thread_fd == len_fd_arr){
+      len_fd_arr *= 2;
+      arr_active_fd = realloc(arr_active_fd, len_fd_arr);
+    } 
     counter++;
     if(counter == len_treads_arr){
       len_treads_arr *= 2;
