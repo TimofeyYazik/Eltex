@@ -1,3 +1,5 @@
+all: server client
+
 client: client.o
 	gcc $^ -o client
 
