@@ -1,7 +1,6 @@
 import subprocess
 import threading
 import sys
-import time
 
 def run_client():
     process = subprocess.Popen(["./client"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
