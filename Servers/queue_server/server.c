@@ -35,9 +35,9 @@ void *ChildServer(void *null) {
   ListServer *f = NULL;
   while (stop) {
     pthread_mutex_lock(&mutex);
+    sleep(1);
     f = SearchFree(head);
     if (f == NULL) {
-      sleep(2);
       pthread_mutex_unlock(&mutex);
       continue;
     }
