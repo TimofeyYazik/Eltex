@@ -45,13 +45,14 @@ int main(){
   *point_head = SIZE_BUFF;
   point_head++;
   *point_head = 0;
-  
+  point_head -= 2;
   while(stop){
     scanf("%119s", buff + 8);
     if(!strcmp(buff + 8, "exit")) break;
     sendto(cfd, buff, SIZE_BUFF, 0, (SA*)&server_endpoint, size);
-    recvfrom(cfd, buff + 8, 120, 0, (SA*)&server_endpoint, &size);
-    printf("%s\n", buff);
+    recvfrom(cfd, buff, SIZE_BUFF, 0, (SA*)&server_endpoint, &size);
+    if(*point_head == htons(SOURCE_PORT))
+      printf("%s\n", buff);
   }
   pthread_join(stop_client, NULL);
   close(cfd);

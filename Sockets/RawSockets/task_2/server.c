@@ -33,7 +33,7 @@ int main(){
   char buff[SIZE_BUFF] = {0};
   int ip_addres = 0;
   inet_pton(AF_INET, IP_ADDRES, &ip_addres);
-  sfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+  sfd = socket(AF_INET, SOCK_DGRAM, 0);
   if(sfd == -1){
     handler_error("socket"); 
   }
@@ -52,8 +52,10 @@ int main(){
   printf("PRESS 0 (ZERO) CLIENT STOP\n");
   while(stop){
     recvfrom(sfd, buff, SIZE_BUFF, 0, (struct sockaddr*)&client_endpoint, &size);
+    printf("RECV\n");
     buff[0] = 'B';
     sendto(sfd, buff, SIZE_BUFF, 0, (SA*) &client_endpoint, sizeof(client_endpoint));
+    printf("SEND\n");
   }
   pthread_join(stop_client, NULL);
   close(sfd);
