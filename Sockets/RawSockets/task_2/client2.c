@@ -34,8 +34,7 @@ unsigned short checksum(void *b, int len) {
 
 int main() {
     int cfd = 0;
-    char buff_send[SIZE_BUFF_SEND + sizeof(struct iphdr) + sizeof(struct udphdr)] = {0};
-    printf("%d %d\n", sizeof(struct iphdr) ,sizeof(struct udphdr) );
+    char buff_send[SIZE_BUFF_SEND] = {0};
     char buff_recv[SIZE_BUFF_RECV] = {0};
     struct sockaddr_in server_endpoint;
 
@@ -54,25 +53,25 @@ int main() {
     udph->len = htons(sizeof(struct udphdr) + SIZE_BUFF_SEND);
     udph->check = 0;
 
+    struct iphdr *iph = (struct iphdr *)buff_send;
+    iph->ihl = 5;
+    iph->version = 4;
+    iph->tos = 0;
+    iph->tot_len = htons(SIZE_BUFF_SEND);
+    iph->id = htonl(54321);
+    iph->frag_off = 0;
+    iph->ttl = 255;
+    iph->protocol = IPPROTO_UDP;
+    iph->check = 0;
+    iph->saddr = inet_addr(IP_ADDRES);
+    iph->daddr = server_endpoint.sin_addr.s_addr;
+        
     char *data = buff_send + sizeof(struct iphdr) + sizeof(struct udphdr);
     while (1) {
         printf("Введите сообщение (для выхода введите 'exit'):\n");
-        scanf("%s", data);
+        scanf("%9s", data);
         if (strcmp(data, "exit") == 0) break;
 
-        // Заполнение IP заголовка
-        struct iphdr *iph = (struct iphdr *)buff_send;
-        iph->ihl = 5;
-        iph->version = 4;
-        iph->tos = 0;
-        iph->tot_len = htons(sizeof(struct iphdr) + sizeof(struct udphdr) + SIZE_BUFF_SEND);
-        iph->id = htonl(54321);
-        iph->frag_off = 0;
-        iph->ttl = 255;
-        iph->protocol = IPPROTO_UDP;
-        iph->check = 0;
-        iph->saddr = inet_addr(IP_ADDRES);
-        iph->daddr = server_endpoint.sin_addr.s_addr;
         
         // Контрольная сумма IP заголовка
         iph->check = checksum(iph, sizeof(struct iphdr));
