@@ -36,6 +36,9 @@ int main() {
     char buff_send[SIZE_BUFF] = {0};
     char buff_recv[SIZE_BUFF] = {0};
     struct sockaddr_in server_endpoint, server_recv;
+    memset(&server_endpoint, 0, sizeof(server_endpoint));
+    memset(&server_recv, 0, sizeof(server_recv));
+    
     socklen_t serv = sizeof(server_recv);
     cfd = socket(AF_INET, SOCK_RAW, IPPROTO_RAW);
     if (cfd == -1) {
@@ -45,6 +48,13 @@ int main() {
     server_endpoint.sin_family = AF_INET;
     server_endpoint.sin_port = htons(PORT);
     inet_pton(AF_INET, IP_ADDRES, &server_endpoint.sin_addr);
+
+    struct sockaddr_in client_settings;
+    client_settings.sin_family = AF_INET;
+    client_settings.sin_port = htons(PORT);
+    inet_pton(AF_INET, IP_ADDRES, &client_settings.sin_addr);
+    
+    socklen_t size = sizeof(client_settings);
     
     struct iphdr *iph = (struct iphdr *)buff_send;
     iph->ihl = 5;
@@ -76,7 +86,7 @@ int main() {
         }
         printf("messege send!\n");
         while (1) {
-            recvfrom(cfd, buff_recv, SIZE_BUFF, 0, (SA*)&server_recv, &serv);
+            recvfrom(cfd, buff_recv, SIZE_BUFF, 0, (SA*)&client_settings, &size);
             printf("client recv\n");
             printf("%s\n", buff_recv + 28);
             udph = (struct udphdr *)(buff_recv + sizeof(struct iphdr));
