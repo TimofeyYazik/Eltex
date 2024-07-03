@@ -11,7 +11,7 @@
 #define PORT 6666
 #define SOURCE_PORT 7777
 #define IP_ADDRES "127.0.0.1"
-#define SIZE_BUFF_SEND 18
+#define SIZE_BUFF_SEND 38
 #define SIZE_BUFF_RECV 38
 #define SA struct sockaddr
 #define handler_error(text) \

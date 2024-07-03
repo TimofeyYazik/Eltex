@@ -52,7 +52,7 @@ int main(){
   printf("PRESS 0 (ZERO) CLIENT STOP\n");
   while(stop){
     recvfrom(sfd, buff, SIZE_BUFF, 0, (SA*)&client_endpoint, &size);
-    printf("RECV\n");
+    printf("RECV %s\n", buff);
     buff[0] = 'B';
     sendto(sfd, buff, SIZE_BUFF, 0, (SA*) &client_endpoint, sizeof(client_endpoint));
     printf("SEND\n");
