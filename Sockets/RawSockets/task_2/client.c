@@ -45,13 +45,7 @@ int main() {
     server_endpoint.sin_family = AF_INET;
     server_endpoint.sin_port = htons(PORT);
     inet_pton(AF_INET, IP_ADDRES, &server_endpoint.sin_addr);
-
-    struct udphdr *udph = (struct udphdr *)(buff_send + sizeof(struct iphdr));
-    udph->source = htons(SOURCE_PORT);
-    udph->dest = htons(PORT);
-    udph->len = htons(sizeof(struct udphdr) + SIZE_BUFF);
-    udph->check = 0;
-
+    
     struct iphdr *iph = (struct iphdr *)buff_send;
     iph->ihl = 5;
     iph->version = 4;
@@ -66,26 +60,29 @@ int main() {
     iph->daddr = server_endpoint.sin_addr.s_addr;
     iph->check = checksum(iph, sizeof(struct iphdr));
         
+    struct udphdr *udph = (struct udphdr *)(buff_send + sizeof(struct iphdr));
+    udph->source = htons(SOURCE_PORT);
+    udph->dest = htons(PORT);
+    udph->len = htons(SIZE_BUFF);
+    udph->check = 0;
+
     char *data = buff_send + sizeof(struct iphdr) + sizeof(struct udphdr);
     while (1) {
         printf("enter messege (to exit enter 'exit'):\n");
         scanf("%9s", data);
         if (strcmp(data, "exit") == 0) break;
-
-        
-
         if (sendto(cfd, buff_send, SIZE_BUFF, 0, (SA*)&server_endpoint, sizeof(server_endpoint)) == -1) {
             handler_error("sendto");
         }
         printf("messege send!\n");
-        while (1) {
-            recv(cfd, buff_recv, SIZE_BUFF, 0);
-            udph = (struct udphdr *)(buff_recv + sizeof(struct iphdr));
-            if(udph->uh_dport == htons(SOURCE_PORT)){
-               printf("%s", buff_recv + 28);
-               break;
-            }
-        }
+        //while (1) {
+        //    recv(cfd, buff_recv, SIZE_BUFF, 0);
+        //    udph = (struct udphdr *)(buff_recv + sizeof(struct iphdr));
+        //    if(udph->uh_dport == htons(SOURCE_PORT)){
+        //       printf("%s", buff_recv + 28);
+        //       break;
+        //    }
+        //}
     }
 
     close(cfd);
