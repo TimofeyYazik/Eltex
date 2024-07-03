@@ -77,9 +77,10 @@ int main() {
         printf("messege send!\n");
         while (1) {
             recvfrom(cfd, buff_recv, SIZE_BUFF, 0, (SA*)&server_recv, &serv);
+            printf("%s\n", buff+28);
             udph = (struct udphdr *)(buff_recv + sizeof(struct iphdr));
             if(udph->dest == htons(SOURCE_PORT)){
-               printf("%s", buff_recv + 28);
+               printf("%s\n", buff_recv + 28);
                break;
             }
         }
