@@ -5,75 +5,88 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#include <netinet/in.h>
-#include <pthread.h>
+#include <netinet/ip.h>
+#include <netinet/udp.h>
 
 #define PORT 6666
+#define SOURCE_PORT 7777
 #define IP_ADDRES "127.0.0.1"
+#define SIZE_BUFF_SEND 18
+#define SIZE_BUFF_RECV 38
 #define SA struct sockaddr
-#define SIZE_BUFF 120
 #define handler_error(text) \
 do{ perror(text); exit(EXIT_FAILURE); } while(1);
 
-void *ThreadStop(void *stop_p){
-    int *stop = stop_p;
-    while (*stop) {
-        if(scanf("%d", stop) != 1){
-            *stop = 0;
-        }
-    }
-    return NULL;
+unsigned short checksum(void *b, int len) {    
+    unsigned short *buf = b;
+    unsigned int sum = 0;
+    unsigned short result;
+    
+    for (sum = 0; len > 1; len -= 2)
+        sum += *buf++;
+    if (len == 1)
+        sum += *(unsigned char*)buf;
+    sum = (sum >> 16) + (sum & 0xFFFF);
+    sum += (sum >> 16);
+    result = ~sum;
+    return result;
 }
 
 int main() {
-    int sfd = 0;
-    int stop = 1;
-    char buff[SIZE_BUFF] = {0};
-    struct sockaddr_in server_settings, client_endpoint;
+    int cfd = 0;
+    char buff_send[SIZE_BUFF_SEND + sizeof(struct iphdr) + sizeof(struct udphdr)] = {0};
+    char buff_recv[SIZE_BUFF_RECV] = {0};
+    struct sockaddr_in server_endpoint;
 
-    // Создаем UDP socket
-    sfd = socket(AF_INET, SOCK_DGRAM, 0);
-    if (sfd == -1) {
+    // Создаем raw socket
+    cfd = socket(AF_INET, SOCK_RAW, IPPROTO_RAW);
+    if (cfd == -1) {
         handler_error("socket");
     }
 
-    // Устанавливаем параметры сервера
-    server_settings.sin_family = AF_INET;
-    server_settings.sin_addr.s_addr = inet_addr(IP_ADDRES);
-    server_settings.sin_port = htons(PORT);
+    // Устанавливаем адрес сервера
+    server_endpoint.sin_family = AF_INET;
+    server_endpoint.sin_port = htons(PORT);
+    inet_pton(AF_INET, IP_ADDRES, &server_endpoint.sin_addr);
 
-    // Привязываем сокет
-    if (bind(sfd, (SA*)&server_settings, sizeof(server_settings)) == -1) {
-        handler_error("bind");
-    }
+    // Заполнение UDP заголовка
+    struct udphdr *udph = (struct udphdr *)(buff_send + sizeof(struct iphdr));
+    udph->source = htons(SOURCE_PORT);
+    udph->dest = htons(PORT);
+    udph->len = htons(sizeof(struct udphdr) + SIZE_BUFF_SEND);
+    udph->check = 0;
 
-    socklen_t size = sizeof(client_endpoint);
-    pthread_t stop_client = 0;
+    // Заполнение данных
+    char *data = buff_send + sizeof(struct iphdr) + sizeof(struct udphdr);
+    while (1) {
+        printf("Введите сообщение (для выхода введите 'exit'):\n");
+        scanf("%s", data);
+        if (strcmp(data, "exit") == 0) break;
 
-    pthread_create(&stop_client, NULL, ThreadStop, &stop);
+        // Заполнение IP заголовка
+        struct iphdr *iph = (struct iphdr *)buff_send;
+        iph->ihl = 5;
+        iph->version = 4;
+        iph->tos = 0;
+        iph->tot_len = htons(sizeof(struct iphdr) + sizeof(struct udphdr) + SIZE_BUFF_SEND);
+        iph->id = htonl(54321);
+        iph->frag_off = 0;
+        iph->ttl = 255;
+        iph->protocol = IPPROTO_UDP;
+        iph->check = 0;
+        iph->saddr = inet_addr(IP_ADDRES);
+        iph->daddr = server_endpoint.sin_addr.s_addr;
+        
+        // Контрольная сумма IP заголовка
+        iph->check = checksum(iph, sizeof(struct iphdr));
 
-    printf("PRESS 0 (ZERO) CLIENT STOP\n");
-    while (stop) {
-        int recv_len = recvfrom(sfd, buff, SIZE_BUFF, 0, (SA*)&client_endpoint, &size);
-        if (recv_len == -1) {
-            handler_error("recvfrom");
-        }
-
-        printf("Получено сообщение: %s\n", buff);
-
-        // Ответное сообщение
-        strcpy(buff, "Ответ от сервера");
-
-        // Отправка ответа
-        if (sendto(sfd, buff, strlen(buff) + 1, 0, (SA*)&client_endpoint, size) == -1) {
+        // Отправка пакета
+        if (sendto(cfd, buff_send, sizeof(struct iphdr) + sizeof(struct udphdr) + SIZE_BUFF_SEND, 0, (SA*)&server_endpoint, sizeof(server_endpoint)) == -1) {
             handler_error("sendto");
         }
-
-        printf("Ответ отправлен!\n");
+        printf("Сообщение отправлено!\n");
     }
 
-    pthread_join(stop_client, NULL);
-    close(sfd);
+    close(cfd);
     return 0;
 }
-
