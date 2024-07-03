@@ -35,8 +35,8 @@ int main() {
     int cfd = 0;
     char buff_send[SIZE_BUFF] = {0};
     char buff_recv[SIZE_BUFF] = {0};
-    struct sockaddr_in server_endpoint;
-
+    struct sockaddr_in server_endpoint, server_recv;
+    socklen_t serv = sizeof(server_recv);
     cfd = socket(AF_INET, SOCK_RAW, IPPROTO_RAW);
     if (cfd == -1) {
         handler_error("socket");
@@ -76,7 +76,7 @@ int main() {
         }
         printf("messege send!\n");
         while (1) {
-            recv(cfd, buff_recv, SIZE_BUFF, 0);
+            recvfrom(cfd, buff_recv, SIZE_BUFF, 0, &server_recv, serv);
             udph = (struct udphdr *)(buff_recv + sizeof(struct iphdr));
             if(udph->uh_dport == htons(SOURCE_PORT)){
                printf("%s", buff_recv + 28);
