@@ -63,7 +63,7 @@ int main() {
     struct udphdr *udph = (struct udphdr *)(buff_send + sizeof(struct iphdr));
     udph->source = htons(SOURCE_PORT);
     udph->dest = htons(PORT);
-    udph->len = htons(SIZE_BUFF);
+    udph->len = htons(SIZE_BUFF - sizeof(struct iphdr));
     udph->check = 0;
 
     char *data = buff_send + sizeof(struct iphdr) + sizeof(struct udphdr);
