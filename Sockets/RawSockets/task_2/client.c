@@ -74,12 +74,12 @@ int main() {
         
         iph->check = checksum(iph, sizeof(struct iphdr));
 
-        if (sendto(cfd, buff_send, sizeof(struct iphdr) + sizeof(struct udphdr) + SIZE_BUFF_SEND, 0, (SA*)&server_endpoint, sizeof(server_endpoint)) == -1) {
+        if (sendto(cfd, buff_send, SIZE_BUFF, 0, (SA*)&server_endpoint, sizeof(server_endpoint)) == -1) {
             handler_error("sendto");
         }
         printf("messege send!\n");
         while (1) {
-            recv(cfd, buff_recv, BUFF_SIZE, 0);
+            recv(cfd, buff_recv, SIZE_BUFF, 0);
             udph = (struct udphdr *)(buff_recv + sizeof(struct idhdr));
             if(udph->uh_dport == htons(SOURCE_PORT)){
                printf("%s", buff_recv + 28);
