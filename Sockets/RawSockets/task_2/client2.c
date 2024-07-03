@@ -35,28 +35,25 @@ unsigned short checksum(void *b, int len) {
 int main() {
     int cfd = 0;
     char buff_send[SIZE_BUFF_SEND + sizeof(struct iphdr) + sizeof(struct udphdr)] = {0};
+    printf("%d %d\n", sizeof(struct iphdr) ,sizeof(struct udphdr) );
     char buff_recv[SIZE_BUFF_RECV] = {0};
     struct sockaddr_in server_endpoint;
 
-    // Создаем raw socket
     cfd = socket(AF_INET, SOCK_RAW, IPPROTO_RAW);
     if (cfd == -1) {
         handler_error("socket");
     }
 
-    // Устанавливаем адрес сервера
     server_endpoint.sin_family = AF_INET;
     server_endpoint.sin_port = htons(PORT);
     inet_pton(AF_INET, IP_ADDRES, &server_endpoint.sin_addr);
 
-    // Заполнение UDP заголовка
     struct udphdr *udph = (struct udphdr *)(buff_send + sizeof(struct iphdr));
     udph->source = htons(SOURCE_PORT);
     udph->dest = htons(PORT);
     udph->len = htons(sizeof(struct udphdr) + SIZE_BUFF_SEND);
     udph->check = 0;
 
-    // Заполнение данных
     char *data = buff_send + sizeof(struct iphdr) + sizeof(struct udphdr);
     while (1) {
         printf("Введите сообщение (для выхода введите 'exit'):\n");
@@ -85,6 +82,7 @@ int main() {
             handler_error("sendto");
         }
         printf("Сообщение отправлено!\n");
+        //recv(cfd, buff_recv, BU )
     }
 
     close(cfd);
