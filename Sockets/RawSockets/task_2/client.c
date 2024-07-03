@@ -39,7 +39,7 @@ int main(){
   pthread_t stop_client = 0;
   printf("PRESS 0 (ZERO) CLIENT STOP\n");
 
-  int16_t *point_head = &buff_send[0];
+  int16_t *point_head = (int16_t *)&buff_send[0];
   *point_head = htons(SOURCE_PORT);
   point_head++;
   *point_head = htons(PORT);
@@ -53,7 +53,7 @@ int main(){
     if(!strcmp(buff_send + 8, "exit")) break;
     sendto(cfd, buff_send, SIZE_BUFF_SEND, 0, (SA*)&server_endpoint, size);
     recvfrom(cfd, buff_recv, SIZE_BUFF_RECV, 0, (SA*)&server_endpoint, &size);
-    point_head = &buff_recv[22];
+    point_head = (int16_t *)&buff_recv[22];
     if(*point_head == htons(SOURCE_PORT))
       printf("%s\n", buff_recv + 28);
   }
