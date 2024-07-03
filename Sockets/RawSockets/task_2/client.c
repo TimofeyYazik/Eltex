@@ -75,14 +75,14 @@ int main() {
             handler_error("sendto");
         }
         printf("messege send!\n");
-        //while (1) {
-        //    recv(cfd, buff_recv, SIZE_BUFF, 0);
-        //    udph = (struct udphdr *)(buff_recv + sizeof(struct iphdr));
-        //    if(udph->uh_dport == htons(SOURCE_PORT)){
-        //       printf("%s", buff_recv + 28);
-        //       break;
-        //    }
-        //}
+        while (1) {
+            recv(cfd, buff_recv, SIZE_BUFF, 0);
+            udph = (struct udphdr *)(buff_recv + sizeof(struct iphdr));
+            if(udph->uh_dport == htons(SOURCE_PORT)){
+               printf("%s", buff_recv + 28);
+               break;
+            }
+        }
     }
 
     close(cfd);
