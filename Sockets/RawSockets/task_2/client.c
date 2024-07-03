@@ -50,7 +50,6 @@ int main(){
   
   while(stop){
     scanf("%9s", buff_send + 8);
-    printf("%s", buff_send + 8);
     if(!strcmp(buff_send + 8, "exit")) break;
     sendto(cfd, buff_send, SIZE_BUFF_SEND, 0, (SA*)&server_endpoint, size);
     recvfrom(cfd, buff_recv, SIZE_BUFF_RECV, 0, (SA*)&server_endpoint, &size);
