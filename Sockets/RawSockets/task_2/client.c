@@ -39,7 +39,6 @@ int main() {
     memset(&server_endpoint, 0, sizeof(server_endpoint));
     memset(&server_recv, 0, sizeof(server_recv));
     
-    socklen_t serv = sizeof(server_recv);
     cfd = socket(AF_INET, SOCK_RAW, IPPROTO_RAW);
     if (cfd == -1) {
         handler_error("socket");
@@ -51,7 +50,7 @@ int main() {
 
     struct sockaddr_in client_settings;
     client_settings.sin_family = AF_INET;
-    client_settings.sin_port = htons(PORT);
+    client_settings.sin_port = htons(SOURCE_PORT);
     inet_pton(AF_INET, IP_ADDRES, &client_settings.sin_addr);
     
     socklen_t size = sizeof(client_settings);
