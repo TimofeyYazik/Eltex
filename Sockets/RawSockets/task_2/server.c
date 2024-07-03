@@ -55,7 +55,7 @@ int main(){
     printf("RECV %s\n", buff);
     buff[0] = 'B';
     sendto(sfd, buff, SIZE_BUFF, 0, (SA*) &client_endpoint, sizeof(client_endpoint));
-    printf("SEND\n");
+    printf("SEND %s\n", buff);
   }
   pthread_join(stop_client, NULL);
   close(sfd);
