@@ -64,6 +64,7 @@ int main() {
     iph->check = 0;
     iph->saddr = inet_addr(IP_ADDRES);
     iph->daddr = server_endpoint.sin_addr.s_addr;
+    iph->check = checksum(iph, sizeof(struct iphdr));
         
     char *data = buff_send + sizeof(struct iphdr) + sizeof(struct udphdr);
     while (1) {
@@ -72,7 +73,6 @@ int main() {
         if (strcmp(data, "exit") == 0) break;
 
         
-        iph->check = checksum(iph, sizeof(struct iphdr));
 
         if (sendto(cfd, buff_send, SIZE_BUFF, 0, (SA*)&server_endpoint, sizeof(server_endpoint)) == -1) {
             handler_error("sendto");
