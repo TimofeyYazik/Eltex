@@ -37,9 +37,7 @@ int main(){
     handler_error("socket"); 
   }
   struct sockaddr_in client_settings;
-  client_settings.sin_family = AF_INET;
-  client_settings.sin_addr.s_addr = ip_addres;
-  client_settings.sin_port = htons(PORT);
+  memset(&client_settings, 0, sizeof(client_settings));
   socklen_t size = sizeof(client_settings);
   pthread_t stop_client = 0;
   pthread_create(&stop_client, NULL, ThreadStop, &stop);
