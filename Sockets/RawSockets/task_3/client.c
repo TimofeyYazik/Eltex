@@ -40,7 +40,7 @@ int main() {
       
     struct iphdr  *ihdr = (struct iphdr *)(buff_send);    
     ihdr->version = 4;
-    ihdr->tos = 0;
+    ihdr->tot = 0;
     ihdr->ihl = 5;
     ihdr->top_len = SIZE_BUFF;
     ihdr->id = htonl(12134);
