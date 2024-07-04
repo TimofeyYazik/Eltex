@@ -17,24 +17,10 @@
 #define handler_error(text) \
 do{ perror(text); exit(EXIT_FAILURE); } while(1);
 
-unsigned short checksum(void *b, int len) {    
-    unsigned short *buf = b;
-    unsigned int sum = 0;
-    unsigned short result;
-    
-    for (sum = 0; len > 1; len -= 2)
-        sum += *buf++;
-    if (len == 1)
-        sum += *(unsigned char*)buf;
-    sum = (sum >> 16) + (sum & 0xFFFF);
-    sum += (sum >> 16);
-    result = ~sum;
-    return result;
-}
 
 int main() {
     int cfd = 0;
-    int flag = 1
+    int flag = 1;
     char buff_send[SIZE_BUFF] = {0};
     char buff_recv[SIZE_BUFF] = {0};
     struct sockaddr_in server_endpoint, client_settings;
