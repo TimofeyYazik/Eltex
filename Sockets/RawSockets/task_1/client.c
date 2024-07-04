@@ -11,7 +11,7 @@
 
 #define PORT 6666
 #define IP_ADDRES "127.0.0.1"
-#define SIZE_BUFF 128
+#define SIZE_BUFF 108
 #define handler_error(text) \
 do{ perror(text); exit(EXIT_FAILURE); } while(1);
 
@@ -44,7 +44,7 @@ int main(){
   printf("PRESS 0 (ZERO) CLIENT STOP\n");
   while(stop){
     recvfrom(cfd, buff, SIZE_BUFF, 0, (struct sockaddr*)&client_settings, &size);
-    printf("%s\n", buff);
+    printf("%s\n", buff + 28);
   }
   pthread_join(stop_client, NULL);
   close(cfd);
