@@ -11,7 +11,7 @@
 #define PORT 6666
 #define SOURCE_PORT 7777
 #define IP_ADDRES "127.0.0.1"
-#define SIZE_BUFF 38
+#define SIZE_BUFF 108
 #define SA struct sockaddr
 #define handler_error(text) \
 do{ perror(text); exit(EXIT_FAILURE); } while(1);
@@ -35,26 +35,21 @@ int main() {
     int cfd = 0;
     char buff_send[SIZE_BUFF] = {0};
     char buff_recv[SIZE_BUFF] = {0};
-    struct sockaddr_in server_endpoint, server_recv;
+    struct sockaddr_in server_endpoint, client_settings;
     memset(&server_endpoint, 0, sizeof(server_endpoint));
-    memset(&server_recv, 0, sizeof(server_recv));
+    memset(&client_settings, 0, sizeof(client_settings));
+    socklen_t size = sizeof(client_settings);
     
-    cfd = socket(AF_INET, SOCK_RAW, IPPROTO_RAW);
-    if (cfd == -1) {
-        handler_error("socket");
-    }
-
     server_endpoint.sin_family = AF_INET;
     server_endpoint.sin_port = htons(PORT);
     inet_pton(AF_INET, IP_ADDRES, &server_endpoint.sin_addr);
 
-    struct sockaddr_in client_settings;
-    client_settings.sin_family = AF_INET;
-    client_settings.sin_port = htons(SOURCE_PORT);
-    inet_pton(AF_INET, IP_ADDRES, &client_settings.sin_addr);
+    cfd = socket(AF_INET, SOCK_RAW, IPPROTO_RAW);
+    if (cfd == -1) {
+        handler_error("socket");
+    }
     
-    socklen_t size = sizeof(client_settings);
-    
+  
     struct iphdr *iph = (struct iphdr *)buff_send;
     iph->ihl = 5;
     iph->version = 4;

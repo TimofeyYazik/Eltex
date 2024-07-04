@@ -13,7 +13,7 @@
 #define IP_ADDRES "127.0.0.1"
 #define SIZE_BUFF 128
 #define handler_error(text) \
-do{ perror(text); exit(EXIT_FAILURE) } while(1);
+do{ perror(text); exit(EXIT_FAILURE); } while(1);
 
 
 void *ThreadStop(void *stop_p){
@@ -33,13 +33,14 @@ int main(){
   int ip_addres = 0;
   inet_pton(AF_INET, IP_ADDRES, &ip_addres);
   cfd = socket(AF_INET, SOCK_RAW, IPPROTO_UDP);
+  if(cfd == -1){
+    handler_error("socket"); 
+  }
   struct sockaddr_in client_settings;
   client_settings.sin_family = AF_INET;
   client_settings.sin_addr.s_addr = ip_addres;
   client_settings.sin_port = htons(PORT);
   socklen_t size = sizeof(client_settings);
-  if(cfd == -1){
-  }
   pthread_t stop_client = 0;
   pthread_create(&stop_client, NULL, ThreadStop, &stop);
   printf("PRESS 0 (ZERO) CLIENT STOP\n");
