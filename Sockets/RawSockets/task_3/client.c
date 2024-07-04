@@ -39,6 +39,7 @@ int main() {
     }
       
     struct iphdr  *ihdr = (struct iphdr *)(buff_send);    
+
     ihdr->version = 4;
     ihdr->tot = 0;
     ihdr->ihl = 5;
