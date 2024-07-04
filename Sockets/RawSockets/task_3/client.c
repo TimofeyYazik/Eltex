@@ -41,9 +41,9 @@ int main() {
     struct iphdr  *ihdr = (struct iphdr *)(buff_send);    
 
     ihdr->version = 4;
-    ihdr->tot = 0;
+    ihdr->tos = 0;
     ihdr->ihl = 5;
-    ihdr->top_len = SIZE_BUFF;
+    ihdr->tot_len = SIZE_BUFF;
     ihdr->id = htonl(12134);
     ihdr->frag_off = 0;
     ihdr->ttl= 255;
