@@ -10,7 +10,8 @@
 
 #define PORT 6666
 #define SOURCE_PORT 7777
-#define IP_ADDRES "127.0.0.2"
+#define ADDRES_IP "127.0.0.2"
+#define IP_ADDRES "127.0.0.1"
 #define SIZE_BUFF 80
 #define SA struct sockaddr
 #define handler_error(text) \
@@ -28,7 +29,7 @@ int main() {
 
     client_settings.sin_port = htons(SOURCE_PORT);
     client_settings.sin_family = AF_INET;
-    inet_pton(AF_INET,IP_ADDRES,&client_settings.sin_addr);
+    inet_pton(AF_INET,ADDRES_IP,&client_settings.sin_addr);
     server_endpoint.sin_family = AF_INET;
     server_endpoint.sin_port = htons(PORT);
     inet_pton(AF_INET, IP_ADDRES, &server_endpoint.sin_addr);
