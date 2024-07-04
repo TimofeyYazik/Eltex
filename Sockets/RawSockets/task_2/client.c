@@ -80,6 +80,7 @@ int main() {
         }
         printf("messege send!\n");
         while (1) {
+            printf("LOOP\n");
             recvfrom(cfd, buff_recv, SIZE_BUFF, 0, (SA*)&client_settings, &size);
             printf("client recv\n");
             printf("%s\n", buff_recv + 28);
