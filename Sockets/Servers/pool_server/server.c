@@ -6,31 +6,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/signal.h>
-#include <sys/socket.h>
-#include <time.h>
-#include <unistd.h>
-
-#define POOL_TREADS 20
-#define SA struct sockaddr
-#define PORT 6666
-#define SIZE_BUFF 80
-#define IP_ADDRES "127.0.0.2"
-#define handler_error(text)                                                    \
-  do {                                                                         \
-    perror(text);                                                              \
-    exit(EXIT_FAILURE);                                                        \
-  } while (0);
-
-typedef struct {
-#include <arpa/inet.h>
-#include <errno.h>
-#include <netinet/in.h>
-#include <pthread.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <sys/socket.h>
 #include <time.h>
 #include <unistd.h>
