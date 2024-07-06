@@ -45,12 +45,18 @@ void CalcCheckSum(struct iphdr *ip_header, int *check){
 int main() {
     char buff_send[SIZE_BUFF] = {0};
     char buff_recv[SIZE_BUFF] = {0};
-    struct sockaddr_ll server_endpoint;
+    struct sockaddr_ll server_endpoint, client_point;
     memset(&server_endpoint, 0, sizeof(server_endpoint));
     server_endpoint.sll_family = AF_PACKET;
     server_endpoint.sll_ifindex = if_nametoindex(NAME_PC);
     server_endpoint.sll_halen = 6;
-    server_endpoint.sll_addr = 0; //TO_DO MAC ADDR WEST
+    //c4:b3:01:d7:e8:6d
+    server_endpoint.sll_addr[0] = 0xc4; 
+    server_endpoint.sll_addr[1] = 0xb3;
+    server_endpoint.sll_addr[2] = 0x01;
+    server_endpoint.sll_addr[3] = 0xd7;
+    server_endpoint.sll_addr[4] = 0xe8;
+    server_endpoint.sll_addr[5] = 0x6d;
     int cfd = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
     if (cfd == -1) {
         handler_error("socket");
@@ -93,7 +99,7 @@ int main() {
     udph->dest = htons(PORT);
     udph->len = htons(SIZE_BUFF - sizeof(struct iphdr));
     udph->check = 0;
-
+    inr size = sizeof(client_point);
     char *data = buff_send + sizeof(struct udphdr) + sizeof(struct iphdr) + CHL_LEVEL;
     while (1) {
         printf("enter messege (to exit enter 'exit'):\n");
@@ -104,7 +110,7 @@ int main() {
         }
         printf("messege send!\n");
         while (1) {
-            recvfrom(cfd, buff_recv, SIZE_BUFF, 0, (SA*)&client_settings, &size);
+            recvfrom(cfd, buff_recv, SIZE_BUFF, 0, (SA*)&client_point, &size);
             udph = (struct udphdr *)(buff_recv + sizeof(struct iphdr) + CHL_LEVEL);
             if(udph->dest == htons(SOURCE_PORT)){
                printf("%s\n", buff_recv + 36);
