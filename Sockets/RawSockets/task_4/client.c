@@ -92,8 +92,9 @@ int main() {
     ihdr->check = 0;
     inet_pton(AF_INET, SOURCE_IP_ADDRES, &ihdr->saddr);
     inet_pton(AF_INET, DEST_IP_ADDRES, &ihdr->daddr);
-    CalcCheckSum(ihdr, &ihdr->check);
-    
+    int check = 0;
+    CalcCheckSum(ihdr, &check);
+    ihdr->check = check;
     struct udphdr *udph = (struct udphdr *)(buff_send + sizeof(struct iphdr) + CHL_LEVEL);
     udph->source = htons(SOURCE_PORT);
     udph->dest = htons(PORT);
