@@ -71,25 +71,22 @@ void *ChildServer(void *port_p) {
   pthread_mutex_unlock(&mutex);
   while (stop) {
     if (serv[serv_num].busy == 0) {
-      sleep(3);
+      sleep(2);
       continue;
     }
     printf("START SERVED CLIENT\n");
     while (1) {
-      recvfrom(thread_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings,
-               &client_size);
+      recvfrom(thread_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings, &client_size);
       printf("RECV CLIENT\n");
       if (!strcmp(buff, "exit")) {
         serv[serv_num].busy = 0;
-        sendto(thread_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings,
-               client_size);
+        sendto(thread_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings, client_size);
         printf("STOP SERVED CLIENT\n");
         break;
       } else {
         time(&time_now);
         strncpy(buff, ctime(&time_now), 79);
-        sendto(thread_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings,
-               client_size);
+        sendto(thread_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings, client_size);
         printf("SEND CLIENT\n");
       }
     }
@@ -119,8 +116,7 @@ void *StopServer(void *ip) {
 
   char buff[SIZE_BUFF] = {0};
   strcpy(buff, "close");
-  sendto(main_sfd, buff, SIZE_BUFF, 0, (SA *)&server_settings,
-         sizeof(server_settings));
+  sendto(main_sfd, buff, SIZE_BUFF, 0, (SA *)&server_settings, sizeof(server_settings));
 
   return NULL;
 }
@@ -161,8 +157,7 @@ int main() {
   char buff[SIZE_BUFF] = {0};
   int i = 0;
   while (stop) {
-    recvfrom(main_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings,
-             &size_len_client);
+    recvfrom(main_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings, &size_len_client);
     if (!strcmp(buff, "close"))
       break;
     if (strcmp(buff, "conn"))
@@ -174,8 +169,7 @@ int main() {
       }
     }
     sprintf(buff, "%d", serv[i].port);
-    sendto(main_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings,
-           size_len_client);
+    sendto(main_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings, size_len_client);
   }
   pthread_join(stop_tread, NULL);
   for (int i = 0; i < POOL_TREADS; i++) {
