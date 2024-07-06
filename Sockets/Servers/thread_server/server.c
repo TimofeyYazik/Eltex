@@ -96,7 +96,7 @@ void AddThread(int *fd, Thread *obj){
     obj->size = obj->size * 3 / 2;
     obj->arr = realloc(obj->arr, obj->size);
   }
-  pthread_create(&obj->arr[obj->len], NULL, ChildServer, (void *)fd);
+  pthread_create(&obj->arr[obj->len - 1], NULL, ChildServer, (void *)fd);
   obj->len++;
 }
 
