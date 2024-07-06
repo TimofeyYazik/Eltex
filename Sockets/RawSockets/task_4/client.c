@@ -1,5 +1,6 @@
 //#ifdef __linux__
 #include <arpa/inet.h>
+#include <linux/if_ether.h>
 #include <linux/if_packet.h>
 #include <errno.h>
 #include <stdio.h>
