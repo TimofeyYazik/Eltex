@@ -16,7 +16,7 @@
 #define POOL_TREADS 50
 #define SA struct sockaddr
 #define PORT 6666
-#define SIZE_BUFF 8
+#define SIZE_BUFF 80
 #define IP_ADDRES "127.0.0.1"
 #define handler_error(text)                                                    \
   do {                                                                         \
@@ -29,7 +29,6 @@ volatile int stop = 1;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void *ChildServer(void *null) {
-  char time_buff[80] = {0};
   time_t time_now;
   char buff[SIZE_BUFF];
   ListServer *f = NULL;
@@ -44,19 +43,30 @@ void *ChildServer(void *null) {
     f->busy = 1;
     printf("CLIENT SERVED\n");
     pthread_mutex_unlock(&mutex);
+    int recv_r = 0;
+    int send_r = 0;
     while (1) {
-      recv(f->active_fd, buff, SIZE_BUFF, 0);
+      if((recv_r = recv(f->active_fd, buff, SIZE_BUFF, 0) == -1)){
+          close(f->active_fd);
+          perror("recv thread");
+          Remove(f);
+          break;
+      } 
       printf("RECERV CLIENT: %d\n", f->active_fd);
       if (!strcmp(buff, "exit")) {
-        send(f->active_fd, buff, SIZE_BUFF, 0);
         close(f->active_fd);
         printf("CLIENT IS OUT: %d\n", f->active_fd);
         Remove(f);
         break;
       } else {
         time(&time_now);
-        strcpy(time_buff, ctime(&time_now));
-        send(f->active_fd, (void *)time_buff, 80, 0);
+        strcpy(buff, ctime(&time_now));
+        if((send_r = send(f->active_fd, (void *)buff, SIZE_BUFF, 0)) == -1){
+          close(f->active_fd);
+          perror("send thread");
+          Remove(f);
+          break;
+        }
         printf("SEND CLIENT: %d\n", f->active_fd);
       }
     }
@@ -125,10 +135,15 @@ int main() {
   printf("SERVER START WORK\n");
   printf("PRESS 0 (ZERO) SERVER STOP\n");
 
-  char buff[8] = {0};
+  int recv_r = 0;
+  char buff[SIZE_BUFF] = {0};
   while (stop) {
     int active_fd = accept(main_sfd, (SA *)&server_settings, &len);
-    recv(active_fd, buff, 8, 0);
+    if((recv_r = recv(active_fd, buff, SIZE_BUFF, 0)) == -1){
+      perror("recv");
+      close(active_fd);
+      continue;
+    }
     if(!strcmp(buff, "close")) break;
     printf("NEW CLIENT: %d\n", active_fd);
     ListServer *new_client = malloc(sizeof(ListServer));
