@@ -13,7 +13,8 @@
 
 #define PORT 6666
 #define SOURCE_PORT 7777
-#define IP_ADDRESS "127.0.0.1"
+#define SOURCE_IP_ADDRESS "127.0.0.1"
+#define DEST_IP_ADDRESS "127.0.0.2"
 #define SIZE_BUFF 114
 #define SA struct sockaddr
 #define CHL_LEVEL 14
@@ -25,21 +26,9 @@ do{ perror(text); exit(EXIT_FAILURE); } while(1);
 typedef struct {
     uint8_t dest_mac[6];
     uint8_t source_mac[6];
-    uint16_t type;
+    uint16_t type;    
 } ethernet_frame_t;
 
-void CalcCheckSum(struct iphdr *ip_header) {
-    ip_header->check = 0;
-    uint32_t check = 0;
-    uint16_t *counter = (uint16_t *)ip_header;
-    for (int i = 0; i < sizeof(struct iphdr) / 2; i++) {
-        check += ntohs(counter[i]);
-    }
-    while (check >> 16) {
-        check = (check & 0xFFFF) + (check >> 16);
-    }
-    ip_header->check = ~check;
-}
 
 int main() {
     char buff_send[SIZE_BUFF] = {0};
@@ -48,35 +37,42 @@ int main() {
     memset(&server_endpoint, 0, sizeof(server_endpoint));
     server_endpoint.sll_family = AF_PACKET;
     server_endpoint.sll_ifindex = if_nametoindex(NAME_PC);
-    server_endpoint.sll_halen = 6;
-    server_endpoint.sll_addr[0] = 0xc4;
+    server_endpoint.sll_halen = ETH_ALEN;
+
+    // MAC address destination
+    server_endpoint.sll_addr[0] = 0xc4; 
     server_endpoint.sll_addr[1] = 0xb3;
     server_endpoint.sll_addr[2] = 0x01;
     server_endpoint.sll_addr[3] = 0xd7;
     server_endpoint.sll_addr[4] = 0xe8;
     server_endpoint.sll_addr[5] = 0x6d;
+
     int cfd = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
     if (cfd == -1) {
         handler_error("socket");
     }
 
-    ethernet_frame_t *frame = (ethernet_frame_t *)buff_send;
+    ethernet_frame_t *frame = (ethernet_frame_t*)buff_send;
+
+    // MAC address source
     frame->source_mac[0] = 0x08;
     frame->source_mac[1] = 0x00;
     frame->source_mac[2] = 0x27;
     frame->source_mac[3] = 0x68;
     frame->source_mac[4] = 0xb9;
     frame->source_mac[5] = 0xf2;
-
+    
+    // MAC address destination
     frame->dest_mac[0] = 0xc4;
     frame->dest_mac[1] = 0xb3;
     frame->dest_mac[2] = 0x01;
     frame->dest_mac[3] = 0xd7;
     frame->dest_mac[4] = 0xe8;
     frame->dest_mac[5] = 0x6d;
-    frame->type = htons(TYPE_IPV4); 
 
-    struct iphdr *ihdr = (struct iphdr *)(buff_send + CHL_LEVEL);
+    frame->type = htons(TYPE_IPV4);
+
+    struct iphdr *ihdr = (struct iphdr *)(buff_send + CHL_LEVEL);    
     ihdr->version = 4;
     ihdr->ihl = 5;
     ihdr->tos = 0;
@@ -85,8 +81,9 @@ int main() {
     ihdr->frag_off = 0;
     ihdr->ttl = 255;
     ihdr->protocol = IPPROTO_UDP;
-    inet_pton(AF_INET, IP_ADDRESS, &ihdr->saddr);
-    inet_pton(AF_INET, IP_ADDRESS, &ihdr->daddr);
+    ihdr->check = 0;
+    inet_pton(AF_INET, SOURCE_IP_ADDRESS, &ihdr->saddr);
+    inet_pton(AF_INET, DEST_IP_ADDRESS, &ihdr->daddr);
     CalcCheckSum(ihdr);
 
     struct udphdr *udph = (struct udphdr *)(buff_send + sizeof(struct iphdr) + CHL_LEVEL);
@@ -111,8 +108,8 @@ int main() {
             recvfrom(cfd, buff_recv, SIZE_BUFF, 0, (SA*)&client_point, &size);
             udph = (struct udphdr *)(buff_recv + sizeof(struct iphdr) + CHL_LEVEL);
             if (udph->dest == htons(SOURCE_PORT)) {
-                printf("%s\n", buff_recv + sizeof(struct iphdr) + sizeof(struct udphdr) + CHL_LEVEL);
-                break;
+               printf("%s\n", buff_recv + sizeof(struct iphdr) + sizeof(struct udphdr) + CHL_LEVEL);
+               break;
             }
         }
     }
@@ -120,3 +117,4 @@ int main() {
     close(cfd);
     return 0;
 }
+

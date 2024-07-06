@@ -10,7 +10,7 @@
 #include <unistd.h>
 
 #define PORT 6666
-#define IP_ADDRES "127.0.0.2"
+#define IP_ADDRES "127.0.0.1"
 #define SA struct sockaddr
 #define SIZE_BUFF 80
 #define handler_error(text) \
