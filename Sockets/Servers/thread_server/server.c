@@ -96,7 +96,7 @@ void AddThread(int *fd, Thread *obj){
     obj->size = obj->size * 3 / 2;
     obj->arr = realloc(obj->arr, obj->size);
   }
-  pthread_create(&obj->arr[obj->len - 1], NULL, ChildServer, (void *)fd);
+  pthread_create(&obj->arr[obj->len], NULL, ChildServer, (void *)fd);
   obj->len++;
 }
 
@@ -138,7 +138,7 @@ int main(){
     if(strcmp(buff, "conn")) continue;
     printf("NEW CLIENT: %d\n", active_fd);
     AddFD(active_fd, &obj_act);
-    AddThread(&obj_act.arr[obj_act.len], &obj_thread);
+    AddThread(&obj_act.arr[obj_act.len - 1], &obj_thread);
   }
   pthread_join(stop_tread, NULL);
   for(int i = 0; i < obj_thread.len; i++){
