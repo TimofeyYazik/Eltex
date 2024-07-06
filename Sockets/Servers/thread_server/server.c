@@ -1,4 +1,3 @@
-
 #include <signal.h>
 #include <stdint.h>
 #include <sys/socket.h>
@@ -42,7 +41,6 @@ void *ChildServer(void *fd){
     recv(*active_fd, buff, SIZE_BUFF, 0);
     printf("RECERV CLIENT: %d\n", *active_fd);
     if(!strcmp(buff, "exit")){
-      send(*active_fd, buff, SIZE_BUFF, 0);
       break;
     } else {
       time(&time_now);
@@ -85,20 +83,21 @@ void *StopServer(void *ip){
 }
 
 void AddFD(int fd, ActiveFD *obj){
-  if(obj->len == obj->size){
+  if(obj->len == obj->size - 1){
     obj->size = obj->size * 3 / 2;
     obj->arr = realloc(obj->arr, obj->size);
   }
+  if(obj->len != 0) obj->len++;
   obj->arr[obj->len] = fd;
-  obj->len++;
 }
 
 int AddThread(int *fd, Thread *obj){
+  int afd = *fd;
   if(obj->len == obj->size){
     obj->size = obj->size * 3 / 2;
     obj->arr = realloc(obj->arr, obj->size);
   }
-  if(pthread_create(&obj->arr[obj->len], NULL, ChildServer, (void *)fd) != 0){
+  if(pthread_create(&obj->arr[obj->len], NULL, ChildServer, (void *)&afd) != 0){
     return 1;  
   }
   obj->len++;
@@ -144,7 +143,7 @@ int main(){
     if(strcmp(buff, "conn")) continue;
     printf("NEW CLIENT: %d\n", active_fd);
     AddFD(active_fd, &obj_act);
-    err = AddThread(&obj_act.arr[obj_act.len - 1], &obj_thread);
+    err = AddThread(&obj_act.arr[obj_act.len], &obj_thread);
     if(err != 1){
       strcpy(buff, "error");
       send(active_fd, buff, SIZE_BUFF, 0);
