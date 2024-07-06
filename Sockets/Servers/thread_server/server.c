@@ -39,7 +39,7 @@ void *ChildServer(void *fd) {
     time_t time_now = 0;
     char buff[SIZE_BUFF] = {0};
     while (1) {
-        ssize_t recv_bytes = recv(*active_fd, buff, SIZE_BUFF, 0);
+        int recv_bytes = recv(*active_fd, buff, SIZE_BUFF, 0);
         if (recv_bytes <= 0) {
             if (recv_bytes == 0) {
                 printf("Client disconnected: %d\n", *active_fd);
@@ -54,8 +54,8 @@ void *ChildServer(void *fd) {
         } else {
             time(&time_now);
             strcpy(buff, ctime(&time_now));
-            ssize_t sent_bytes = send(*active_fd, buff, SIZE_BUFF, 0);
-            if (sent_bytes == -1) {
+            int send_bytes  = send(*active_fd, buff, SIZE_BUFF, 0);
+            if (send_bytes  == -1) {
                 perror("send");
                 break;
             }
@@ -168,7 +168,7 @@ int main() {
             perror("accept");
             continue;
         }
-        ssize_t recv_bytes = recv(active_fd, buff, SIZE_BUFF, 0);
+        int recv_bytes = recv(active_fd, buff, SIZE_BUFF, 0);
         if (recv_bytes <= 0) {
             if (recv_bytes == 0) {
                 printf("Connection closed by client before sending data\n");

@@ -77,19 +77,21 @@ void *ChildServer(void *port_p) {
     printf("START SERVED CLIENT\n");
     while (1) {
       if(recvfrom(thread_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings, &client_size) == -1){
-        perror("recvfrom");
+        perror("recvfrom thread");
         continue;
       }
       printf("RECV CLIENT\n");
       if (!strcmp(buff, "exit")) {
         serv[serv_num].busy = 0;
-        sendto(thread_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings, client_size);
         printf("STOP SERVED CLIENT\n");
         break;
       } else {
         time(&time_now);
         strncpy(buff, ctime(&time_now), 79);
-        sendto(thread_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings, client_size);
+        if(sendto(thread_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings, client_size) == -1){
+          perror("sendto thread");
+          break;
+        }
         printf("SEND CLIENT\n");
       }
     }
@@ -106,17 +108,14 @@ void *StopServer(void *ip) {
       stop = 0;
     }
   }
-
   int main_sfd = socket(AF_INET, SOCK_DGRAM, 0);
   if (main_sfd == -1) {
     handler_error("socket");
   }
-
   struct sockaddr_in server_settings, client_settings;
   server_settings.sin_family = AF_INET;
   server_settings.sin_addr.s_addr = *ip_addres;
   server_settings.sin_port = htons(PORT);
-
   char buff[SIZE_BUFF] = {0};
   strcpy(buff, "close");
   sendto(main_sfd, buff, SIZE_BUFF, 0, (SA *)&server_settings, sizeof(server_settings));
@@ -130,7 +129,6 @@ int main() {
   int ip_addres = 0;
   inet_pton(AF_INET, IP_ADDRES, &ip_addres);
   int main_sfd = socket(AF_INET, SOCK_DGRAM, 0);
-
   if (main_sfd == -1) {
     handler_error("socket");
   }
@@ -159,7 +157,10 @@ int main() {
   char buff[SIZE_BUFF] = {0};
   int i = 0;
   while (stop) {
-    recvfrom(main_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings, &size_len_client);
+    if(recvfrom(main_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings, &size_len_client) == -1){
+      perror("recvfrom");
+      continue;
+    }
     if (!strcmp(buff, "close"))
       break;
     if (strcmp(buff, "conn"))
@@ -171,7 +172,10 @@ int main() {
       }
     }
     sprintf(buff, "%d", serv[i].port);
-    sendto(main_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings, size_len_client);
+    if(sendto(main_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings, size_len_client) == -1){
+      perror("sendto");
+      continue;
+    }
   }
   pthread_join(stop_tread, NULL);
   for (int i = 0; i < POOL_TREADS; i++) {
