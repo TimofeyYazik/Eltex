@@ -30,8 +30,6 @@ int main(){
   int cfd = 0;
   int stop = 1;
   char buff[SIZE_BUFF] = {0};
-  int ip_addres = 0;
-  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
   cfd = socket(AF_INET, SOCK_RAW, IPPROTO_UDP);
   if(cfd == -1){
     handler_error("socket"); 

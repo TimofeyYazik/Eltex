@@ -50,20 +50,7 @@ int main() {
         handler_error("socket");
     }
       
-    //struct iphdr *iph = (struct iphdr *)buff_send;
-    //iph->ihl = 5;
-    //iph->version = 4;
-    //iph->tos = 0;
-    //iph->tot_len = htons(SIZE_BUFF);
-    //iph->id = htonl(54321);
-    //iph->frag_off = 0;
-    //iph->ttl = 255;
-    //iph->protocol = IPPROTO_UDP;
-    //iph->check = 0;
-    //iph->saddr = inet_addr(IP_ADDRES);
-    //iph->daddr = server_endpoint.sin_addr.s_addr;
-    //iph->check = checksum(iph, sizeof(struct iphdr));
-        
+      
     struct udphdr *udph = (struct udphdr *)(buff_send);
     udph->source = htons(SOURCE_PORT);
     udph->dest = htons(PORT);
@@ -80,10 +67,7 @@ int main() {
         }
         printf("messege send!\n");
         while (1) {
-            printf("LOOP\n");
             recvfrom(cfd, buff_recv, SIZE_BUFF, 0, (SA*)&client_settings, &size);
-            printf("client recv\n");
-            printf("%s\n", buff_recv + 28);
             udph = (struct udphdr *)(buff_recv + sizeof(struct iphdr));
             if(udph->dest == htons(SOURCE_PORT)){
                printf("%s\n", buff_recv + 28);
