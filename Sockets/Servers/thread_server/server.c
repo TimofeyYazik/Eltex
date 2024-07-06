@@ -74,6 +74,8 @@ void *StopServer(void *ip){
 
 
 int main(){
+  int len_fd_arr = 100;
+  int *arr_active_fd = malloc(len_fd_arr * sizeof(int));
   int len_treads_arr = 100;
   pthread_t *arr_treads = malloc(len_treads_arr * sizeof(pthread_t));
   int ip_addres = 0;
@@ -99,8 +101,6 @@ int main(){
   pthread_create(&stop_tread, NULL, StopServer, (void *) &ip_addres);
   printf("SERVER START WORK\n");
   printf("PRESS 0 (ZERO) SERVER STOP\n");
-  int len_fd_arr = 100;
-  int *arr_active_fd = malloc(len_fd_arr * sizeof(int));
   int thread_fd = 0;
   char buff[SIZE_BUFF] = {0};
   while(stop){

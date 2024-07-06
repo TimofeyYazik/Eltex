@@ -29,7 +29,6 @@ def create_client_threads(num_clients):
         thread = threading.Thread(target=run_client)
         threads.append(thread)
         thread.start()
-        time.sleep(1)
     for thread in threads:
         thread.join()
 
