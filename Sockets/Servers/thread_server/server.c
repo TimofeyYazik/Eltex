@@ -92,12 +92,11 @@ void AddFD(int fd, ActiveFD *obj){
 }
 
 int AddThread(int *fd, Thread *obj){
-  int afd = *fd;
   if(obj->len == obj->size){
     obj->size = obj->size * 3 / 2;
     obj->arr = realloc(obj->arr, obj->size);
   }
-  if(pthread_create(&obj->arr[obj->len], NULL, ChildServer, (void *)&afd) != 0){
+  if(pthread_create(&obj->arr[obj->len], NULL, ChildServer, (void *)fd) != 0){
     return 1;  
   }
   obj->len++;
