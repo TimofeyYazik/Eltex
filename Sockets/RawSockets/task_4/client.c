@@ -1,5 +1,6 @@
 //#ifdef __linux__
 #include <arpa/inet.h>
+#include <linux/if_packet.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -100,7 +101,7 @@ int main() {
     udph->dest = htons(PORT);
     udph->len = htons(SIZE_BUFF - sizeof(struct iphdr));
     udph->check = 0;
-    inr size = sizeof(client_point);
+    int size = sizeof(client_point);
     char *data = buff_send + sizeof(struct udphdr) + sizeof(struct iphdr) + CHL_LEVEL;
     while (1) {
         printf("enter messege (to exit enter 'exit'):\n");
