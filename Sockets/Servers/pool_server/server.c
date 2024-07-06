@@ -48,8 +48,7 @@ void *ChildServer(void *port_p) {
   socklen_t client_size = sizeof(client_settings);
   pthread_mutex_lock(&mutex);
   while (1) {
-    if (bind(thread_sfd, (SA *)&server_settings, sizeof(server_settings)) ==
-        -1) {
+    if (bind(thread_sfd, (SA *)&server_settings, sizeof(server_settings)) == -1) {
       if (errno == EADDRINUSE) {
         (*port)++;
         server_settings.sin_port = htons(*port);
@@ -157,15 +156,10 @@ int main() {
 
   printf("SERVER START WORK\n");
   printf("PRESS 0 (ZERO) SERVER STOP\n");
-  int recv_bytes = 0;
-  int send_bytes = 0;
   char buff[SIZE_BUFF] = {0};
   int i = 0;
   while (stop) {
     recvfrom(main_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings, &size_len_client);
-    if(recv_bytes <= 0){
-      handler_error("recvfrom");
-    }
     if (!strcmp(buff, "close"))
       break;
     if (strcmp(buff, "conn"))
