@@ -1,4 +1,5 @@
 #include <signal.h>
+#include <stdint.h>
 #include <sys/socket.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -91,13 +92,16 @@ void AddFD(int fd, ActiveFD *obj){
   obj->len++;
 }
 
-void AddThread(int *fd, Thread *obj){
+int AddThread(int *fd, Thread *obj){
   if(obj->len == obj->size){
     obj->size = obj->size * 3 / 2;
     obj->arr = realloc(obj->arr, obj->size);
   }
-  pthread_create(&obj->arr[obj->len], NULL, ChildServer, (void *)fd);
+  if(pthread_create(&obj->arr[obj->len], NULL, ChildServer, (void *)fd) != 0){
+    return 1;  
+  }
   obj->len++;
+  return 0;
 }
 
 int main(){
@@ -109,6 +113,7 @@ int main(){
   obj_thread.len = 0;
   obj_thread.size = 100;
   obj_thread.arr = calloc(obj_thread.size, sizeof(pthread_t ));
+  int err = 0;
   int main_sfd = socket(AF_INET, SOCK_STREAM, 0);
   if(main_sfd == -1){
     handler_error("socket");
@@ -138,7 +143,13 @@ int main(){
     if(strcmp(buff, "conn")) continue;
     printf("NEW CLIENT: %d\n", active_fd);
     AddFD(active_fd, &obj_act);
-    AddThread(&obj_act.arr[obj_act.len - 1], &obj_thread);
+    err = AddThread(&obj_act.arr[obj_act.len - 1], &obj_thread);
+    if(err != 1){
+      strcpy(buff, "error");
+      send(active_fd, buff, SIZE_BUFF, 0);
+      obj_act.len--;
+      close(obj_act.arr[obj_act.len]);
+    }
   }
   pthread_join(stop_tread, NULL);
   for(int i = 0; i < obj_thread.len; i++){

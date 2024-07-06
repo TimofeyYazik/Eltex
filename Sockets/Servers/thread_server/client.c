@@ -47,7 +47,9 @@ int main(){
       break;
     } else if(!strcmp(buff, "time")){
       send(cfd, buff, SIZE_BUFF, 0);
-      recv(cfd, buff, 80, 0);
+      recv(cfd, buff, SIZE_BUFF, 0);
+      if(!strcmp(buff, "error"))
+        break;
       printf("%s", buff);
     }
   }
