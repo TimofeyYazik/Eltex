@@ -105,7 +105,7 @@ int main() {
         if (sendto(cfd, buff_send, SIZE_BUFF, 0, (SA*)&server_endpoint, sizeof(server_endpoint)) == -1) {
             handler_error("sendto");
         }
-        printf("Message sent!\n");
+        printf("Message send!\n");
 
         while (1) {
             recvfrom(cfd, buff_recv, SIZE_BUFF, 0, (SA*)&client_point, &size);

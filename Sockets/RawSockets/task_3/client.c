@@ -33,10 +33,10 @@ int main() {
     inet_pton(AF_INET, DEST_IP_ADDRES, &server_endpoint.sin_addr);
 
     cfd = socket(AF_INET, SOCK_RAW, IPPROTO_UDP);
-    setsockopt(cfd, IPPROTO_IP, IP_HDRINCL, &flag, sizeof(flag));
     if (cfd == -1) {
         handler_error("socket");
     }
+    setsockopt(cfd, IPPROTO_IP, IP_HDRINCL, &flag, sizeof(flag));
       
     struct iphdr  *ihdr = (struct iphdr *)(buff_send);    
 
