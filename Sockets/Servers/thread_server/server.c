@@ -16,7 +16,7 @@
 #define PORT 6667
 #define LISTEN_USERS 8
 #define SIZE_BUFF 80
-#define IP_ADDRES "127.0.0.1"
+#define IP_ADDRES "127.0.0.2"
 #define handler_error(text) \
           do { perror(text); exit(EXIT_FAILURE); } while(0);
 

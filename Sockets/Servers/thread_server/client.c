@@ -14,7 +14,7 @@
 #define SA struct sockaddr
 #define PORT 6667
 #define SIZE_BUFF 80
-#define IP_ADDRES "127.0.0.1"
+#define IP_ADDRES "127.0.0.2"
 #define handler_error(text) \
           do { perror(text); exit(EXIT_FAILURE); } while(0);
 
