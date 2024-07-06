@@ -20,6 +20,17 @@
           do { perror(text); exit(EXIT_FAILURE); } while(0);
 
 volatile int stop = 1;
+typedef struct{
+  int *arr;
+  int len;
+  int size;
+} ActiveFD;
+
+typedef struct{
+  pthread_t *arr;
+  int len;
+  int size;
+} Thread;
 
 void *ChildServer(void *fd){
   int *active_fd = (int *)fd;
@@ -71,23 +82,41 @@ void *StopServer(void *ip){
   return NULL;
 }
 
+void AddFD(int fd, ActiveFD *obj){
+  if(obj->len == obj->size){
+    obj->size = obj->size * 3 / 2;
+    obj->arr = realloc(obj->arr, obj->size);
+  }
+  obj->arr[obj->len] = fd;
+  obj->len++;
+}
 
+void AddThread(int *fd, Thread *obj){
+  if(obj->len == obj->size){
+    obj->size = obj->size * 3 / 2;
+    obj->arr = realloc(obj->arr, obj->size);
+  }
+  pthread_create(&obj->arr[obj->len], NULL, ChildServer, (void *)fd);
+  obj->len++;
+}
 
 int main(){
-  int len_fd_arr = 100;
-  int *arr_active_fd = malloc(len_fd_arr * sizeof(int));
-  int len_treads_arr = 100;
-  pthread_t *arr_treads = malloc(len_treads_arr * sizeof(pthread_t));
-  int ip_addres = 0;
-  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
+  ActiveFD obj_act;
+  obj_act.size = 100;
+  obj_act.len = 0;
+  obj_act.arr = calloc(obj_act.size, sizeof(int));
+  Thread obj_thread;
+  obj_thread.len = 0;
+  obj_thread.size = 100;
+  obj_thread.arr = calloc(obj_thread.size, sizeof(pthread_t ));
   int main_sfd = socket(AF_INET, SOCK_STREAM, 0);
   if(main_sfd == -1){
     handler_error("socket");
   }
   struct sockaddr_in server_settings;
   server_settings.sin_family = AF_INET;
-  server_settings.sin_addr.s_addr = ip_addres;
   server_settings.sin_port = htons(PORT);
+  inet_pton(AF_INET, IP_ADDRES, &server_settings.sin_addr);
 
   if(bind(main_sfd,(SA *)&server_settings, sizeof(server_settings)) == -1){
     handler_error("bind");
@@ -98,35 +127,26 @@ int main(){
   socklen_t len = sizeof(server_settings);
   int counter = 0;
   pthread_t stop_tread;
-  pthread_create(&stop_tread, NULL, StopServer, (void *) &ip_addres);
+  pthread_create(&stop_tread, NULL, StopServer, (void *) &server_settings.sin_addr);
   printf("SERVER START WORK\n");
   printf("PRESS 0 (ZERO) SERVER STOP\n");
-  int thread_fd = 0;
   char buff[SIZE_BUFF] = {0};
   while(stop){
     int active_fd = accept(main_sfd, (SA *)&server_settings, &len);
     recv(active_fd, buff, SIZE_BUFF, 0);
     if(!strcmp(buff, "close")) break;
     if(strcmp(buff, "conn")) continue;
-    arr_active_fd[thread_fd] = active_fd;
     printf("NEW CLIENT: %d\n", active_fd);
-    pthread_create(&arr_treads[counter], NULL, ChildServer, (void *)&arr_active_fd[thread_fd]);
-    thread_fd++;
-    if(thread_fd == len_fd_arr){
-      len_fd_arr *= 2;
-      arr_active_fd = realloc(arr_active_fd, len_fd_arr);
-    } 
-    counter++;
-    if(counter == len_treads_arr){
-      len_treads_arr *= 2;
-      arr_treads = realloc(arr_treads, len_treads_arr);
-    }
+    AddFD(active_fd, &obj_act);
+    AddThread(&obj_act.arr[obj_act.len], &obj_thread);
   }
   pthread_join(stop_tread, NULL);
-  for(int i = 0; i < counter; i++){
-    pthread_join(arr_treads[i], NULL);
+  for(int i = 0; i < obj_thread.len; i++){
+    pthread_join(obj_thread.arr[i], NULL);
   }
   close(main_sfd);
+  free(obj_act.arr);
+  free(obj_thread.arr);
   printf("SERVER END WORK\n");
   exit(EXIT_SUCCESS);
 }
