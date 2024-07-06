@@ -38,7 +38,6 @@ void *ChildServer(void *fd) {
     int *active_fd = (int *)fd;
     time_t time_now = 0;
     char buff[SIZE_BUFF] = {0};
-
     while (1) {
         ssize_t recv_bytes = recv(*active_fd, buff, SIZE_BUFF, 0);
         if (recv_bytes <= 0) {
@@ -54,7 +53,7 @@ void *ChildServer(void *fd) {
             break;
         } else {
             time(&time_now);
-            snprintf(buff, SIZE_BUFF, "%s", ctime(&time_now));
+            strcpy(buff, ctime(&time_now));
             ssize_t sent_bytes = send(*active_fd, buff, SIZE_BUFF, 0);
             if (sent_bytes == -1) {
                 perror("send");
@@ -63,7 +62,6 @@ void *ChildServer(void *fd) {
             printf("Sent to client %d\n", *active_fd);
         }
     }
-
     printf("Client is out: %d\n", *active_fd);
     close(*active_fd);
     return NULL;
@@ -77,18 +75,16 @@ void *StopServer(void *ip) {
         }
         if (stop == 0) break;
     }
-
     int cfd = socket(AF_INET, SOCK_STREAM, 0);
     if (cfd == -1) {
         handler_error("socket");
     }
-
     struct sockaddr_in server_connect;
     server_connect.sin_family = AF_INET;
     server_connect.sin_addr.s_addr = *ip_address;
     server_connect.sin_port = htons(PORT);
     char buff[SIZE_BUFF] = {0};
-    snprintf(buff, SIZE_BUFF, "close");
+    strcpy(buff, "close");
 
     if (connect(cfd, (SA*)&server_connect, sizeof(server_connect)) == -1) {
         handler_error("connect");
@@ -134,7 +130,6 @@ int main() {
     if (!obj_act.arr) {
         handler_error("calloc");
     }
-
     Thread obj_thread;
     obj_thread.len = 0;
     obj_thread.size = 100;
@@ -142,27 +137,22 @@ int main() {
     if (!obj_thread.arr) {
         handler_error("calloc");
     }
-
     int main_sfd = socket(AF_INET, SOCK_STREAM, 0);
     if (main_sfd == -1) {
         handler_error("socket");
     }
-
     struct sockaddr_in server_settings;
     server_settings.sin_family = AF_INET;
     server_settings.sin_port = htons(PORT);
     if (inet_pton(AF_INET, IP_ADDRESS, &server_settings.sin_addr) <= 0) {
         handler_error("inet_pton");
     }
-
     if (bind(main_sfd, (SA *)&server_settings, sizeof(server_settings)) == -1) {
         handler_error("bind");
     }
-
     if (listen(main_sfd, LISTEN_USERS) == -1) {
         handler_error("listen");
     }
-
     socklen_t len = sizeof(server_settings);
     pthread_t stop_thread;
     if (pthread_create(&stop_thread, NULL, StopServer, (void *)&server_settings.sin_addr) != 0) {
@@ -178,7 +168,6 @@ int main() {
             perror("accept");
             continue;
         }
-
         ssize_t recv_bytes = recv(active_fd, buff, SIZE_BUFF, 0);
         if (recv_bytes <= 0) {
             if (recv_bytes == 0) {
@@ -189,18 +178,15 @@ int main() {
             close(active_fd);
             continue;
         }
-
         if (strcmp(buff, "close") == 0) break;
-
         if (strcmp(buff, "conn") != 0) {
             close(active_fd);
             continue;
         }
-
         printf("NEW CLIENT: %d\n", active_fd);
         AddFD(active_fd, &obj_act);
         if (AddThread(&obj_act.arr[obj_act.len], &obj_thread) != 0) {
-            snprintf(buff, SIZE_BUFF, "error");
+            strcpy(buff, "error");
             send(active_fd, buff, SIZE_BUFF, 0);
             obj_act.len--;
             close(obj_act.arr[obj_act.len]);
