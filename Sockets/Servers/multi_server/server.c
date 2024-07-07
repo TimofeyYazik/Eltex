@@ -105,13 +105,14 @@ int main() {
         strncpy(buff, ctime(&tm), SIZE_BUFF - 1);
         send(conn_sock, buff, SIZE_BUFF, 0);          
         close(conn_sock);
-    }
-    if(events[i].data.fd == sfd_udp){
+      }
+      if(events[i].data.fd == sfd_udp){
         socklen_t size_client = sizeof(client_udp);
         recvfrom(sfd_udp, buff, SIZE_BUFF, 0, (SA*)&client_udp, &size_client);
         time(&tm);
         strncpy(buff, ctime(&tm), SIZE_BUFF - 1);
         sendto(conn_sock, buff, SIZE_BUFF, 0, (SA*)&client_udp, size_client);          
+      }
     }
   }
   pthread_join(stop_tread, NULL);
