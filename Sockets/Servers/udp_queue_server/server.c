@@ -40,7 +40,7 @@ void *ChildServer(void *null) {
     pthread_mutex_lock(&mutex);
     f = SearchFree(head);
     if (f == NULL) {
-      usleep(100);
+      usleep(80);
       pthread_mutex_unlock(&mutex);
       continue;
     }
