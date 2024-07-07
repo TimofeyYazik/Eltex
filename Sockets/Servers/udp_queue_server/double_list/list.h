@@ -4,7 +4,6 @@
 
 typedef struct list_t {
   struct sockaddr_in sock;
-  int busy;
   struct list_t *prev;
   struct list_t *next;
 } ListServer;

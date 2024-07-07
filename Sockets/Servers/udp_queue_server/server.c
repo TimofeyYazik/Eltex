@@ -13,7 +13,7 @@
 
 #include "double_list/list.h"
 
-#define POOL_THREADS 100
+#define POOL_THREADS 50
 #define SA struct sockaddr
 #define PORT 6666
 #define SIZE_BUFF 80
@@ -24,27 +24,15 @@
 ListServer *head = NULL;
 volatile int stop = 1;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+static inline void CopySockaddr_in(struct sockaddr_in *dest, struct sockaddr_in *source);
+void *StopServer(void *s);
+static inline int SettingsChild(int *pt);
+
 
 void *ChildServer(void *null) {
-  int port = PORT;
-  int fd = socket(AF_INET, SOCK_DGRAM, 0);
-  struct sockaddr_in server_settings, client_settings;
-  server_settings.sin_family = AF_INET;
-  inet_pton(AF_INET, IP_ADDRESS, &server_settings.sin_addr);
-  server_settings.sin_port = htons(port);
-  while (1) {
-    if (bind(fd, (SA *)&server_settings, sizeof(server_settings)) == -1) {
-      if (errno == EADDRINUSE) {
-        port++;
-        server_settings.sin_port = htons(port);
-        continue;
-      } else {
-        handler_error("bind");
-      }
-    }
-    break;
-  }
-
+  struct sockaddr_in client;
+  int port = 0;
+  int fd = SettingsChild(&port);
   time_t time_now = 0;
   char buff[SIZE_BUFF] = {0};
   ListServer *f = NULL;
@@ -56,68 +44,36 @@ void *ChildServer(void *null) {
       pthread_mutex_unlock(&mutex);
       continue;
     }
-    f->busy = 1;
+    CopySockaddr_in(&client, &f->sock);
+    Remove(f);
     pthread_mutex_unlock(&mutex);
     printf("CLIENT SERVED\n");
     sprintf(buff, "%d", port);
-    sendto(fd, buff, SIZE_BUFF, 0, (SA*)&f->sock, sizeof(f->sock));
+    sendto(fd, buff, SIZE_BUFF, 0, (SA*)&client, sizeof(f->sock));
     int recv_r = 0;
     int send_r = 0;
     socklen_t len = sizeof(f->sock);
     while (1) {
-      if ((recv_r = recvfrom(fd, buff, SIZE_BUFF, 0, (SA*)&f->sock, &len)) == -1) {
+      if ((recv_r = recvfrom(fd, buff, SIZE_BUFF, 0, (SA*)&client, &len)) == -1) {
         perror("recv thread");
-        Remove(f);
         break;
       }
-      printf("RECEIVED FROM CLIENT\n");
       if (!strcmp(buff, "exit")) {
-        printf("CLIENT IS OUT\n");
-        Remove(f);
         break;
       } else if (!strcmp(buff, "time")) {
         time(&time_now);
         strcpy(buff, ctime(&time_now));
-        if ((send_r = sendto(fd, (void *)buff, SIZE_BUFF, 0, (SA*)&f->sock, len)) == -1) {
+        if ((send_r = sendto(fd, (void *)buff, SIZE_BUFF, 0, (SA*)&client, len)) == -1) {
           perror("send thread");
-          Remove(f);
           break;
         }
-        printf("SEND TO CLIENT\n");
       }
     }
   }
-  printf("THREAD IS OUT\n");
   return NULL;
 }
 
-void *StopServer(void *s) {
-  while (stop) {
-    if (scanf("%d", &stop) != 1) {
-      stop = 0;
-    }
-  }
-  int cfd = socket(AF_INET, SOCK_STREAM, 0);
-  if (cfd == -1) {
-    handler_error("socket");
-  }
-  struct sockaddr_in server_connect;
-  memset(&server_connect, 0, sizeof(server_connect));
-  server_connect.sin_family = AF_INET;
-  server_connect.sin_port = htons(PORT);
-  inet_pton(AF_INET, IP_ADDRESS, &server_connect.sin_addr);
-  char buff[SIZE_BUFF] = {0};
-  strcpy(buff, "close");
-  sendto(cfd, buff, SIZE_BUFF, 0, (SA*)&server_connect, sizeof(server_connect));
-  close(cfd);
-  return NULL;
-}
 
-void CopySockaddr_in(struct sockaddr_in *dest, struct sockaddr_in *source) {
-  dest->sin_addr = source->sin_addr;
-  dest->sin_family = source->sin_family;
-  dest->sin_port = source->sin_port;
-}
 
 int main() {
   head = CreateList();
@@ -170,3 +126,56 @@ int main() {
   printf("SERVER END WORK\n");
   exit(EXIT_SUCCESS);
 }
+
+
+static inline void CopySockaddr_in(struct sockaddr_in *dest, struct sockaddr_in *source) {
+  dest->sin_addr = source->sin_addr;
+  dest->sin_family = source->sin_family;
+  dest->sin_port = source->sin_port;
+}
+
+void *StopServer(void *s) {
+  while (stop) {
+    if (scanf("%d", &stop) != 1) {
+      stop = 0;
+    }
+  }
+  int cfd = socket(AF_INET, SOCK_STREAM, 0);
+  if (cfd == -1) {
+    handler_error("socket");
+  }
+  struct sockaddr_in server_connect;
+  memset(&server_connect, 0, sizeof(server_connect));
+  server_connect.sin_family = AF_INET;
+  server_connect.sin_port = htons(PORT);
+  inet_pton(AF_INET, IP_ADDRESS, &server_connect.sin_addr);
+  char buff[SIZE_BUFF] = {0};
+  strcpy(buff, "close");
+  sendto(cfd, buff, SIZE_BUFF, 0, (SA*)&server_connect, sizeof(server_connect));
+  close(cfd);
+  return NULL;
+}
+
+static inline int SettingsChild(int *pt){
+  int port = PORT;
+  int fd = socket(AF_INET, SOCK_DGRAM, 0);
+  struct sockaddr_in server_settings, client_settings;
+  server_settings.sin_family = AF_INET;
+  inet_pton(AF_INET, IP_ADDRESS, &server_settings.sin_addr);
+  server_settings.sin_port = htons(port);
+  while (1) {
+    if (bind(fd, (SA *)&server_settings, sizeof(server_settings)) == -1) {
+      if (errno == EADDRINUSE) {
+        port++;
+        server_settings.sin_port = htons(port);
+        continue;
+      } else {
+        handler_error("bind");
+      }
+    }
+    break;
+  }
+  *pt = port;
+  return fd;
+}
+
