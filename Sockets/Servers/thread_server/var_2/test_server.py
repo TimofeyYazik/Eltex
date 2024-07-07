@@ -7,11 +7,6 @@ def run_client():
     process = subprocess.Popen(["./client"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
     
     try:
-        # Отправляем команды в терминал
-        commands = ["time", "time", "exit"]
-        input_data = "\n".join(commands) + "\n"
-        process.communicate(input=input_data)
-
         # Ждем завершения процесса и получаем его вывод
         stdout, stderr = process.communicate()
         print(f"Client output:\n{stdout}")
