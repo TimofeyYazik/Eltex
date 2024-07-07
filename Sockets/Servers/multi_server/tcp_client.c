@@ -12,7 +12,7 @@
 #include <sys/signal.h>
 
 #define SA struct sockaddr
-#define PORT 6666
+#define PORT 6667
 #define SIZE_BUFF 80
 #define IP_ADDRES "127.0.0.1"
 #define handler_error(text) \
