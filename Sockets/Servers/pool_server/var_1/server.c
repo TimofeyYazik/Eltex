@@ -180,6 +180,7 @@ int main() {
   for (int i = 0; i < POOL_TREADS; i++) {
     pthread_join(arr_treads[i], NULL);
   }
+  pthread_mutex_destroy(&mutex);
   close(main_sfd);
   printf("SERVER END WORK\n");
   exit(EXIT_SUCCESS);

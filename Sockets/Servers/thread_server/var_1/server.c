@@ -16,7 +16,7 @@
 #define PORT 6667
 #define LISTEN_USERS 8
 #define SIZE_BUFF 80
-#define IP_ADDRESS "127.0.0.2"
+#define IP_ADDRES "127.0.0.2"
 #define handler_error(text) \
           do { perror(text); exit(EXIT_FAILURE); } while(0);
 
@@ -77,7 +77,7 @@ void *StopServer(void *null) {
     struct sockaddr_in server_connect;
     server_connect.sin_family = AF_INET;
     server_connect.sin_port = htons(PORT);
-    inet_pton(AF_INET, IP_ADDRESS, &server_connect.sin_addr);
+    inet_pton(AF_INET, IP_ADDRES, &server_connect.sin_addr);
     char buff[SIZE_BUFF] = {0};
     strcpy(buff, "close");
 
@@ -139,7 +139,7 @@ int main() {
     struct sockaddr_in server_settings;
     server_settings.sin_family = AF_INET;
     server_settings.sin_port = htons(PORT);
-    if (inet_pton(AF_INET, IP_ADDRESS, &server_settings.sin_addr) <= 0) {
+    if (inet_pton(AF_INET, IP_ADDRES, &server_settings.sin_addr) <= 0) {
         handler_error("inet_pton");
     }
     if (bind(main_sfd, (SA *)&server_settings, sizeof(server_settings)) == -1) {

@@ -46,7 +46,6 @@ void *StopServer(void *null){
   return NULL;
 }
 
-
 void *ChildServer(void *null){
   int fd = 0;
   time_t tm = 0;
@@ -71,8 +70,6 @@ void *ChildServer(void *null){
   return NULL;
 }
 
-
-
 int main(){
   int sock = socket(AF_INET, SOCK_STREAM, 0);
   pthread_t servers[POOL_TREADS] = {0};
@@ -93,6 +90,7 @@ int main(){
   for(int i = 0; i < POOL_TREADS; i++){
     pthread_create(&servers[i], NULL, ChildServer, NULL);
   }
+  printf("TYPE KEY TO STOP SERVER\n");
   while(!stop){
     int asock = accept(sock, (SA*)&serv, &size);
     ListServer *nel = malloc(sizeof(ListServer));
