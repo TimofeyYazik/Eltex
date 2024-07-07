@@ -16,20 +16,10 @@ void InsertEnd(ListServer *head, ListServer *new_element) {
   new_element->next = NULL;
 }
 
-//ListServer *SearchFD(int fd, ListServer *head) {
-//  ListServer *buff = head;
-//  while (buff != NULL) {
-//    if (buff->active_fd == fd)
-//      return buff;
-//    buff = buff->next;
-//  }
-//  return NULL;
-//}
-
 ListServer *SearchFree(ListServer *head) {
   ListServer *buff = head;
   while (buff != NULL) {
-      if (buff->busy == 0 && buff->sock.sin_family != 0)
+      if (buff->busy == 0)
       return buff;
     buff = buff->next;
   }
@@ -54,7 +44,7 @@ ListServer *CreateList() {
   ListServer *head = (ListServer *)malloc(sizeof(ListServer));
   if (head != NULL) {
     memset(&head->sock, 0, sizeof(head->sock));
-    head->busy = 0;
+    head->busy = -1;
     head->prev = NULL;
     head->next = NULL;
   }

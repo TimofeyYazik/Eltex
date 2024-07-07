@@ -1,4 +1,3 @@
-
 #include <arpa/inet.h>
 #include <errno.h>
 #include <netinet/in.h>
@@ -20,10 +19,7 @@
 #define SIZE_BUFF 80
 #define IP_ADDRES "127.0.0.2"
 #define handler_error(text)                                                    \
-  do {                                                                         \
-    perror(text);                                                              \
-    exit(EXIT_FAILURE);                                                        \
-  } while (0);
+  do { perror(text); exit(EXIT_FAILURE); } while (0);
 
 ListServer *head = NULL;
 volatile int stop = 1;
@@ -34,9 +30,8 @@ void *ChildServer(void *null) {
   int fd = socket(AF_INET, SOCK_DGRAM, 0);
   struct sockaddr_in server_settings, client_settings;
   server_settings.sin_family = AF_INET;
-  inet_pton(AF_INET, IP_ADDRES, &server_settings.sin_addr.s_addr); 
+  inet_pton(AF_INET, IP_ADDRES, &server_settings.sin_addr); 
   server_settings.sin_port = htons(port);
-
   while (1) {
     if (bind(fd, (SA *)&server_settings, sizeof(server_settings)) == -1) {
       if (errno == EADDRINUSE) {
@@ -80,7 +75,7 @@ void *ChildServer(void *null) {
         printf("CLIENT IS OUT\n");
         Remove(f);
         break;
-      } else {
+      } else if(!strcmp(buff, "time")){
         time(&time_now);
         strcpy(buff, ctime(&time_now));
         if((send_r = sendto(fd, (void *)buff, SIZE_BUFF, 0, (SA*)&f->sock, len)) == -1){
@@ -130,8 +125,6 @@ void CopySockaddr_in(struct sockaddr_in *dest, struct sockaddr_in *source){
 int main() {
   head = CreateList();
   pthread_t arr_treads[POOL_TREADS] = {0};
-  int ip_addres = 0;
-  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
   int main_sfd = socket(AF_INET, SOCK_DGRAM, 0);
 
   if (main_sfd == -1) {
@@ -140,8 +133,8 @@ int main() {
 
   struct sockaddr_in server_settings, client_endpoint;
   server_settings.sin_family = AF_INET;
-  server_settings.sin_addr.s_addr = ip_addres;
   server_settings.sin_port = htons(PORT);
+  inet_pton(AF_INET, IP_ADDRES, &server_settings.sin_addr);
   socklen_t size = sizeof(client_endpoint); 
   if (bind(main_sfd, (SA *)&server_settings, sizeof(server_settings)) == -1) {
     handler_error("bind");
@@ -149,7 +142,7 @@ int main() {
 
   socklen_t len = sizeof(server_settings);
   pthread_t stop_tread;
-  pthread_create(&stop_tread, NULL, StopServer, (void *)&ip_addres);
+  pthread_create(&stop_tread, NULL, StopServer, NULL);
   for (int i = 0; i < POOL_TREADS; i++) {
     pthread_create(&arr_treads[i], NULL, ChildServer, NULL);
   }
