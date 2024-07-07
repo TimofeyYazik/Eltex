@@ -40,7 +40,7 @@ void *ChildServer(void *null) {
     pthread_mutex_lock(&mutex);
     f = SearchFree(head);
     if (f == NULL) {
-      usleep(80);
+      usleep(1000);
       pthread_mutex_unlock(&mutex);
       continue;
     }
@@ -59,6 +59,7 @@ void *ChildServer(void *null) {
       break;
     }
   }
+  close(fd);
   return NULL;
 }
 
@@ -110,6 +111,7 @@ int main() {
   for (int i = 0; i < POOL_THREADS; i++) {
     pthread_join(arr_threads[i], NULL);
   }
+  pthread_mutex_destroy(&mutex);
   close(main_sfd);
   FreeList(head);
   printf("SERVER END WORK\n");
