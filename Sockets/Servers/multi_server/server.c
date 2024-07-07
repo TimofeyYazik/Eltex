@@ -112,7 +112,7 @@ int main() {
         recvfrom(sfd_udp, buff, SIZE_BUFF, 0, (SA*)&client_udp, &size_client);
         time(&tm);
         strncpy(buff, ctime(&tm), SIZE_BUFF - 1);
-        sendto(conn_sock, buff, SIZE_BUFF, 0, (SA*)&client_udp, size_client);          
+        sendto(sfd_udp, buff, SIZE_BUFF, 0, (SA*)&client_udp, size_client);          
       }
     }
   }
