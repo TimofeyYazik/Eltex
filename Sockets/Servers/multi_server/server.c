@@ -70,7 +70,6 @@ int main() {
   pthread_t stop_tread;
   pthread_create(&stop_tread, NULL, StopServer, (void *)&ip_addres);
 
-
   
 
   printf("SERVER START WORK\n");
