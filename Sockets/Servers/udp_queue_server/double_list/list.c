@@ -6,6 +6,16 @@
 #define ERROR 1
 #define OK 0
 
+
+void FreeList(ListServer *head){
+  ListServer *buff = head;
+  while(buff->next){
+    buff = buff->next;
+    free(buff->prev);
+  }
+  free(buff);
+}
+
 void InsertEnd(ListServer *head, ListServer *new_element) {
   ListServer *buff = head;
   while (buff->next != NULL) {

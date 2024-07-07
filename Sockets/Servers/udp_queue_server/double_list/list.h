@@ -13,5 +13,5 @@ void InsertEnd(ListServer *head, ListServer *new_element);
 int Remove(ListServer *el);
 ListServer *SearchFree(ListServer *head);
 ListServer *CreateList();
-
+void FreeList(ListServer *head);
 #endif // _LIST_H_
