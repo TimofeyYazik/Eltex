@@ -24,13 +24,27 @@
     exit(EXIT_FAILURE);                                                        \
   } while (0);
 
-void *StopServer(void *null);
-void *ChildServer(void *null);
+
 
 ListServer *head = NULL;
-volatile int stop = 1;
+volatile int stop = 0;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
+void *StopServer(void *null){
+  scanf("%d", &stop);
+  stop = 1;
+  struct sockaddr_in serv;
+  int sock = socket(AF_INET, SOCK_STREAM, 0);
+  serv.sin_family = AF_INET;
+  serv.sin_port = htons(PORT);
+  inet_pton(AF_INET, IP_ADDRES, &serv.sin_addr);
+  connect(sock, (SA*)&serv, sizeof(serv));
+  char buff[SIZE_BUFF] = {0};
+  strcpy(buff, "close");
+  send(sock, buff, SIZE_BUFF, 0);
+  close(sock);
+  return NULL;
+}
 
 
 void *ChildServer(void *null){
@@ -38,7 +52,7 @@ void *ChildServer(void *null){
   time_t tm = 0;
   char buff[SIZE_BUFF] = {0};
   ListServer *f = NULL;
-  while (1) {
+  while (!stop) {
     pthread_mutex_lock(&mutex);
     f = SearchFree(head);
     if(f == NULL){
@@ -47,7 +61,6 @@ void *ChildServer(void *null){
       continue;
     }
     fd = f->active_fd;
-    printf("client\n");
     Remove(f);
     pthread_mutex_unlock(&mutex);
     time(&tm);
@@ -63,6 +76,7 @@ void *ChildServer(void *null){
 int main(){
   int sock = socket(AF_INET, SOCK_STREAM, 0);
   pthread_t servers[POOL_TREADS] = {0};
+  char buff[SIZE_BUFF] = {0};
   struct sockaddr_in serv;
   serv.sin_family = AF_INET;
   serv.sin_port = htons(PORT);
@@ -74,13 +88,17 @@ int main(){
   }
   listen(sock, 5);
   socklen_t size = sizeof(serv);
+  pthread_t st = 0;
+  pthread_create(&st, NULL, StopServer, NULL);
   for(int i = 0; i < POOL_TREADS; i++){
     pthread_create(&servers[i], NULL, ChildServer, NULL);
   }
-  while(1){
+  while(!stop){
     int asock = accept(sock, (SA*)&serv, &size);
     ListServer *nel = malloc(sizeof(ListServer));
     nel->active_fd = asock;
+    recv(asock, buff, SIZE_BUFF, 0);
+    if(!strcmp(buff, "close")) break;;
     pthread_mutex_lock(&mutex);
     InsertEnd(head, nel);
     pthread_mutex_unlock(&mutex);

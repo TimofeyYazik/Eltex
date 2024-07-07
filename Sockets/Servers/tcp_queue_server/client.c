@@ -18,8 +18,6 @@
 #define handler_error(text) \
           do { perror(text); exit(EXIT_FAILURE); } while(0);
 
-
-
 int main(){
   int ip_addres = 0;
   inet_pton(AF_INET, IP_ADDRES, &ip_addres);
@@ -35,6 +33,7 @@ int main(){
   if(connect(cfd, (SA*)&server_connect, sizeof(server_connect)) == -1){
     handler_error("ne vezet");
   }
+  send(cfd, buff, SIZE_BUFF, 0);
   recv(cfd, buff, SIZE_BUFF, 0);
   printf("%s", buff);
   close(cfd);
