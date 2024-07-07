@@ -10,6 +10,7 @@
 #include <sys/socket.h>
 #include <time.h>
 #include <unistd.h>
+#include <sys/epoll.h>
 
 #include "double_list/list.h"
 
@@ -54,7 +55,7 @@ int main() {
   server_tcp.sin_family = AF_INET;
   server_tcp.sin_addr.s_addr = ip_addres;
   server_tcp.sin_port = htons(PORT_TCP);
-
+  
   if (bind(sfd_tsp, (SA *)&server_tcp, sizeof(server_tcp)) == -1) {
     handler_error("bind");
   }
@@ -68,6 +69,9 @@ int main() {
   socklen_t len = sizeof(server_udp);
   pthread_t stop_tread;
   pthread_create(&stop_tread, NULL, StopServer, (void *)&ip_addres);
+
+
+  
 
   printf("SERVER START WORK\n");
   printf("PRESS 0 (ZERO) SERVER STOP\n");
