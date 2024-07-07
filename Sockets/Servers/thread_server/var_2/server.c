@@ -21,7 +21,6 @@
           do { perror(text); exit(EXIT_FAILURE); } while(0);
 
 volatile int stop = 1;
-pthread_mutex_t fd_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 typedef struct {
     int *arr;
@@ -49,8 +48,7 @@ void *ChildServer(void *fd) {
     return NULL;
 }
 
-void *StopServer(void *ip) {
-    int *ip_address = ip;
+void *StopServer(void *null) {
     while (1) {
         if (scanf("%d", &stop) != 1) {
             stop = 0;
@@ -63,8 +61,8 @@ void *StopServer(void *ip) {
     }
     struct sockaddr_in server_connect;
     server_connect.sin_family = AF_INET;
-    server_connect.sin_addr.s_addr = *ip_address;
     server_connect.sin_port = htons(PORT);
+    inet_pton(AF_INET, IP_ADDRESS, &server_connect.sin_addr);
     char buff[SIZE_BUFF] = {0};
     strcpy(buff, "close");
 
@@ -77,37 +75,30 @@ void *StopServer(void *ip) {
 }
 
 void AddFD(int fd, ActiveFD *obj) {
-//    pthread_mutex_lock(&fd_mutex);
     if (obj->len == obj->size - 1) {
         obj->size = obj->size * 3 / 2;
         obj->arr = realloc(obj->arr, obj->size * sizeof(int));
         if (!obj->arr) {
-  //          pthread_mutex_unlock(&fd_mutex);
             handler_error("realloc");
         }
     }
     obj->arr[obj->len] = fd;
     obj->len++;
-   // pthread_mutex_unlock(&fd_mutex);
 }
 
 int AddThread(int *fd, Thread *obj) {
-   // pthread_mutex_lock(&fd_mutex);
     if (obj->len == obj->size) {
         obj->size = obj->size * 3 / 2;
         obj->arr = realloc(obj->arr, obj->size * sizeof(pthread_t));
         if (!obj->arr) {
-     //       pthread_mutex_unlock(&fd_mutex);
             handler_error("realloc");
         }
     }
     if (pthread_create(&obj->arr[obj->len], NULL, ChildServer, (void *)fd) != 0) {
         perror("pthread_create");
-       // pthread_mutex_unlock(&fd_mutex);
         return 1;
     }
     obj->len++;
-   // pthread_mutex_unlock(&fd_mutex);
     return 0;
 }
 
@@ -144,7 +135,7 @@ int main() {
     }
     socklen_t len = sizeof(server_settings);
     pthread_t stop_thread;
-    if (pthread_create(&stop_thread, NULL, StopServer, (void *)&server_settings.sin_addr) != 0) {
+    if (pthread_create(&stop_thread, NULL, StopServer, NULL) != 0) {
         handler_error("pthread_create");
     }
 
@@ -158,12 +149,8 @@ int main() {
             continue;
         }
         int recv_bytes = recv(active_fd, buff, SIZE_BUFF, 0);
-        if (recv_bytes <= 0) {
-            if (recv_bytes == 0) {
-                printf("Connection closed by client before sending data\n");
-            } else {
-                perror("recv");
-            }
+        if (recv_bytes == -1) {
+            perror("recv");
             close(active_fd);
             continue;
         }
