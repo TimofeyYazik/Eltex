@@ -119,6 +119,7 @@ int main() {
   pthread_join(stop_tread, NULL);
   close(sfd_tcp);
   close(sfd_udp);
+  close(epfd);
   printf("SERVER END WORK\n");
   exit(EXIT_SUCCESS);
 }
