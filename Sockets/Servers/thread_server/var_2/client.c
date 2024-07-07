@@ -38,6 +38,7 @@ int main(){
   strcpy(buff, "conn");
   send(cfd, buff, SIZE_BUFF, 0);
   recv(cfd, buff, SIZE_BUFF, 0);
+  printf("%s", buff);
   close(cfd);
   exit(EXIT_SUCCESS);
 }
