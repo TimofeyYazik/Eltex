@@ -47,7 +47,6 @@ void *ChildServer(void *null) {
     CopySockaddr_in(&client, &f->sock);
     Remove(f);
     pthread_mutex_unlock(&mutex);
-    printf("CLIENT SERVED\n");
     sprintf(buff, "%d", port);
     sendto(fd, buff, SIZE_BUFF, 0, (SA*)&client, sizeof(f->sock));
     int recv_r = 0;
