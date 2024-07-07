@@ -1,4 +1,3 @@
-#include <fcntl.h>
 #include <arpa/inet.h>
 #include <errno.h>
 #include <netinet/in.h>
@@ -13,42 +12,50 @@
 #include <unistd.h>
 #include <sys/epoll.h>
 
-#define POOL_THREADS 50
 #define SA struct sockaddr
 #define PORT_UDP 6666
 #define MAX_EVENTS 10
 #define PORT_TCP 6667
 #define SIZE_BUFF 80
-#define IP_ADDRESS "127.0.0.1"
+#define IP_ADDRES "127.0.0.1"
 #define handler_error(text) \
   do { \
     perror(text); \
     exit(EXIT_FAILURE); \
   } while (0);
 
-volatile int stop = 1;
 void *StopServer(void *null) {
+  int stop = 1;
   while (stop) {
     if (scanf("%d", &stop) != 1) {
       stop = 0;
     }
   }
+  int ip_addres = 0;
+  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
+  int cfd = socket(AF_INET, SOCK_DGRAM, 0);
+  if(cfd == -1){
+    handler_error("socket");
+  }
+  struct sockaddr_in server_connect;
+  server_connect.sin_family = AF_INET;
+  server_connect.sin_addr.s_addr = ip_addres;
+  server_connect.sin_port = htons(PORT_UDP);
+  char buff[SIZE_BUFF] = {0};
+  strcpy(buff, "close");
+  socklen_t size_struct = sizeof(server_connect);
+  if(connect(cfd, (SA*)&server_connect, sizeof(server_connect)) == -1){
+    handler_error("ne vezet");
+  }
+  send(cfd, buff, SIZE_BUFF, 0);
+  close(cfd);
   return NULL;
 }
 
-//void set_nonblocking(int sockfd) {
-//    int flags = fcntl(sockfd, F_GETFL, 0);
-//    if (flags == -1) {
-//        handler_error("fcntl");
-//    }
-//    if (fcntl(sockfd, F_SETFL, flags | O_NONBLOCK) == -1) {
-//        handler_error("fcntl");
-//    }
-//}
 
 int main() {
   int ip_address = 0;
-  inet_pton(AF_INET, IP_ADDRESS, &ip_address);
+  inet_pton(AF_INET, IP_ADDRES, &ip_address);
 
   int sfd_tcp = socket(AF_INET, SOCK_STREAM, 0);
   int sfd_udp = socket(AF_INET, SOCK_DGRAM, 0);
@@ -56,8 +63,6 @@ int main() {
     handler_error("socket");
   }
 
- // set_nonblocking(sfd_tcp);
- // set_nonblocking(sfd_udp);
 
   struct sockaddr_in server_udp, server_tcp;
   struct sockaddr_in client_udp;
@@ -113,8 +118,8 @@ int main() {
   int conn_sock = 0;
   socklen_t size = sizeof(client_udp);
   char buff[SIZE_BUFF] = {0};
-
-  while (stop) {
+  int stop = 0;
+  while (!stop) {
     int nfds = epoll_wait(epfd, events, MAX_EVENTS, -1);
     if (nfds == -1) {
         perror("epoll_wait");
@@ -128,7 +133,6 @@ int main() {
           perror("accept");
           continue;
         }
-   //     set_nonblocking(conn_sock);
         time(&tm);
         strncpy(buff, ctime(&tm), SIZE_BUFF - 1);
         send(conn_sock, buff, SIZE_BUFF, 0);
@@ -136,9 +140,11 @@ int main() {
       } else if (events[i].data.fd == sfd_udp) {
         socklen_t size_client = sizeof(client_udp);
         recv_r = recvfrom(sfd_udp, buff, SIZE_BUFF, 0, (SA*)&client_udp, &size_client);
+        if(!strcmp(buff, "close")) break;
         if (recv_r == -1) {
             perror("recvfrom");
-            continue;
+            stop = 1;
+            break;
         }
         time(&tm);
         strncpy(buff, ctime(&tm), SIZE_BUFF - 1);
