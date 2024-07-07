@@ -75,10 +75,6 @@ void *ChildServer(void *port_p) {
       continue;
     }
     printf("START SERVED CLIENT\n");
-    if(recvfrom(thread_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings, &client_size) == -1){
-        perror("recvfrom thread");
-        continue;
-    }
     serv[serv_num].busy = 0;
     time(&time_now);
     strncpy(buff, ctime(&time_now), 79);
