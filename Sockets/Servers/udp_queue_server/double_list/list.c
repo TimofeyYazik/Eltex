@@ -29,7 +29,7 @@ void InsertEnd(ListServer *head, ListServer *new_element) {
 ListServer *SearchFree(ListServer *head) {
   ListServer *buff = head;
   while (buff != NULL) {
-      if (buff->sock.sin_family == 0)
+      if (buff->sock.sin_family != 0)
       return buff;
     buff = buff->next;
   }
