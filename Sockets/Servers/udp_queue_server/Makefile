@@ -3,7 +3,7 @@
 
 all: server client
 
-server: server.o 
+server: server.o double_list/list.o
 	gcc -pthread $^ -o server 
 
 client: client.o
