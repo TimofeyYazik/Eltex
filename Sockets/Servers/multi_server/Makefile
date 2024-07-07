@@ -3,7 +3,7 @@
 
 all: server tcp_client udp_client
 
-server: server.o double_list/list.o
+server: server.o 
 	gcc -pthread $^ -o server 
 
 tcp_client: tcp_client.o
