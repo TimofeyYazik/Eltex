@@ -92,14 +92,11 @@ void *ChildServer(void *null) {
 }
 
 void *StopServer(void *s) {
-  int *ip = s;
-  int ip_addres = *ip;
   while (stop) {
     if (scanf("%d", &stop) != 1) {
       stop = 0;
     }
   }
-  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
   int cfd = socket(AF_INET, SOCK_STREAM, 0);
   if (cfd == -1) {
     handler_error("socket");
@@ -107,8 +104,8 @@ void *StopServer(void *s) {
   struct sockaddr_in server_connect, server_endpoint;
   memset(&server_endpoint, 0, sizeof(server_endpoint));
   server_connect.sin_family = AF_INET;
-  server_connect.sin_addr.s_addr = ip_addres;
   server_connect.sin_port = htons(PORT);
+  inet_pton(AF_INET, IP_ADDRES, &server_connect.sin_addr);
   char buff[SIZE_BUFF] = {0};
   strcpy(buff, "close");
   sendto(cfd, buff, SIZE_BUFF, 0, (SA*)&server_endpoint, sizeof(server_endpoint));
