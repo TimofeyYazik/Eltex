@@ -21,6 +21,7 @@
           do { perror(text); exit(EXIT_FAILURE); } while(0);
 
 volatile int stop = 1;
+pthread_mutex_t fd_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 typedef struct {
     int *arr;
@@ -40,9 +41,9 @@ void *ChildServer(void *fd) {
     char buff[SIZE_BUFF] = {0};
     time(&time_now);
     strcpy(buff, ctime(&time_now));
-    int send_bytes  = send(*active_fd, buff, SIZE_BUFF, 0);
-    if (send_bytes  == -1) {
-       perror("send");
+    int send_bytes = send(*active_fd, buff, SIZE_BUFF, 0);
+    if (send_bytes == -1) {
+        perror("send");
     }
     close(*active_fd);
     return NULL;
@@ -76,30 +77,37 @@ void *StopServer(void *ip) {
 }
 
 void AddFD(int fd, ActiveFD *obj) {
+    pthread_mutex_lock(&fd_mutex);
     if (obj->len == obj->size - 1) {
         obj->size = obj->size * 3 / 2;
         obj->arr = realloc(obj->arr, obj->size * sizeof(int));
         if (!obj->arr) {
+            pthread_mutex_unlock(&fd_mutex);
             handler_error("realloc");
         }
     }
-    if (obj->len != 0) obj->len++;
     obj->arr[obj->len] = fd;
+    obj->len++;
+    pthread_mutex_unlock(&fd_mutex);
 }
 
 int AddThread(int *fd, Thread *obj) {
+    pthread_mutex_lock(&fd_mutex);
     if (obj->len == obj->size) {
         obj->size = obj->size * 3 / 2;
         obj->arr = realloc(obj->arr, obj->size * sizeof(pthread_t));
         if (!obj->arr) {
+            pthread_mutex_unlock(&fd_mutex);
             handler_error("realloc");
         }
     }
     if (pthread_create(&obj->arr[obj->len], NULL, ChildServer, (void *)fd) != 0) {
         perror("pthread_create");
+        pthread_mutex_unlock(&fd_mutex);
         return 1;
     }
     obj->len++;
+    pthread_mutex_unlock(&fd_mutex);
     return 0;
 }
 
@@ -166,7 +174,7 @@ int main() {
         }
         printf("NEW CLIENT: %d\n", active_fd);
         AddFD(active_fd, &obj_act);
-        if (AddThread(&obj_act.arr[obj_act.len], &obj_thread) != 0) {
+        if (AddThread(&obj_act.arr[obj_act.len - 1], &obj_thread) != 0) {
             strcpy(buff, "error");
             send(active_fd, buff, SIZE_BUFF, 0);
             obj_act.len--;
