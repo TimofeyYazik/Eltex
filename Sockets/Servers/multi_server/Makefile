@@ -7,9 +7,9 @@ server: server.o
 	gcc -pthread $^ -o server 
 
 tcp_client: tcp_client.o
-	gcc $^ -o uclient
-udp_client: udp_client.o
 	gcc $^ -o tclient
+udp_client: udp_client.o
+	gcc $^ -o uclient
 
 clean:
-	rm -rf server client *.o 
+	rm -rf server uclient tclient *.o 
