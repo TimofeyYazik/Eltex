@@ -47,6 +47,7 @@ void *ChildServer(void *null){
       continue;
     }
     fd = f->active_fd;
+    printf("client\n");
     Remove(f);
     pthread_mutex_unlock(&mutex);
     time(&tm);
