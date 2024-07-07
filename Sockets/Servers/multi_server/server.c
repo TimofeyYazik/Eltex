@@ -70,7 +70,7 @@ int main() {
   pthread_t stop_tread;
   pthread_create(&stop_tread, NULL, StopServer, (void *)&ip_addres);
 
-  
+  int epoll = epoll_create1(0);  
 
   printf("SERVER START WORK\n");
   printf("PRESS 0 (ZERO) SERVER STOP\n");
