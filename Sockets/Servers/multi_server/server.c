@@ -140,10 +140,12 @@ int main() {
       } else if (events[i].data.fd == sfd_udp) {
         socklen_t size_client = sizeof(client_udp);
         recv_r = recvfrom(sfd_udp, buff, SIZE_BUFF, 0, (SA*)&client_udp, &size_client);
-        if(!strcmp(buff, "close")) break;
+        if(!strcmp(buff, "close")){
+            stop = 1;
+            break;
+        }
         if (recv_r == -1) {
             perror("recvfrom");
-            stop = 1;
             break;
         }
         time(&tm);
