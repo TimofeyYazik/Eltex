@@ -76,8 +76,8 @@ void *ChildServer(void *port_p) {
     }
     printf("START SERVED CLIENT\n");
     time(&time_now);
-    if(recvfrom(thread_sfd, buff, SIZE_BUFF, 0, &client_settings, &client_size)){
-      perror("sendto thread");
+    if(recvfrom(thread_sfd, buff, SIZE_BUFF, 0, (SA*)&client_settings, &client_size) == -1){
+      perror("recv thread");
       serv[serv_num].busy = 0;
       continue;
     }
