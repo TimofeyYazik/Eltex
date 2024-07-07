@@ -36,15 +36,15 @@ void *StopServer(void *null) {
   return NULL;
 }
 
-void set_nonblocking(int sockfd) {
-    int flags = fcntl(sockfd, F_GETFL, 0);
-    if (flags == -1) {
-        handler_error("fcntl");
-    }
-    if (fcntl(sockfd, F_SETFL, flags | O_NONBLOCK) == -1) {
-        handler_error("fcntl");
-    }
-}
+//void set_nonblocking(int sockfd) {
+//    int flags = fcntl(sockfd, F_GETFL, 0);
+//    if (flags == -1) {
+//        handler_error("fcntl");
+//    }
+//    if (fcntl(sockfd, F_SETFL, flags | O_NONBLOCK) == -1) {
+//        handler_error("fcntl");
+//    }
+//}
 
 int main() {
   int ip_address = 0;
@@ -56,8 +56,8 @@ int main() {
     handler_error("socket");
   }
 
-  set_nonblocking(sfd_tcp);
-  set_nonblocking(sfd_udp);
+ // set_nonblocking(sfd_tcp);
+ // set_nonblocking(sfd_udp);
 
   struct sockaddr_in server_udp, server_tcp;
   struct sockaddr_in client_udp;
@@ -128,7 +128,7 @@ int main() {
           perror("accept");
           continue;
         }
-        set_nonblocking(conn_sock);
+   //     set_nonblocking(conn_sock);
         time(&tm);
         strncpy(buff, ctime(&tm), SIZE_BUFF - 1);
         send(conn_sock, buff, SIZE_BUFF, 0);
