@@ -89,6 +89,7 @@ int main() {
   char buff[SIZE_BUFF] = {0};
   while (stop) {
     int nfds = epoll_wait(epfd, events, MAX_EVENTS, -1);
+    printf("EVENT\n");
     if (nfds == -1) {
         perror("epoll_wait");
         close(epfd);
