@@ -35,21 +35,8 @@ int main(){
   if(connect(cfd, (SA*)&server_connect, sizeof(server_connect)) == -1){
     handler_error("ne vezet");
   }
-  send(cfd, buff, SIZE_BUFF, 0);
-  printf("type 'time' to display the time\n");
-  printf("type 'exit' to exit\n");
-  while(1){
-    scanf("%7s", buff);
-    if(!strcmp(buff, "exit")){
-      send(cfd, buff, SIZE_BUFF, 0);
-      break;
-    }    
-    if(!strcmp(buff, "time")){
-      send(cfd, buff, SIZE_BUFF, 0);
-      recv(cfd, buff, SIZE_BUFF, 0);
-      printf("%s", buff);
-    }
-  }
+  recv(cfd, buff, SIZE_BUFF, 0);
+  printf("%s", buff);
   close(cfd);
   exit(EXIT_SUCCESS);
 }
