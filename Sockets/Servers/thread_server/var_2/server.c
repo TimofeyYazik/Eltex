@@ -148,7 +148,7 @@ int main() {
             continue;
         }
         if (strcmp(buff, "close") == 0) break;
-        if (strcmp(buff, "conn") != 0) {
+        if (strcmp(buff, "conn")) {
             close(active_fd);
             continue;
         }

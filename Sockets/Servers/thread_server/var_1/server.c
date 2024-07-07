@@ -40,12 +40,8 @@ void *ChildServer(void *fd) {
     char buff[SIZE_BUFF] = {0};
     while (1) {
         int recv_bytes = recv(*active_fd, buff, SIZE_BUFF, 0);
-        if (recv_bytes <= 0) {
-            if (recv_bytes == 0) {
-                printf("Client disconnected: %d\n", *active_fd);
-            } else {
-                perror("recv");
-            }
+        if (recv_bytes == -1) {
+            perror("recv");
             break;
         }
         printf("Received from client %d: %s\n", *active_fd, buff);
@@ -174,7 +170,7 @@ int main() {
             continue;
         }
         if (strcmp(buff, "close") == 0) break;
-        if (strcmp(buff, "conn") != 0) {
+        if (strcmp(buff, "conn")) {
             close(active_fd);
             continue;
         }
