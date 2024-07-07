@@ -80,10 +80,10 @@ void *ChildServer(void *port_p) {
         perror("recvfrom thread");
         continue;
       }
-      printf("RECV CLIENT\n");
+      printf("Received from client %s\n", buff);
       if (!strcmp(buff, "exit")) {
         serv[serv_num].busy = 0;
-        printf("STOP SERVED CLIENT\n");
+        printf("Client is out\n");
         break;
       } else {
         time(&time_now);
@@ -92,7 +92,7 @@ void *ChildServer(void *port_p) {
           perror("sendto thread");
           break;
         }
-        printf("SEND CLIENT\n");
+        printf("Sent to client %s\n", buff);
       }
     }
   }
@@ -101,8 +101,7 @@ void *ChildServer(void *port_p) {
   return NULL;
 }
 
-void *StopServer(void *ip) {
-  int *ip_addres = ip;
+void *StopServer(void *null) {
   while (stop) {
     if (scanf("%d", &stop) != 1) {
       stop = 0;
@@ -114,8 +113,8 @@ void *StopServer(void *ip) {
   }
   struct sockaddr_in server_settings, client_settings;
   server_settings.sin_family = AF_INET;
-  server_settings.sin_addr.s_addr = *ip_addres;
   server_settings.sin_port = htons(PORT);
+  inet_pton(AF_INET, IP_ADDRES, &server_settings.sin_addr);
   char buff[SIZE_BUFF] = {0};
   strcpy(buff, "close");
   sendto(main_sfd, buff, SIZE_BUFF, 0, (SA *)&server_settings, sizeof(server_settings));
