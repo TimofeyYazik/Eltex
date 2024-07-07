@@ -75,14 +75,20 @@ void *ChildServer(void *port_p) {
       continue;
     }
     printf("START SERVED CLIENT\n");
-    serv[serv_num].busy = 0;
     time(&time_now);
+    if(recvfrom(thread_sfd, buff, SIZE_BUFF, 0, &client_settings, &client_size)){
+      perror("sendto thread");
+      serv[serv_num].busy = 0;
+      continue;
+    }
     strncpy(buff, ctime(&time_now), 79);
     if(sendto(thread_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings, client_size) == -1){
       perror("sendto thread");
-      break;
-      printf("Sent to client %s\n", buff);
-     }
+      serv[serv_num].busy = 0;
+      continue;
+    }
+    printf("Sent to client %s\n", buff);
+    serv[serv_num].busy = 0;
   }
   close(thread_sfd);
   printf("THREAD IS OUT\n");
