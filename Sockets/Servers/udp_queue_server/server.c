@@ -13,7 +13,7 @@
 
 #include "double_list/list.h"
 
-#define POOL_THREADS 50
+#define POOL_THREADS 20
 #define SA struct sockaddr
 #define PORT 6666
 #define SIZE_BUFF 80
