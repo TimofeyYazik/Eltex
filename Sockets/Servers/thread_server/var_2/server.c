@@ -1,4 +1,3 @@
-#include <signal.h>
 #include <stdint.h>
 #include <sys/socket.h>
 #include <stdio.h>
@@ -39,7 +38,7 @@ void *ChildServer(void *fd) {
     time_t time_now = 0;
     char buff[SIZE_BUFF] = {0};
     time(&time_now);
-    strcpy(buff, ctime(&time_now));
+    strncpy(buff, ctime(&time_now), SIZE_BUFF-1);
     int send_bytes = send(*active_fd, buff, SIZE_BUFF, 0);
     if (send_bytes == -1) {
         perror("send");
@@ -107,16 +106,10 @@ int main() {
     obj_act.size = 100;
     obj_act.len = 0;
     obj_act.arr = calloc(obj_act.size, sizeof(int));
-    if (!obj_act.arr) {
-        handler_error("calloc");
-    }
     Thread obj_thread;
     obj_thread.len = 0;
     obj_thread.size = 100;
     obj_thread.arr = calloc(obj_thread.size, sizeof(pthread_t));
-    if (!obj_thread.arr) {
-        handler_error("calloc");
-    }
     int main_sfd = socket(AF_INET, SOCK_STREAM, 0);
     if (main_sfd == -1) {
         handler_error("socket");
