@@ -12,7 +12,6 @@
 #include <unistd.h>
 #include <sys/epoll.h>
 
-#include "double_list/list.h"
 
 #define POOL_TREADS 50
 #define SA struct sockaddr
