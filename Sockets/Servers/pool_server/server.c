@@ -71,7 +71,7 @@ void *ChildServer(void *port_p) {
 
   while (stop) {
     if (serv[serv_num].busy == 0) {
-      sleep(2);
+      usleep(100);
       continue;
     }
     printf("START SERVED CLIENT\n");
