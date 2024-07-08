@@ -35,15 +35,9 @@ int main(){
   strcpy(buff, "conn");
   socklen_t size_struct = sizeof(server_connect);
   sendto(cfd, buff, SIZE_BUFF, 0, (SA*)&server_connect, sizeof(SA));
-  recvfrom(cfd, buff, SIZE_BUFF, 0, (SA*)&server_connect, &size_struct);
-  int port = 0;
-  sscanf(buff, "%d", &port);
-  server_connect.sin_port = htons(port);
-  if(connect(cfd, (SA*)&server_connect, sizeof(server_connect)) == -1){
-    handler_error("ne vezet");
-  }
   printf("START CLIENT\n");
-  recv(cfd, buff, SIZE_BUFF, 0);
+  socklen_t size = sizeof(server_connect);
+  recvfrom(cfd, buff, SIZE_BUFF, 0, (SA*)&server_connect, &size);
   printf("%s", buff);
   close(cfd);
   exit(EXIT_SUCCESS);
