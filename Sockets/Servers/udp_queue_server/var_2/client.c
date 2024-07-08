@@ -27,7 +27,7 @@ int main(){
   if(cfd == -1){
     handler_error("socket");
   }
-  struct sockaddr_in server_connect;
+  struct sockaddr_in server_connect, client;
   server_connect.sin_family = AF_INET;
   server_connect.sin_addr.s_addr = ip_addres;
   server_connect.sin_port = htons(PORT);
@@ -36,8 +36,8 @@ int main(){
   socklen_t size_struct = sizeof(server_connect);
   sendto(cfd, buff, SIZE_BUFF, 0, (SA*)&server_connect, sizeof(SA));
   printf("START CLIENT\n");
-  socklen_t size = sizeof(server_connect);
-  recvfrom(cfd, buff, SIZE_BUFF, 0, (SA*)&server_connect, &size);
+  socklen_t size = sizeof(client);
+  recvfrom(cfd, buff, SIZE_BUFF, 0, (SA*)&client, &size);
   printf("%s", buff);
   close(cfd);
   exit(EXIT_SUCCESS);

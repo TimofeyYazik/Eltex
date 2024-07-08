@@ -28,6 +28,7 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 //func
 static inline void CopySockaddr_in(struct sockaddr_in *dest, struct sockaddr_in *source);
 static inline int SettingsChild(int *pt);
+void *StopServer(void *null);
 
 void *ChildServer(void *null){
   int port = 0;
@@ -61,7 +62,7 @@ int main(){
   for(int i = 0; i < POOL_THREADS; i++){
     pthread_create(&list[i], NULL, ChildServer, NULL);
   }
-  
+  pthread_create(&stop_thread, NULL, ChildServer, NULL);
   int sock = socket(AF_INET, SOCK_DGRAM, 0);
   struct sockaddr_in serv, client;
   serv.sin_port = htons(PORT);
@@ -71,6 +72,7 @@ int main(){
   socklen_t len = sizeof(client);
   while(!stop){
     recvfrom(sock, buff, SIZE_BUFF, 0, (SA*)&client, &len);
+    if(!strcmp(buff, "exit")) break;
     ListServer *l = malloc(sizeof(ListServer));
     CopySockaddr_in(&l->sock, &client);
     InsertEnd(head, l);
@@ -80,6 +82,19 @@ int main(){
   exit(EXIT_SUCCESS);
 }
 
+void *StopServer(void *null){
+  scanf("%d", &stop);
+  stop = 1;
+  int sock = socket(AF_INET, SOCK_DGRAM, 0);
+  struct sockaddr_in serv;
+  serv.sin_port = htons(PORT);
+  serv.sin_family = AF_INET;
+  char buff[SIZE_BUFF] = {0};
+  inet_pton(sock, IP_ADDRES, &serv.sin_addr);
+  strcpy(buff, "exit");
+  
+  return NULL;
+}
 
 static inline void CopySockaddr_in(struct sockaddr_in *dest, struct sockaddr_in *source) {
   dest->sin_addr = source->sin_addr;
