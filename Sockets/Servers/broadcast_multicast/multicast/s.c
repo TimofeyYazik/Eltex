@@ -1,3 +1,4 @@
+
 #include <arpa/inet.h>
 #include <errno.h>
 #include <netinet/in.h>
@@ -26,6 +27,7 @@ int main(){
   if(cfd == -1){
     handler_error("socket");
   }
+  setsockopt(cfd, SOL_SOCKET, SO_BROADCAST, &flag_socket, sizeof(flag_socket));
   struct sockaddr_in server_endpoint;
   int ip_addres = 0;
   inet_pton(AF_INET, IP_ADDRES, &ip_addres);
