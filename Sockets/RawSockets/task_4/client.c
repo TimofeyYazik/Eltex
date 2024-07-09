@@ -2,6 +2,7 @@
 #include <linux/if_ether.h>
 #include <linux/if_packet.h>
 #include <errno.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -30,8 +31,8 @@ typedef struct {
 
 void CalcCheckSum(struct iphdr *ip_header) {
     ip_header->check = 0;
-    uint32_t check = 0;
-    uint16_t *counter = (uint16_t *)ip_header;
+    int check = 0;
+    int16_t *counter = (int16_t *)ip_header;
     for (int i = 0; i < sizeof(struct iphdr) / 2; i++) {
         check += ntohs(counter[i]);
     }
@@ -39,6 +40,17 @@ void CalcCheckSum(struct iphdr *ip_header) {
         check = (check & 0xFFFF) + (check >> 16);
     }
     ip_header->check = ~check;
+}
+
+void CalculateUdpChecksum(uint16_t *header_ptr) {
+    int check = 0;
+    for (size_t i = 0; i < 4; ++i) {
+        check += header_ptr[i];  
+    }
+    while (check >> 16) {
+        check = (check & 0xFFFF) + (check >> 16);
+    }
+    *header_ptr = check;      
 }
 
 int main() {
@@ -94,7 +106,7 @@ int main() {
     udph->dest = htons(PORT);
     udph->len = htons(SIZE_BUFF - sizeof(struct iphdr) - CHL_LEVEL);
     udph->check = 0;
-
+    CalculateUdpChecksum((uint16_t*)udph);
     int size = sizeof(client_point);
     char *data = buff_send + sizeof(struct udphdr) + sizeof(struct iphdr) + CHL_LEVEL;
 
