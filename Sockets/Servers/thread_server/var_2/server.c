@@ -1,3 +1,4 @@
+#include <malloc.h>
 #include <stdint.h>
 #include <sys/socket.h>
 #include <stdio.h>
