@@ -1,124 +1,61 @@
 #include <arpa/inet.h>
-#include <linux/if_ether.h>
-#include <linux/if_packet.h>
 #include <errno.h>
-#include <stdint.h>
+#include <netinet/in.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <time.h>
 #include <unistd.h>
-#include <netinet/ip.h>
-#include <netinet/udp.h>
-#include <net/if.h>
 
 #define PORT 6666
-#define SOURCE_PORT 7777
-#define D_IP_ADDRES "192.168.56.2"
-#define S_IP_ADDRES "192.168.56.3"
-#define SIZE_BUFF 114
+#define IP_ADDRES "127.0.0.1"
 #define SA struct sockaddr
-#define CHL_LEVEL 14
-#define NAME_PC "enp0s8"
-#define TYPE_IPV4 0x0800
+#define SIZE_BUFF 80
 #define handler_error(text) \
 do{ perror(text); exit(EXIT_FAILURE); } while(1);
 
-typedef struct {
-    uint8_t dest_mac[6];
-    uint8_t source_mac[6];
-    uint16_t type;
-} ethernet_frame_t;
 
-void CalcCheckSum(struct iphdr *ip_header) {
-    ip_header->check = 0;
-    uint32_t check = 0;
-    uint16_t *counter = (uint16_t *)ip_header;
-    for (int i = 0; i < 10; i++) {
-        check += counter[i];
-    }
-    while (check >> 16) {
-        check = (check & 0xFFFF) + (check >> 16);
-    }
-    ip_header->check = ~check;
+void *ThreadStop(void *stop_p){
+  int *stop = stop_p;
+  if(scanf("%d", stop) != 1){
+    *stop = 0;
+  }
+  return NULL;
 }
 
-int main() {
-    char buff_send[SIZE_BUFF] = {0};
-    char buff_recv[SIZE_BUFF] = {0};
-    struct sockaddr_ll server_endpoint, client_point;
-    memset(&server_endpoint, 0, sizeof(server_endpoint));
-    server_endpoint.sll_family = AF_PACKET;
-    server_endpoint.sll_ifindex = if_nametoindex(NAME_PC);
-    server_endpoint.sll_halen = 6;
-    server_endpoint.sll_addr[0] = 0x08;
-    server_endpoint.sll_addr[1] = 0x00;
-    server_endpoint.sll_addr[2] = 0x27;
-    server_endpoint.sll_addr[3] = 0x78;
-    server_endpoint.sll_addr[4] = 0x85;
-    server_endpoint.sll_addr[5] = 0x25;
-    int cfd = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
-    if (cfd == -1) {
-        handler_error("socket");
-    }
-
-    ethernet_frame_t *frame = (ethernet_frame_t *)buff_send;
-    frame->source_mac[0] = 0x08;
-    frame->source_mac[1] = 0x00;
-    frame->source_mac[2] = 0x27;
-    frame->source_mac[3] = 0xd1;
-    frame->source_mac[4] = 0xe9;
-    frame->source_mac[5] = 0x19;
-
-    frame->dest_mac[0] = 0x08;
-    frame->dest_mac[1] = 0x00;
-    frame->dest_mac[2] = 0x27;
-    frame->dest_mac[3] = 0x78;
-    frame->dest_mac[4] = 0x85;
-    frame->dest_mac[5] = 0x25;
-    frame->type = htons(ETH_P_IP); 
-
-    struct iphdr *ihdr = (struct iphdr *)(buff_send + CHL_LEVEL);
-    ihdr->version = 4;
-    ihdr->ihl = 5;
-    ihdr->tos = 0;
-    ihdr->tot_len = htons(SIZE_BUFF - CHL_LEVEL);
-    ihdr->id = htons(12134);
-    ihdr->frag_off = 0;
-    ihdr->ttl = 255;
-    ihdr->protocol = IPPROTO_UDP;
-    inet_pton(AF_INET, S_IP_ADDRES, &ihdr->saddr);
-    inet_pton(AF_INET, D_IP_ADDRES, &ihdr->daddr);
-    CalcCheckSum(ihdr);
-
-    struct udphdr *udph = (struct udphdr *)(buff_send + sizeof(struct iphdr) + CHL_LEVEL);
-    udph->source = htons(SOURCE_PORT);
-    udph->dest = htons(PORT);
-    udph->len = htons(SIZE_BUFF - sizeof(struct iphdr) - CHL_LEVEL);
-    udph->check = 0;
-    //CalculateUdpChecksum((uint16_t*)udph);
-    int size = sizeof(client_point);
-    char *data = buff_send + sizeof(struct udphdr) + sizeof(struct iphdr) + CHL_LEVEL;
-
-    while (1) {
-        printf("Enter message (to exit enter 'exit'):\n");
-        scanf("%79s", data);
-        if (strcmp(data, "exit") == 0) break;
-        if (sendto(cfd, buff_send, SIZE_BUFF, 0, (SA*)&server_endpoint, sizeof(server_endpoint)) == -1) {
-            handler_error("sendto");
-        }
-        printf("Message send!\n");
-
-        while (1) {
-            recvfrom(cfd, buff_recv, SIZE_BUFF, 0, (SA*)&client_point, &size);
-            udph = (struct udphdr *)(buff_recv + sizeof(struct iphdr) + CHL_LEVEL);
-            if (udph->dest == htons(SOURCE_PORT)) {
-                printf("%s\n", buff_recv + sizeof(struct iphdr) + sizeof(struct udphdr) + CHL_LEVEL);
-                break;
-            }
-        }
-    }
-
-    close(cfd);
-    return 0;
+int main(){
+  int sfd = 0;
+  int stop = 1;
+  char buff[SIZE_BUFF] = {0};
+  int ip_addres = 0;
+  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
+  sfd = socket(AF_INET, SOCK_DGRAM, 0);
+  if(sfd == -1){
+    handler_error("socket"); 
+  }
+  struct sockaddr_in server_settings, client_endpoint;
+  server_settings.sin_family = AF_INET;
+  server_settings.sin_addr.s_addr = ip_addres;
+  server_settings.sin_port = htons(PORT);
+  socklen_t size = sizeof(client_endpoint);
+  pthread_t stop_client = 0;
+  if(bind(sfd, (SA*) &server_settings, sizeof(server_settings)) == -1){
+    handler_error("bind");
+  }
+  
+  pthread_create(&stop_client, NULL, ThreadStop, &stop);
+  
+  printf("PRESS 0 (ZERO) CLIENT STOP\n");
+  while(stop){
+    recvfrom(sfd, buff, SIZE_BUFF, 0, (SA*)&client_endpoint, &size);
+    printf("RECV %s\n", buff);
+    buff[0] = 'B';
+    sendto(sfd, buff, SIZE_BUFF, 0, (SA*) &client_endpoint, sizeof(client_endpoint));
+    printf("SEND %s\n", buff);
+  }
+  pthread_join(stop_client, NULL);
+  close(sfd);
+  exit(EXIT_SUCCESS);
 }
