@@ -47,7 +47,7 @@ int main() {
         printf("enter messege (to exit enter 'exit'):\n");
         scanf("%79s", data);
         if (strcmp(data, "exit") == 0) break;
-        if (sendto(cfd, buff_send, SIZE_BUFF, 0, (SA*)&server_endpoint, sizeof(server_endpoint)) == -1) {
+        if (sendto(cfd, buff_send, SIZE_BUFF_SEND, 0, (SA*)&server_endpoint, sizeof(server_endpoint)) == -1) {
             handler_error("sendto");
         }
         printf("messege send!\n");
