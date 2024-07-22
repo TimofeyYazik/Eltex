@@ -18,21 +18,24 @@
 #define handler_error(text) \
           do { perror(text); exit(EXIT_FAILURE); } while(0);
 
+static inline void FillSock(struct sockaddr_in *s){
+  int ip_addres = 0;
+  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
+  s->sin_family = AF_INET;
+  s->sin_addr.s_addr = ip_addres;
+  s->sin_port = htons(PORT);
+}
 
 
 int main(){
-  int ip_addres = 0;
-  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
   int cfd = socket(AF_INET, SOCK_STREAM, 0);
   if(cfd == -1){
     handler_error("socket");
   }
-  struct sockaddr_in server_connect;
-  server_connect.sin_family = AF_INET;
-  server_connect.sin_addr.s_addr = ip_addres;
-  server_connect.sin_port = htons(PORT);
+  struct sockaddr_in server_enpoint;
+  FillSock(&server_enpoint);  
   char buff[SIZE_BUFF] = {0};
-  if(connect(cfd, (SA*)&server_connect, sizeof(server_connect)) == -1){
+  if(connect(cfd, (SA*)&server_enpoint, sizeof(server_enpoint)) == -1){
     handler_error("connect");
   }
   strcpy(buff, "conn");
