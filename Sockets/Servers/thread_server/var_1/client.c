@@ -19,13 +19,10 @@
           do { perror(text); exit(EXIT_FAILURE); } while(0);
 
 static inline void FillSock(struct sockaddr_in *s){
-  int ip_addres = 0;
-  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
+  inet_pton(AF_INET, IP_ADDRES, &s->sin_addr.s_addr);
   s->sin_family = AF_INET;
-  s->sin_addr.s_addr = ip_addres;
   s->sin_port = htons(PORT);
 }
-
 
 int main(){
   int cfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -39,17 +36,25 @@ int main(){
     handler_error("connect");
   }
   strcpy(buff, "conn");
-  send(cfd, buff, SIZE_BUFF, 0);
+  if(send(cfd, buff, SIZE_BUFF, 0) == -1){
+    handler_error("send");
+  }
   printf("type 'time' to display the time\n");
   printf("type 'exit' to exit\n");
   while(1){
     scanf("%7s", buff);
     if(!strcmp(buff, "exit")){
-      send(cfd, buff, SIZE_BUFF, 0);
+      if(send(cfd, buff, SIZE_BUFF, 0) == -1){
+        handler_error("send");
+      }
       break;
     } else if(!strcmp(buff, "time")){
-      send(cfd, buff, SIZE_BUFF, 0);
-      recv(cfd, buff, SIZE_BUFF, 0);
+      if(send(cfd, buff, SIZE_BUFF, 0) == -1){
+        handler_error("send");
+      }
+      if(recv(cfd, buff, SIZE_BUFF, 0) == -1){
+        handler_error("recv");
+      }
       if(!strcmp(buff, "error"))
         break;
       printf("%s", buff);

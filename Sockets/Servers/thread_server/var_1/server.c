@@ -36,10 +36,8 @@ typedef struct {
 } Thread;
 
 static inline void FillSock(struct sockaddr_in *s){
-  int ip_addres = 0;
-  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
+  inet_pton(AF_INET, IP_ADDRES, &s->sin_addr.s_addr);
   s->sin_family = AF_INET;
-  s->sin_addr.s_addr = ip_addres;
   s->sin_port = htons(PORT);
 }
 

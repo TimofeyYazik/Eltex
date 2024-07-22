@@ -48,31 +48,34 @@ void *ChildServer(void *fd) {
     return NULL;
 }
 
+static inline void FillSock(struct sockaddr_in *s){
+  inet_pton(AF_INET, IP_ADDRES, &s->sin_addr.s_addr);
+  s->sin_family = AF_INET;
+  s->sin_port = htons(PORT);
+}
+
 void *StopServer(void *null) {
-    while (1) {
+    while (stop) {
         if (scanf("%d", &stop) != 1) {
             stop = 0;
         }
-        if (stop == 0) break;
     }
     int cfd = socket(AF_INET, SOCK_STREAM, 0);
     if (cfd == -1) {
         handler_error("socket");
     }
-    struct sockaddr_in server_connect;
-    server_connect.sin_family = AF_INET;
-    server_connect.sin_port = htons(PORT);
-    inet_pton(AF_INET, IP_ADDRES, &server_connect.sin_addr);
+    struct sockaddr_in server_endpoint;
+    FillSock(&server_endpoint);
     char buff[SIZE_BUFF] = {0};
     strcpy(buff, "close");
-
-    if (connect(cfd, (SA*)&server_connect, sizeof(server_connect)) == -1) {
+    if (connect(cfd, (SA*)&server_endpoint, sizeof(server_endpoint)) == -1) {
         handler_error("connect");
     }
     send(cfd, buff, SIZE_BUFF, 0);
     close(cfd);
     return NULL;
 }
+
 
 void AddFD(int fd, ActiveFD *obj) {
     if (obj->len == obj->size - 1) {
@@ -102,25 +105,31 @@ int AddThread(int *fd, Thread *obj) {
     return 0;
 }
 
+static inline void FillUserStruct(ActiveFD *a, Thread *t){
+    a->size = 100;
+    a->len = 0;
+    a->arr = calloc(a->size, sizeof(int));
+    if (!a->arr) {
+        handler_error("calloc");
+    }
+    t->len = 0;
+    t->size = 100;
+    t->arr = calloc(t->size, sizeof(pthread_t));
+    if (!t->arr) {
+        handler_error("calloc");
+    }
+}
+
 int main() {
     ActiveFD obj_act;
-    obj_act.size = 100;
-    obj_act.len = 0;
-    obj_act.arr = calloc(obj_act.size, sizeof(int));
     Thread obj_thread;
-    obj_thread.len = 0;
-    obj_thread.size = 100;
-    obj_thread.arr = calloc(obj_thread.size, sizeof(pthread_t));
+    FillUserStruct(&obj_act, &obj_thread);
     int main_sfd = socket(AF_INET, SOCK_STREAM, 0);
     if (main_sfd == -1) {
         handler_error("socket");
     }
     struct sockaddr_in server_settings;
-    server_settings.sin_family = AF_INET;
-    server_settings.sin_port = htons(PORT);
-    if (inet_pton(AF_INET, IP_ADDRES, &server_settings.sin_addr) <= 0) {
-        handler_error("inet_pton");
-    }
+    FillSock(&server_settings);
     if (bind(main_sfd, (SA *)&server_settings, sizeof(server_settings)) == -1) {
         handler_error("bind");
     }

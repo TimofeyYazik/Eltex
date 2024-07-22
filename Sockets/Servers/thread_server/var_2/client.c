@@ -19,25 +19,30 @@
           do { perror(text); exit(EXIT_FAILURE); } while(0);
 
 
+static inline void FillSock(struct sockaddr_in *s){
+  inet_pton(AF_INET, IP_ADDRES, &s->sin_addr.s_addr);
+  s->sin_family = AF_INET;
+  s->sin_port = htons(PORT);
+}
 
 int main(){
-  int ip_addres = 0;
-  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
   int cfd = socket(AF_INET, SOCK_STREAM, 0);
   if(cfd == -1){
     handler_error("socket");
   }
-  struct sockaddr_in server_connect;
-  server_connect.sin_family = AF_INET;
-  server_connect.sin_addr.s_addr = ip_addres;
-  server_connect.sin_port = htons(PORT);
+  struct sockaddr_in server_endpoint;
+  FillSock(&server_endpoint);
   char buff[SIZE_BUFF] = {0};
-  if(connect(cfd, (SA*)&server_connect, sizeof(server_connect)) == -1){
+  if(connect(cfd, (SA*)&server_endpoint, sizeof(server_endpoint)) == -1){
     handler_error("connect");
   }
   strcpy(buff, "conn");
-  send(cfd, buff, SIZE_BUFF, 0);
-  recv(cfd, buff, SIZE_BUFF, 0);
+  if(send(cfd, buff, SIZE_BUFF, 0) == -1){
+    handler_error("send");
+  }
+  if(recv(cfd, buff, SIZE_BUFF, 0) == -1){
+    handler_error("recv");
+  }
   printf("%s", buff);
   close(cfd);
   exit(EXIT_SUCCESS);
