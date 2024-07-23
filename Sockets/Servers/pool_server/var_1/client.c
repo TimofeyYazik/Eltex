@@ -19,28 +19,29 @@
           do { perror(text); exit(EXIT_FAILURE); } while(0);
 
 
+static inline void FillSock(struct sockaddr_in *s){
+  inet_pton(AF_INET, IP_ADDRES, &s->sin_addr.s_addr);
+  s->sin_family = AF_INET;
+  s->sin_port = htons(PORT);
+}
 
 int main(){
-  int ip_addres = 0;
-  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
   int cfd = socket(AF_INET, SOCK_DGRAM, 0);
   if(cfd == -1){
     handler_error("socket");
   }
-  struct sockaddr_in server_connect;
-  server_connect.sin_family = AF_INET;
-  server_connect.sin_addr.s_addr = ip_addres;
-  server_connect.sin_port = htons(PORT);
+  struct sockaddr_in server_endpoint;
+  FillSock(&server_endpoint);
   char buff[SIZE_BUFF] = {0};
   strcpy(buff, "conn");
-  socklen_t size_struct = sizeof(server_connect);
+  socklen_t size_struct = sizeof(server_endpoint);
   printf("START CLIENT\n");
-  sendto(cfd, buff, SIZE_BUFF, 0, (SA*)&server_connect, sizeof(SA));
-  recvfrom(cfd, buff, SIZE_BUFF, 0, (SA*)&server_connect, &size_struct);
+  sendto(cfd, buff, SIZE_BUFF, 0, (SA*)&server_endpoint, sizeof(SA));
+  recvfrom(cfd, buff, SIZE_BUFF, 0, (SA*)&server_endpoint, &size_struct);
   int port = 0;
   sscanf(buff, "%d", &port);
-  server_connect.sin_port = htons(port);
-  if(connect(cfd, (SA*)&server_connect, sizeof(server_connect)) == -1){
+  server_endpoint.sin_port = htons(port);
+  if(connect(cfd, (SA*)&server_endpoint, sizeof(server_endpoint)) == -1){
     handler_error("ne vezet");
   }
   printf("type 'time' to display the time\n");
