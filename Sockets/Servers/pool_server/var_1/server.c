@@ -177,7 +177,6 @@ int main() {
   if (bind(main_sfd, (SA *)&server_settings, sizeof(server_settings)) == -1) {
     handler_error("bind");
   }
-  socklen_t size_len_serv = sizeof(struct sockaddr_in);
   pthread_t stop_tread;
   pthread_create(&stop_tread, NULL, StopServer, NULL);
   int ports[POOL_TREADS] = {0};

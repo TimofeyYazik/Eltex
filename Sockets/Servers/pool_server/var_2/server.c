@@ -31,27 +31,20 @@ volatile int stop = 1;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 ServersInfo serv[POOL_TREADS] = {0};
 
-void *ChildServer(void *port_p) {
-  int *port = port_p;
-  time_t time_now;
-  char buff[SIZE_BUFF] = {0};
+static inline void FillSock(struct sockaddr_in *s){
+  inet_pton(AF_INET, IP_ADDRES, &s->sin_addr.s_addr);
+  s->sin_family = AF_INET;
+  s->sin_port = htons(PORT);
+}
 
-  int ip_addres = 0;
-  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
-  int thread_sfd = socket(AF_INET, SOCK_DGRAM, 0);
 
-  struct sockaddr_in server_settings, client_settings;
-  server_settings.sin_family = AF_INET;
-  server_settings.sin_addr.s_addr = ip_addres;
-  server_settings.sin_port = htons(*port);
-  int port_thread = 0;
-  socklen_t client_size = sizeof(client_settings);
-  pthread_mutex_lock(&mutex);
+
+void BindChild(int fd, struct sockaddr_in *server, int *port, int *serv_num){
   while (1) {
-    if (bind(thread_sfd, (SA *)&server_settings, sizeof(server_settings)) == -1) {
+    if (bind(fd, (SA *)server, sizeof(*server)) == -1) {
       if (errno == EADDRINUSE) {
         (*port)++;
-        server_settings.sin_port = htons(*port);
+        server->sin_port = htons(*port);
         continue;
       } else {
         handler_error("bind");
@@ -59,16 +52,21 @@ void *ChildServer(void *port_p) {
     }
     break;
   }
-  int serv_num = 0;
   for (int i = 0; i < POOL_TREADS; i++) {
     if (serv[i].port == 0) {
       serv[i].port = *port;
-      serv_num = i;
+      *serv_num = i;
       break;
     }
   }
-  pthread_mutex_unlock(&mutex);
+}
 
+
+void ExchangeMessage(int fd, int serv_num){
+  struct sockaddr_in client_endpoint;
+  char buff[SIZE_BUFF] = {0};
+  time_t time_now;
+  socklen_t client_size = sizeof(client_endpoint);
   while (stop) {
     if (serv[serv_num].busy == 0) {
       usleep(100);
@@ -76,13 +74,13 @@ void *ChildServer(void *port_p) {
     }
     printf("START SERVED CLIENT\n");
     time(&time_now);
-    if(recvfrom(thread_sfd, buff, SIZE_BUFF, 0, (SA*)&client_settings, &client_size) == -1){
+    if(recvfrom(fd, buff, SIZE_BUFF, 0, (SA*)&client_endpoint, &client_size) == -1){
       perror("recv thread");
       serv[serv_num].busy = 0;
       continue;
     }
     strncpy(buff, ctime(&time_now), 79);
-    if(sendto(thread_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings, client_size) == -1){
+    if(sendto(fd, buff, SIZE_BUFF, 0, (SA *)&client_endpoint, client_size) == -1){
       perror("sendto thread");
       serv[serv_num].busy = 0;
       continue;
@@ -90,6 +88,25 @@ void *ChildServer(void *port_p) {
     printf("Sent to client %s\n", buff);
     serv[serv_num].busy = 0;
   }
+}
+
+void *ChildServer(void *port_p) {
+  int *port = port_p;
+  time_t time_now;
+  char buff[SIZE_BUFF] = {0};
+  int ip_addres = 0;
+  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
+  int thread_sfd = socket(AF_INET, SOCK_DGRAM, 0);
+  struct sockaddr_in server_settings;
+  server_settings.sin_family = AF_INET;
+  server_settings.sin_addr.s_addr = ip_addres;
+  server_settings.sin_port = htons(*port);
+  int port_thread = 0;
+  int serv_num = 0;
+  pthread_mutex_lock(&mutex);
+  BindChild(thread_sfd, &server_settings, port, &serv_num);
+  pthread_mutex_unlock(&mutex);
+  ExchangeMessage(thread_sfd, serv_num);
   close(thread_sfd);
   printf("THREAD IS OUT\n");
   return NULL;
@@ -116,41 +133,13 @@ void *StopServer(void *null) {
   return NULL;
 }
 
-int main() {
-  pthread_t arr_treads[POOL_TREADS] = {0};
-
-  int ip_addres = 0;
-  inet_pton(AF_INET, IP_ADDRES, &ip_addres);
-  int main_sfd = socket(AF_INET, SOCK_DGRAM, 0);
-  if (main_sfd == -1) {
-    handler_error("socket");
-  }
-
-  struct sockaddr_in server_settings, client_settings;
-  server_settings.sin_family = AF_INET;
-  server_settings.sin_addr.s_addr = ip_addres;
-  server_settings.sin_port = htons(PORT);
-
-  if (bind(main_sfd, (SA *)&server_settings, sizeof(server_settings)) == -1) {
-    handler_error("bind");
-  }
-
-  socklen_t size_len_serv = sizeof(struct sockaddr_in);
-  socklen_t size_len_client = sizeof(struct sockaddr_in);
-  pthread_t stop_tread;
-  pthread_create(&stop_tread, NULL, StopServer, (void *)&ip_addres);
-  int ports[POOL_TREADS] = {0};
-  for (int i = 0; i < POOL_TREADS; i++) {
-    ports[i] = PORT + i + 1;
-    pthread_create(&arr_treads[i], NULL, ChildServer, &ports[i]);
-  }
-
-  printf("SERVER START WORK\n");
-  printf("PRESS 0 (ZERO) SERVER STOP\n");
+void ListenLoop(int main_sfd){
   char buff[SIZE_BUFF] = {0};
+  socklen_t size_len_client = sizeof(struct sockaddr_in);
+  struct sockaddr_in client_endpoint;
   int i = 0;
   while (stop) {
-    if(recvfrom(main_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings, &size_len_client) == -1){
+    if(recvfrom(main_sfd, buff, SIZE_BUFF, 0, (SA *)&client_endpoint, &size_len_client) == -1){
       perror("recvfrom");
       continue;
     }
@@ -165,11 +154,34 @@ int main() {
       }
     }
     sprintf(buff, "%d", serv[i].port);
-    if(sendto(main_sfd, buff, SIZE_BUFF, 0, (SA *)&client_settings, size_len_client) == -1){
+    if(sendto(main_sfd, buff, SIZE_BUFF, 0, (SA *)&client_endpoint, size_len_client) == -1){
       perror("sendto");
       continue;
     }
   }
+}
+
+int main() {
+  pthread_t arr_treads[POOL_TREADS] = {0};
+  pthread_t stop_tread;
+  int main_sfd = socket(AF_INET, SOCK_DGRAM, 0);
+  if (main_sfd == -1) {
+    handler_error("socket");
+  }
+  struct sockaddr_in server_settings, client_settings;
+  FillSock(&server_settings);
+  if (bind(main_sfd, (SA *)&server_settings, sizeof(server_settings)) == -1) {
+    handler_error("bind");
+  }
+  pthread_create(&stop_tread, NULL, StopServer, NULL);
+  int ports[POOL_TREADS] = {0};
+  for (int i = 0; i < POOL_TREADS; i++) {
+    ports[i] = PORT + i + 1;
+    pthread_create(&arr_treads[i], NULL, ChildServer, &ports[i]);
+  }
+  printf("SERVER START WORK\n");
+  printf("PRESS 0 (ZERO) SERVER STOP\n");
+  ListenLoop(main_sfd);
   pthread_join(stop_tread, NULL);
   for (int i = 0; i < POOL_TREADS; i++) {
     pthread_join(arr_treads[i], NULL);
